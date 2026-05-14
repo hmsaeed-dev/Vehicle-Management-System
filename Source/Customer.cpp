@@ -8,8 +8,8 @@
 
 using namespace std;
 
-Customer::Customer(string id, string name, string phone, string password)
-    : User(id, name, phone, password) {}
+Customer::Customer(string id, string username, string name, string phone, string password)
+    : User(id, username, name, phone, password) {}
 
 /**
  * @brief Displays the Customer-specific console menu.

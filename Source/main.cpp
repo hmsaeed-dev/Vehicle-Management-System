@@ -94,8 +94,16 @@ void handleSearch(SearchEngine& engine)
 
         if (choice >= 1 && choice <= 5)
         {
-            if (results.empty()) cout << "No matching vehicles found." << endl;
-            else for (Vehicle* v : results) v->displayInfo();
+            if (results.empty()) {
+                cout << "\n[SYSTEM] No matching vehicles found." << endl;
+            } else {
+                cout << "\n[SYSTEM] Found " << results.size() << " vehicles matching your criteria:\n";
+                cout << "+-------+-------------------+-------+-------+----------+------------+------------+\n";
+                cout << "| ID    | Model             | Year  | Cap.  | Rate     | Status     | Category   |\n";
+                cout << "+-------+-------------------+-------+-------+----------+------------+------------+\n";
+                for (Vehicle* v : results) v->displayRow();
+                cout << "+-------+-------------------+-------+-------+----------+------------+------------+\n";
+            }
             waitForUser();
         }
     }
@@ -161,13 +169,30 @@ int main()
 
         if (mainChoice == 1)
         {
-            string name, id, phone, password;
+            string name, id, username, phone, password;
             cout << "\n";
             cout << "+----------------------------------------------------------+\n";
             cout << "|                 ACCOUNT REGISTRATION                     |\n";
             cout << "+----------------------------------------------------------+\n";
             cout << "  Please enter your details to create an account:\n\n";
             cout << "  > Full Name        : "; cin.ignore(); getline(cin, name);
+            cout << "  > Username         : "; cin >> username;
+
+            // Check if username is taken
+            bool taken = false;
+            for (User* u : users) {
+                if (u->getUsername() == username) {
+                    taken = true;
+                    break;
+                }
+            }
+
+            if (taken) {
+                cout << "[ERROR] Username already taken. Please try another." << endl;
+                waitForUser();
+                continue;
+            }
+
             cout << "  > Customer ID      : "; cin >> id;
             cout << "  > Phone Number     : "; cin >> phone;
             cout << "  > Secure Password  : "; cin >> password;
@@ -178,7 +203,7 @@ int main()
             if (id[0] != 'C') {
                 cout << "[ERROR] Only customer registration is allowed via this menu." << endl;
             } else {
-                users.push_back(new Customer(id, name, phone, password));
+                users.push_back(new Customer(id, username, name, phone, password));
                 cout << "[SUCCESS] Account created! Please login." << endl;
             }
             continue;
@@ -186,27 +211,27 @@ int main()
 
         if (mainChoice == 2)
         {
-            string id, pass;
+            string username, pass;
             cout << "\n";
             cout << "+----------------------------------------------------------+\n";
             cout << "|                    SYSTEM LOGIN                          |\n";
             cout << "+----------------------------------------------------------+\n";
             cout << "  Please verify your identity to continue:\n";
-            cout << "  > User ID          : "; cin >> id;
+            cout << "  > Username         : "; cin >> username;
             cout << "  > Password         : "; cin >> pass;
             cout << "+----------------------------------------------------------+\n";
 
             // Checking if User Exists
             User* currentUser = nullptr;
             for (User* u : users) {
-                if (u->getID() == id && u->authenticate(pass)) {
+                if (u->getUsername() == username && u->authenticate(pass)) {
                     currentUser = u;
                     break;
                 }
             }
 
             if (!currentUser) {
-                cout << "[ERROR] Invalid ID or Password." << endl;
+                cout << "[ERROR] Invalid Username or Password." << endl;
                 waitForUser();
                 continue;
             }

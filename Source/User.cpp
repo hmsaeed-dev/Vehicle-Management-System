@@ -3,8 +3,8 @@
 /**
  * @brief Constructor for the User base class.
  */
-User::User(string id, string name, string phone, string password) 
-    : userID(id), name(name), phone(phone), password(password) {}
+User::User(string id, string username, string name, string phone, string password) 
+    : userID(id), username(username), name(name), phone(phone), password(password) {}
 
 /**
  * @brief Virtual destructor for polymorphic cleanup.
@@ -15,6 +15,10 @@ User::~User() {}
 
 string User::getID() const {
     return userID;
+}
+
+string User::getUsername() const {
+    return username;
 }
 
 string User::getName() const {

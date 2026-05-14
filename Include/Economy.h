@@ -16,6 +16,7 @@ public:
     // Polymorphic overrides
     float calculateCost(int hours) override;
     void displayInfo() override;
+    void displayRow() const override;
 };
 
 #endif // ECONOMY_H

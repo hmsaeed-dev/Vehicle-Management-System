@@ -14,19 +14,21 @@ using namespace std;
 class User {
 private:
     string userID;   // Unique User ID
+    string username; // Login Username
     string name;     // Full name
     string phone;    // Contact number
     string password; // Login password
 
 public:
     // Constructor
-    User(string id, string name, string phone, string password);
+    User(string id, string username, string name, string phone, string password);
 
     // Virtual destructor for safe cleanup
     virtual ~User();
 
     // Getters
     string getID() const;
+    string getUsername() const;
     string getName() const;
     string getPhone() const;
     string getPassword() const;

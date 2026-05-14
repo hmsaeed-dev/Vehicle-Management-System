@@ -36,3 +36,14 @@ void Economy::displayInfo()
     cout << "| Status        :  " << left << setw(36) << (getAvailable() ? "AVAILABLE" : "RENTED") << "|\n";
     cout << "+------------------------------------------------------+\n";
 }
+
+void Economy::displayRow() const
+{
+    cout << "| " << left << setw(6) << getID()
+         << "| " << left << setw(18) << getModel()
+         << "| " << left << setw(6) << getYear()
+         << "| " << left << setw(6) << getCapacity()
+         << "| $" << left << setw(7) << fixed << setprecision(2) << getRentalRate()
+         << "| " << left << setw(10) << (getAvailable() ? "Available" : "Rented")
+         << " | " << left << setw(10) << "Economy" << " |" << endl;
+}

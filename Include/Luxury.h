@@ -22,6 +22,7 @@ class Luxury : public Vehicle
     // Polymorphic overrides
     float calculateCost(int hours) override;
     void displayInfo() override;
+    void displayRow() const override;
 };
 
 #endif // LUXURY_H

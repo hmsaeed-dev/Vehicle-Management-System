@@ -21,7 +21,7 @@ class FileHandler;
 class Admin : public User {
 public:
     // Constructor
-    Admin(std::string id, std::string name, std::string phone, std::string password);
+    Admin(std::string id, std::string username, std::string name, std::string phone, std::string password);
 
     // Polymorphic override for Admin menu
     void showMenu() override;

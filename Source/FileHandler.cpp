@@ -135,12 +135,36 @@ vector<User*> FileHandler::loadUsers()
 
         char type = data[0][0];
         string id = data[1];
-        string name = data[2];
-        string phone = data[3];
-        string password = (data.size() > 4) ? data[4] : "1111"; // Default password (1111)
+        string username, name, phone, password;
 
-        if (type == 'A') users.push_back(new Admin(id, name, phone, password));
-        else if (type == 'C') users.push_back(new Customer(id, name, phone, password));
+        // Smart Detection:
+        // If 6 columns exist AND the 3rd column is lowercase/alphanumeric (like a username)
+        // AND the 4th column isn't a phone number... we handle it.
+        // For simplicity: If column 4 contains a dash, it's likely a phone number, meaning column 3 is the Name.
+        
+        if (data.size() >= 6 && data[3].find('-') == string::npos) {
+            // Likely New Format: ID|Username|Name|Phone|Password
+            username = data[2];
+            name = data[3];
+            phone = data[4];
+            password = data[5];
+        } else {
+            // Likely Old or Corrupted Format: ID|Name|Phone|Password
+            // We use the ID as a fallback username to prevent data shifting
+            username = id; 
+            name = data[2];
+            phone = data[3];
+            password = (data.size() > 4) ? data[4] : "1111";
+        }
+
+        // Final cleanup: Ensure no one has "Admin" as a username if it was a shift error
+        if (username == "Admin" && name.find('-') != string::npos) {
+             username = "admin";
+             name = "Admin User";
+        }
+
+        if (type == 'A') users.push_back(new Admin(id, username, name, phone, password));
+        else if (type == 'C') users.push_back(new Customer(id, username, name, phone, password));
     }
 
     file.close();
@@ -156,7 +180,7 @@ void FileHandler::saveUsers(const vector<User*>& users)
         char type = u->getID()[0];
 
         // A for Admin, C for Customer
-        file << type << "|" << u->getID() << "|" << u->getName() << "|" << u->getPhone() << "|" << u->getPassword() << endl;
+        file << type << "|" << u->getID() << "|" << u->getUsername() << "|" << u->getName() << "|" << u->getPhone() << "|" << u->getPassword() << endl;
     }
     file.close();
 }

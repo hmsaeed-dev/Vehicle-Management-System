@@ -46,6 +46,7 @@ public:
     // Pure Virtual Functions
     virtual float calculateCost(int hours) = 0;
     virtual void displayInfo() = 0;
+    virtual void displayRow() const = 0; // New method for tabular view
 };
 
 #endif // VEHICLE_H

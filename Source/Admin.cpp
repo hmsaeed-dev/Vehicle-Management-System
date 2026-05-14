@@ -11,8 +11,8 @@
 using namespace std;
 
 // Admin Class Constructor
-Admin::Admin(string id, string name, string phone, string password)
-    : User(id, name, phone, password) {}
+Admin::Admin(string id, string username, string name, string phone, string password)
+    : User(id, username, name, phone, password) {}
 
 /**
 * @brief Displays the Admin-specific console menu.

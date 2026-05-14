@@ -18,7 +18,7 @@ private:
 
 public:
     // Constructor
-    Customer(string id, string name, string phone, string password);
+    Customer(string id, string username, string name, string phone, string password);
 
     // Polymorphic override for Customer menu
     void showMenu() override;

@@ -12,6 +12,7 @@ public:
     Van(string id, string model, int year, int capacity, float rate);
     float calculateCost(int days) override;
     void displayInfo() override;
+    void displayRow() const override;
 };
 
 #endif // VAN_H

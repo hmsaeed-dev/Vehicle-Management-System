@@ -5,6 +5,8 @@
 #include "SUV.h"
 #include "Van.h"
 #include "FileHandler.h"
+#include "Colors.h"
+#include "InputHandler.h"
 
 #include <iostream>
 #include <iomanip>
@@ -22,9 +24,10 @@ Admin::Admin(string id, string username, string name, string phone, string passw
 void Admin::showMenu()
 {
     cout << "\n";
+    cout << Color::BOLD << Color::RED;
     cout << "+----------------------------------------------------------+\n";
     cout << "|                  ADMIN CONTROL PANEL                     |\n";
-    cout << "+----------------------------------------------------------+\n";
+    cout << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "|  Logged in as : " << left << setw(40)
             << (getName() + " (ID: " + getID() + ")") << "|\n";
     cout << "+----------------------------------------------------------+\n";
@@ -34,7 +37,6 @@ void Admin::showMenu()
     cout << "|   [4]  View All Records                                  |\n";
     cout << "|   [5]  Logout                                            |\n";
     cout << "+----------------------------------------------------------+\n\n";
-    cout << "Enter your choice (1-5): ";
 }
 
 
@@ -50,51 +52,53 @@ void Admin::addVehicle(vector<Vehicle*>& fleet)
     float rate;
     int year, capacity;
 
-    cout << "\n========= ADD NEW VEHICLE =========\n====================================" << endl;
-    cout << "Categories: \nE: Economy\nL: Luxury\nS: SUV\nV: Van/Bus\n" << endl << endl;
-    cout << "Selection: ";
-    cin >> type;
-    type = toupper(type);
+    cout << "\n" << Color::BOLD << Color::BLUE << "========= ADD NEW VEHICLE =========" << Color::RESET << endl;
+    
+    type = InputHandler::getChar("Categories (E: Economy, L: Luxury, S: SUV, V: Van/Bus)", "ELSV", true);
+    if (type == '0') return;
 
-    cout << "Enter Vehicle ID (e.g., V001): ";
-    cin >> id;
+    id = InputHandler::getString("Enter Vehicle ID (e.g., V001): ", false, true);
+    if (id == InputHandler::CANCEL_STR) return;
 
     // Check if ID already exists or NOT
     for (Vehicle* v : fleet)
     {
         if (v->getID() == id)
         {
-            cout << "[ERROR] Vehicle ID already exists!" << endl;
+            cout << Color::ERROR << "[ERROR] Vehicle ID already exists!" << Color::RESET << endl;
             return;
         }
     }
 
-    cout << "Enter Model Name: ";
-    cin.ignore();
-    getline(cin, model);
-    cout << "Enter Year: "; cin >> year;
-    cout << "Enter Capacity: "; cin >> capacity;
-    cout << "Enter Rental Rate per Day: "; cin >> rate;
+    model = InputHandler::getString("Enter Model Name: ", true, true);
+    if (model == InputHandler::CANCEL_STR) return;
+
+    year = InputHandler::getInt("Enter Year: ", 1900, 2026, true);
+    if (year == InputHandler::CANCEL_INT) return;
+
+    capacity = InputHandler::getInt("Enter Capacity: ", 1, 100, true);
+    if (capacity == InputHandler::CANCEL_INT) return;
+
+    rate = InputHandler::getFloat("Enter Rental Rate per Day: ", 0.0f, 1000000.0f, true);
+    if (rate == InputHandler::CANCEL_FLOAT) return;
 
     Vehicle* v = nullptr;
 
     if (type == 'E') v = new Economy(id, model, year, capacity, rate);
     else if (type == 'L')
     {
-        string features;
-        cout << "Enter Luxury Features: ";
-        cin.ignore();
-        getline(cin, features);
+        string features = InputHandler::getString("Enter Luxury Features: ", true, true);
+        if (features == InputHandler::CANCEL_STR) return;
         v = new Luxury(id, model, year, capacity, rate, features);
     }
     else if (type == 'S'){v = new SUV(id, model, year, capacity, rate);}
     else if (type == 'V'){v = new Van(id, model, year, capacity, rate);}
+
     if (v)
     {
         fleet.push_back(v);
-        cout << "\n[SYSTEM] Vehicle " << model << " added successfully!" << endl;
+        cout << "\n" << Color::SUCCESS << "[SYSTEM] Vehicle " << model << " added successfully!" << Color::RESET << endl;
     }
-    else {cout << "[ERROR] Invalid category selected." << endl;}
 }
 
 
@@ -106,23 +110,27 @@ void Admin::removeVehicle(vector<Vehicle*>& fleet)
 {
     string id;
     cout << "\n";
+    cout << Color::BOLD << Color::RED;
     cout << "+----------------------------------------------------------+\n";
     cout << "|                   REMOVE VEHICLE FROM FLEET              |\n";
-    cout << "+----------------------------------------------------------+\n";
+    cout << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "  Please enter the unique ID of the vehicle to delete:\n\n";
-    cout << "  > Vehicle ID to Remove : "; cin >> id;
+    
+    id = InputHandler::getString("  > Vehicle ID to Remove: ", false, true);
+    if (id == InputHandler::CANCEL_STR) return;
+
     cout << "\n+----------------------------------------------------------+\n";
     for (auto it = fleet.begin(); it != fleet.end(); ++it) {
         if ((*it)->getID() == id) {
             cout << "  [SYSTEM] Removing " << (*it)->getModel() << "...\n";
             delete *it;      // Free memory
             fleet.erase(it); // Remove from vector
-            cout << "  [SUCCESS] Vehicle has been purged from the system.\n";
+            cout << Color::SUCCESS << "  [SUCCESS] Vehicle has been purged from the system.\n" << Color::RESET;
             cout << "+----------------------------------------------------------+\n";
             return;
         }
     }
-    cout << "  [ERROR] Vehicle ID '" << id << "' not found.\n";
+    cout << Color::ERROR << "  [ERROR] Vehicle ID '" << id << "' not found.\n" << Color::RESET;
     cout << "+----------------------------------------------------------+\n";
 }
 
@@ -138,17 +146,18 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
 {
     int choice = 0;
     cout << "\n";
+    cout << Color::BOLD << Color::CYAN;
     cout << "+----------------------------------------------------------+\n";
     cout << "|                SALE / PURCHASE MODULE                    |\n";
-    cout << "+----------------------------------------------------------+\n";
+    cout << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "|                                                          |\n";
     cout << "|   [1]   Sell Vehicle                                     |\n";
     cout << "|   [2]   Purchase Vehicle                                 |\n";
     cout << "|   [3]   Back to Admin Menu                               |\n";
     cout << "|                                                          |\n";
-    cout << "+----------------------------------------------------------+\n\n";
-    cout << "Selection: ";
-    cin >> choice;
+    cout << Color::CYAN << "+----------------------------------------------------------+\n\n" << Color::RESET;
+    
+    choice = InputHandler::getInt("Selection: ", 1, 3);
 
 
     // Sell Vehicle
@@ -157,9 +166,14 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
         string vID, cID;
         float price;
 
-        cout << "Enter Vehicle ID to sell: "; cin >> vID;
-        cout << "Enter Buyer Customer ID: "; cin >> cID;
-        cout << "Enter Sale Price: "; cin >> price;
+        vID = InputHandler::getString("Enter Vehicle ID to sell: ", false, true);
+        if (vID == InputHandler::CANCEL_STR) return;
+
+        cID = InputHandler::getString("Enter Buyer Customer ID: ", false, true);
+        if (cID == InputHandler::CANCEL_STR) return;
+
+        price = InputHandler::getFloat("Enter Sale Price: ", 0, 10000000, true);
+        if (price == InputHandler::CANCEL_FLOAT) return;
 
         Vehicle* targetV = nullptr;
         for (Vehicle* v : fleet) if (v->getID() == vID) { targetV = v; break; }
@@ -171,29 +185,30 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
         {
             targetV->setStatus(VehicleStatus::Sold);
             cout << "\n";
+            cout << Color::BOLD << Color::SUCCESS;
             cout << "+======================================================+\n";
             cout << "|                   SALE RECEIPT                       |\n";
-            cout << "+======================================================+\n";
+            cout << "+======================================================+\n" << Color::RESET;
             cout << "| Transaction Type     :  VEHICLE SALE                 |\n";
             cout << "+------------------------------------------------------+\n";
             cout << "| Vehicle ID           :  " << left << setw(35) << vID << "|\n";
             cout << "| Vehicle Model        :  " << left << setw(35) << targetV->getModel() << "|\n";
             cout << "| Buyer                :  " << left << setw(35) << targetC->getName() << "|\n";
             cout << "| Selling Price        :  $" << left << setw(34) << price << "|\n";
-            cout << "+======================================================+\n";
+            cout << Color::SUCCESS << "+======================================================+\n";
             cout << "|                TRANSACTION SUCCESSFUL                |\n";
             cout << "|          Vehicle has been marked as SOLD             |\n";
-            cout << "+======================================================+\n\n";
+            cout << "+======================================================+\n" << Color::RESET << endl;
 
             // Log Transaction immediately using FileHandler
             fh.appendTransaction("SALE", vID, cID, price, "14/05/2026");
-            cout << "[SYSTEM] Sale record archived in Transactions.txt via FileHandler" << endl;
+            cout << Color::INFO << "[SYSTEM] Sale record archived in Transactions.txt via FileHandler" << Color::RESET << endl;
         }
 
 
         else
         {
-            cout << "[ERROR] Sale failed. Check ID validity and vehicle availability." << endl;
+            cout << Color::ERROR << "[ERROR] Sale failed. Check ID validity and vehicle availability." << Color::RESET << endl;
         }
     }
 
@@ -206,28 +221,44 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
         int year, capacity;
 
         cout << "\n";
+        cout << Color::BOLD << Color::BLUE;
         cout << "+----------------------------------------------------------+\n";
         cout << "|                VEHICLE ACQUISITION & PURCHASE            |\n";
-        cout << "+----------------------------------------------------------+\n";
+        cout << "+----------------------------------------------------------+\n" << Color::RESET;
         cout << "  Enter procurement details below:\n\n";
-        cout << "  > Supplier Name    : "; cin.ignore(); getline(cin, supplier);
-        cout << "  > Category (E/L/S/V): "; cin >> type;
-        cout << "  > New Vehicle ID   : "; cin >> id;
-        cout << "  > Model Name       : "; cin.ignore(); getline(cin, model);
-        cout << "  > Release Year     : "; cin >> year;
-        cout << "  > Passenger Cap.   : "; cin >> capacity;
-        cout << "  > Purchase Price   : "; cin >> price;
-        cout << "  > Rental Rate/Day  : "; cin >> rentRate;
+        
+        supplier = InputHandler::getString(Color::INFO + "  > Supplier Name    : " + Color::RESET, true, true);
+        if (supplier == InputHandler::CANCEL_STR) return;
+
+        type = InputHandler::getChar(Color::INFO + "  > Category (E/L/S/V): " + Color::RESET, "ELSV", true);
+        if (type == '0') return;
+
+        id = InputHandler::getString(Color::INFO + "  > New Vehicle ID   : " + Color::RESET, false, true);
+        if (id == InputHandler::CANCEL_STR) return;
+
+        model = InputHandler::getString(Color::INFO + "  > Model Name       : " + Color::RESET, true, true);
+        if (model == InputHandler::CANCEL_STR) return;
+
+        year = InputHandler::getInt(Color::INFO + "  > Release Year     : " + Color::RESET, 1900, 2026, true);
+        if (year == InputHandler::CANCEL_INT) return;
+
+        capacity = InputHandler::getInt(Color::INFO + "  > Passenger Cap.   : " + Color::RESET, 1, 100, true);
+        if (capacity == InputHandler::CANCEL_INT) return;
+
+        price = InputHandler::getFloat(Color::INFO + "  > Purchase Price   : " + Color::RESET, 0, 10000000, true);
+        if (price == InputHandler::CANCEL_FLOAT) return;
+
+        rentRate = InputHandler::getFloat(Color::INFO + "  > Rental Rate/Day  : " + Color::RESET, 0, 1000000, true);
+        if (rentRate == InputHandler::CANCEL_FLOAT) return;
 
         Vehicle* v = nullptr;
-        type = toupper(type);
 
         if (type == 'E') v = new Economy(id, model, year, capacity, rentRate);
         else if (type == 'L') v = new Luxury(id, model, year, capacity, rentRate, "Purchased Luxury");
         else if (type == 'S') v = new SUV(id, model, year, capacity, rentRate);
         else if (type == 'V') v = new Van(id, model, year, capacity, rentRate);
 
-        cout << "+----------------------------------------------------------+\n";
+        cout << Color::BLUE << "+----------------------------------------------------------+\n" << Color::RESET;
 
 
         if (v)
@@ -235,9 +266,10 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
             fleet.push_back(v);
 
             cout << "\n";
+            cout << Color::BOLD << Color::SUCCESS;
             cout << "+======================================================+\n";
             cout << "|                  PURCHASE RECEIPT                    |\n";
-            cout << "+======================================================+\n";
+            cout << "+======================================================+\n" << Color::RESET;
             cout << "| Transaction   :  VEHICLE PURCHASE                    |\n";
             cout << "| Supplier      :  " << left << setw(36) << supplier << "|\n";
             cout << "+------------------------------------------------------+\n";
@@ -245,14 +277,14 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
             cout << "| Model         :  " << left << setw(36) << model << "|\n";
             cout << "| Cost Price    :  $" << left << setw(35) << price << "|\n";
             cout << "| Rental Rate   :  $" << left << setw(35) << rentRate << "|\n";
-            cout << "+======================================================+\n";
+            cout << Color::SUCCESS << "+======================================================+\n";
             cout << "|        [SUCCESS] New vehicle added to fleet.         |\n";
-            cout << "+======================================================+\n\n";
+            cout << "+======================================================+\n" << Color::RESET << endl;
         }
 
         else
         {
-            cout << "[ERROR] Invalid category." << endl;
+            cout << Color::ERROR << "[ERROR] Invalid category." << Color::RESET << endl;
         }
     }
 }
@@ -265,16 +297,17 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
 void Admin::viewAllRecords(const vector<Vehicle*>& fleet, const vector<User*>& users)
 {
     cout << "\n";
+    cout << Color::BOLD << Color::BLUE;
     cout << "+===========================================================+\n";
     cout << "|                   FULL SYSTEM RECORDS                     |\n";
-    cout << "+===========================================================+\n\n";
+    cout << "+===========================================================+\n" << Color::RESET;
 
-    cout << "+------------------- VEHICLE FLEET --------------------------+\n";
+    cout << Color::CYAN << "\n+------------------- VEHICLE FLEET --------------------------+\n" << Color::RESET;
     cout << "| Total Vehicles : " << left << setw(41) << fleet.size() << "|\n";
 
     if (fleet.empty())
     {
-        cout << "| No vehicles available in the fleet.                   |\n";
+        cout << Color::WARNING << "| No vehicles available in the fleet.                   |\n" << Color::RESET;
     }
 
     else
@@ -285,12 +318,13 @@ void Admin::viewAllRecords(const vector<Vehicle*>& fleet, const vector<User*>& u
 
         for (Vehicle* v : fleet)
         {
+            string coloredStatus = (v->getStatus() == VehicleStatus::Available ? Color::GREEN + "Available " + Color::RESET :
+                                   (v->getStatus() == VehicleStatus::Rented    ? Color::RED + "Rented    " + Color::RESET : Color::YELLOW + "Sold      " + Color::RESET));
+
             cout << "| " << left << setw(9)  << v->getID()
                 << "| " << left << setw(25) << v->getModel()
                 << "| " << left << setw(7)  << v->getYear()
-                << "| " << left << setw(12)
-                << (v->getStatus() == VehicleStatus::Available ? "Available" :
-                    (v->getStatus() == VehicleStatus::Rented    ? "Rented"    : "Sold"))
+                << "| " << left << coloredStatus
                 << "|\n";
         }
         cout << "+----------+--------------------------+--------+-------------+\n";
@@ -298,12 +332,12 @@ void Admin::viewAllRecords(const vector<Vehicle*>& fleet, const vector<User*>& u
 
     cout << "\n";
 
-    cout << "+------------------- REGISTERED USERS ---------------------+\n";
+    cout << Color::MAGENTA << "+------------------- REGISTERED USERS ---------------------+\n" << Color::RESET;
     cout << "| Total Users    : " << left << setw(41) << users.size() << "|\n";
 
     if (users.empty())
     {
-        cout << "| No registered users found.                            |\n";
+        cout << Color::WARNING << "| No registered users found.                            |\n" << Color::RESET;
     }
     else
     {
@@ -315,7 +349,7 @@ void Admin::viewAllRecords(const vector<Vehicle*>& fleet, const vector<User*>& u
         {
             cout << "| " << left << setw(9)  << u->getID()
                 << "| " << left << setw(31) << u->getName()
-                << "| " << left << setw(11) << (u->getID()[0] == 'A' ? "Admin" : "Customer")
+                << "| " << left << setw(11) << (u->getID()[0] == 'A' ? Color::RED + "Admin" + Color::RESET : Color::GREEN + "Customer" + Color::RESET)
                 << "|\n";
         }
         cout << "+----------+--------------------------------+------------+\n";

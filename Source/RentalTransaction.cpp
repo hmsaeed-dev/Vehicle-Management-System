@@ -5,7 +5,7 @@ using namespace std;
 
 // Constructor
 RentalTransaction::RentalTransaction(string id, Vehicle* v, Customer* c, string date, string start)
-    : Transaction(id, v, c, date), startTime(start), endTime("N/A"), hoursRented(0), totalBill(0.0f) {}
+    : Transaction(id, v, c, date), startTime(start), endTime("N/A"), daysRented(0), totalBill(0.0f) {}
 
 /**
  * @brief Finalizes the rental deal.
@@ -24,9 +24,9 @@ void RentalTransaction::finalise()
 /**
  * @brief Records the return of the vehicle.
  */
-void RentalTransaction::setEndTime(string end, int hours) {
+void RentalTransaction::setEndTime(string end, int days) {
     endTime = end;
-    hoursRented = hours;
+    daysRented = days;
     totalBill = calculateBill();
 
     if (vehicle) {
@@ -42,7 +42,7 @@ float RentalTransaction::calculateBill()
 {
     if (vehicle)
     {
-        return vehicle->calculateCost(hoursRented);
+        return vehicle->calculateCost(daysRented);
     }
     return 0.0f;
 }

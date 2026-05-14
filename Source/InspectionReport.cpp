@@ -1,6 +1,8 @@
 #include "InspectionReport.h"
 #include "Vehicle.h"
 #include "Customer.h"
+#include "InputHandler.h"
+#include "Colors.h"
 
 #include <iostream>
 #include <iomanip>
@@ -18,29 +20,17 @@ InspectionReport::InspectionReport(Vehicle* v, Customer* c)
  * @brief Interactively fills the inspection report via console.
  */
 void InspectionReport::fillReport() {
-    cout << "\n--- FILLING INSPECTION REPORT ---" << endl;
+    cout << "\n" << Color::BOLD << Color::CYAN << "--- FILLING INSPECTION REPORT ---" << Color::RESET << endl;
     cout << "Vehicle ID: " << (inspectedVehicle ? inspectedVehicle->getID() : "Unknown") << endl;
 
-    cout << "Enter Return Date (DD/MM/YYYY): ";
-    cin.ignore();
-    getline(cin, date);
+    date = InputHandler::getString("Enter Return Date (DD/MM/YYYY): ");
+    fuelLevel = InputHandler::getString("Enter Fuel Level (e.g., Full, Half, 10%): ");
+    mileage = InputHandler::getFloat("Enter Current Mileage: ");
+    damageNotes = InputHandler::getString("Enter Damage Notes (type 'None' if clear): ");
+    condition = InputHandler::getString("Enter Vehicle Condition (Good / Fair / Poor): ");
+    evaluationRemarks = InputHandler::getString("Enter Additional Evaluator Remarks: ");
 
-    cout << "Enter Fuel Level (e.g., Full, Half, 10%): ";
-    getline(cin, fuelLevel);
-
-    cout << "Enter Current Mileage: ";
-    cin >> mileage;
-
-    cout << "Enter Damage Notes (type 'None' if clear): ";
-    getline(cin, damageNotes);
-
-    cout << "Enter Vehicle Condition (Good / Fair / Poor): ";
-    getline(cin, condition);
-
-    cout << "Enter Additional Evaluator Remarks: ";
-    getline(cin, evaluationRemarks);
-
-    cout << "[SYSTEM] Inspection report completed successfully." << endl;
+    cout << Color::SUCCESS << "[SYSTEM] Inspection report completed successfully." << Color::RESET << endl;
 }
 
 float InspectionReport::getDamageFee() const
@@ -57,9 +47,10 @@ float InspectionReport::getDamageFee() const
 void InspectionReport::displayReport() const
 {
     cout << "\n";
+    cout << Color::BOLD << Color::CYAN;
     cout << "+==========================================================+\n";
     cout << "|                 VEHICLE INSPECTION REPORT                |\n";
-    cout << "+==========================================================+\n";
+    cout << "+==========================================================+\n" << Color::RESET;
     cout << "| Date           :  " << left << setw(39) << date << "|\n";
     cout << "| Vehicle        :  " << left << setw(39) << (inspectedVehicle ? inspectedVehicle->getModel() : "N/A") << "|\n";
     cout << "| Customer       :  " << left << setw(39) << (inspector ? inspector->getName() : "N/A") << "|\n";
@@ -70,7 +61,7 @@ void InspectionReport::displayReport() const
     cout << "+----------------------------------------------------------+\n";
     cout << "| Damage Notes   :  " << left << setw(39) << damageNotes << "|\n";
     cout << "| Remarks        :  " << left << setw(39) << evaluationRemarks << "|\n";
-    cout << "+==========================================================+\n\n";
+    cout << Color::CYAN << "+==========================================================+\n" << Color::RESET << "\n";
 }
 
 

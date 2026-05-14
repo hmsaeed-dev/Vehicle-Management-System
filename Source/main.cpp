@@ -8,24 +8,18 @@
 #include "TripPlanner.h"
 #include "RentalTransaction.h"
 #include "Admin.h"
+#include "Colors.h"
 #include "Customer.h"
+#include "InputHandler.h"
 
 using namespace std;
 
 
 // --- Helper Functions ---
 
-void clearInput()
-{
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-}
-
 void waitForUser()
 {
-    cout << "\nPress Enter to continue...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
+    InputHandler::waitForEnter();
 }
 
 
@@ -37,9 +31,10 @@ void handleSearch(SearchEngine& engine)
     do
     {
         cout << "\n";
+    cout << Color::BOLD << Color::CYAN;
     cout << "+----------------------------------------------------------+\n";
     cout << "|                   SEARCH VEHICLE FLEET                   |\n";
-    cout << "+----------------------------------------------------------+\n";
+    cout << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "|                                                          |\n";
     cout << "|   [1]   By Model Name                                    |\n";
     cout << "|   [2]   By Price Range                                   |\n";
@@ -48,34 +43,27 @@ void handleSearch(SearchEngine& engine)
     cout << "|   [5]   By Year                                          |\n";
     cout << "|   [6]   Back to Dashboard                                |\n";
     cout << "|                                                          |\n";
-    cout << "+----------------------------------------------------------+\n\n";
-    cout << "Selection: ";
-
-        if (!(cin >> choice)) {
-            clearInput();
-            continue;
-        }
+    cout << Color::CYAN << "+----------------------------------------------------------+\n\n" << Color::RESET;
+    
+    choice = InputHandler::getInt("Selection: ", 1, 6);
 
         vector<Vehicle*> results;
         if (choice == 1)
         {
-            string name;
-            cout << "Enter model name: "; cin >> name;
+            string name = InputHandler::getString("Enter model name: ");
             results = engine.searchByName(name);
         }
 
         else if (choice == 2)
         {
-            float minP, maxP;
-            cout << "Enter Min Price: "; cin >> minP;
-            cout << "Enter Max Price: "; cin >> maxP;
+            float minP = InputHandler::getFloat("Enter Min Price: ");
+            float maxP = InputHandler::getFloat("Enter Max Price: ");
             results = engine.searchByPriceRange(minP, maxP);
         }
 
         else if (choice == 3)
         {
-            char type;
-            cout << "Enter Category \nE: Economy\nL: Luxury\nS: SUV\n"; cin >> type;
+            char type = InputHandler::getChar("Enter Category (E: Economy, L: Luxury, S: SUV): ", "ELS");
             results = engine.searchByCategory(type);
         }
 
@@ -86,18 +74,17 @@ void handleSearch(SearchEngine& engine)
 
         else if (choice == 5)
         {
-            int minY, maxY;
-            cout << "Enter Start Year: "; cin >> minY;
-            cout << "Enter End Year: "; cin >> maxY;
+            int minY = InputHandler::getInt("Enter Start Year: ");
+            int maxY = InputHandler::getInt("Enter End Year: ");
             results = engine.searchByYearRange(minY, maxY);
         }
 
         if (choice >= 1 && choice <= 5)
         {
             if (results.empty()) {
-                cout << "\n[SYSTEM] No matching vehicles found." << endl;
+                cout << "\n" << Color::WARNING << "[SYSTEM] No matching vehicles found." << Color::RESET << endl;
             } else {
-                cout << "\n[SYSTEM] Found " << results.size() << " vehicles matching your criteria:\n";
+                cout << "\n" << Color::INFO << "[SYSTEM] Found " << results.size() << " vehicles matching your criteria:" << Color::RESET << "\n";
                 cout << "+-------+-------------------+-------+-------+----------+------------+------------+\n";
                 cout << "| ID    | Model             | Year  | Cap.  | Rate     | Status     | Category   |\n";
                 cout << "+-------+-------------------+-------+-------+----------+------------+------------+\n";
@@ -112,22 +99,20 @@ void handleSearch(SearchEngine& engine)
 
 void handleTripPlanning(TripPlanner& planner, vector<Vehicle*>& fleet)
 {
-    string src, dest;
-    float dist, budget;
-    int pax;
-
     cout << "\n";
+    cout << Color::BOLD << Color::YELLOW;
     cout << "+----------------------------------------------------------+\n";
     cout << "|                    TRIP PLANNER MODULE                   |\n";
-    cout << "+----------------------------------------------------------+\n";
+    cout << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "  Please provide your travel details:\n\n";
-    cout << "  > Starting Point   : "; cin >> src;
-    cout << "  > Destination      : "; cin >> dest;
-    cout << "  > Distance (km)    : "; cin >> dist;
-    cout << "  > Your Budget ($)  : "; cin >> budget;
-    cout << "  > Passenger Count  : "; cin >> pax;
+    
+    string src = InputHandler::getString("  > Starting Point   : ");
+    string dest = InputHandler::getString("  > Destination      : ");
+    float dist = InputHandler::getFloat("  > Distance (km)    : ");
+    float budget = InputHandler::getFloat("  > Your Budget ($)  : ");
+    int pax = InputHandler::getInt("  > Passenger Count  : ");
 
-    cout << "\n+----------------------------------------------------------+\n";
+    cout << "\n" << Color::YELLOW << "+----------------------------------------------------------+\n" << Color::RESET;
 
     planner.planTrip(src, dest, dist, budget, pax, fleet);
     waitForUser();
@@ -146,24 +131,20 @@ int main()
     while (true)
     {
         cout << "\n";
+        cout << Color::BOLD << Color::YELLOW;
         cout << "+==========================================================+\n";
         cout << "|                                                          |\n";
-        cout << "|          CAR RENTAL & RESERVATION SYSTEM                 |\n";
+        cout << "|               VEHICLE MANAGEMENT SYSTEM                  |\n";
         cout << "|                                                          |\n";
-        cout << "+==========================================================+\n";
+        cout << "+==========================================================+\n" << Color::RESET;
         cout << "|                                                          |\n";
         cout << "|   [1]   Register New Account                             |\n";
         cout << "|   [2]   Login to System                                  |\n";
         cout << "|   [3]   Exit System                                      |\n";
         cout << "|                                                          |\n";
-        cout << "+----------------------------------------------------------+\n\n";
-        cout << "Selection: ";
-
-        if (!(cin >> mainChoice))
-        {
-            clearInput();
-            continue;
-        }
+        cout << Color::YELLOW << "+----------------------------------------------------------+\n\n" << Color::RESET;
+        
+        mainChoice = InputHandler::getInt("Selection: ", 1, 3);
 
         if (mainChoice == 3) break;
 
@@ -171,12 +152,14 @@ int main()
         {
             string name, id, username, phone, password;
             cout << "\n";
+            cout << Color::BOLD << Color::YELLOW;
             cout << "+----------------------------------------------------------+\n";
             cout << "|                 ACCOUNT REGISTRATION                     |\n";
-            cout << "+----------------------------------------------------------+\n";
+            cout << "+----------------------------------------------------------+\n" << Color::RESET;
             cout << "  Please enter your details to create an account:\n\n";
-            cout << "  > Full Name        : "; cin.ignore(); getline(cin, name);
-            cout << "  > Username         : "; cin >> username;
+            
+            name = InputHandler::getString("  > Full Name        : ");
+            username = InputHandler::getString("  > Username         : ", false);
 
             // Check if username is taken
             bool taken = false;
@@ -188,50 +171,56 @@ int main()
             }
 
             if (taken) {
-                cout << "[ERROR] Username already taken. Please try another." << endl;
+                cout << Color::ERROR << "[ERROR] Username already taken. Please try another." << Color::RESET << endl;
                 waitForUser();
                 continue;
             }
 
-            cout << "  > Customer ID      : "; cin >> id;
-            cout << "  > Phone Number     : "; cin >> phone;
-            cout << "  > Secure Password  : "; cin >> password;
+            id = InputHandler::getString("  > Customer ID      : ", false);
+            phone = InputHandler::getString("  > Phone Number     : ", false);
+            password = InputHandler::getString("  > Secure Password  : ", false);
 
-            cout << "\n+----------------------------------------------------------+\n";
+            cout << "\n" << Color::YELLOW << "+----------------------------------------------------------+\n" << Color::RESET;
 
             // Simple check: Customers start with C
             if (id[0] != 'C') {
-                cout << "[ERROR] Only customer registration is allowed via this menu." << endl;
+                cout << Color::ERROR << "[ERROR] Only customer registration is allowed via this menu." << Color::RESET << endl;
             } else {
                 users.push_back(new Customer(id, username, name, phone, password));
-                cout << "[SUCCESS] Account created! Please login." << endl;
+                cout << Color::SUCCESS << "[SUCCESS] Account created! Please login." << Color::RESET << endl;
             }
+            waitForUser();
             continue;
         }
 
         if (mainChoice == 2)
         {
-            string username, pass;
             cout << "\n";
+            cout << Color::BOLD << Color::YELLOW;
             cout << "+----------------------------------------------------------+\n";
             cout << "|                    SYSTEM LOGIN                          |\n";
-            cout << "+----------------------------------------------------------+\n";
+            cout << "+----------------------------------------------------------+\n" << Color::RESET;
             cout << "  Please verify your identity to continue:\n";
-            cout << "  > Username         : "; cin >> username;
-            cout << "  > Password         : "; cin >> pass;
-            cout << "+----------------------------------------------------------+\n";
+            
+            string username = InputHandler::getString("  > Username         : ", false);
+            string pass = InputHandler::getString("  > Password         : ", false);
+            
+            cout << Color::YELLOW << "+----------------------------------------------------------+\n" << Color::RESET;
 
             // Checking if User Exists
             User* currentUser = nullptr;
-            for (User* u : users) {
-                if (u->getUsername() == username && u->authenticate(pass)) {
+            for (User* u : users)
+            {
+                if (u->getUsername() == username && u->authenticate(pass))
+                {
                     currentUser = u;
                     break;
                 }
             }
 
-            if (!currentUser) {
-                cout << "[ERROR] Invalid Username or Password." << endl;
+            if (!currentUser)
+            {
+                cout << Color::ERROR << "[ERROR] Invalid Username or Password." << Color::RESET << endl;
                 waitForUser();
                 continue;
             }
@@ -243,11 +232,7 @@ int main()
 
             do {
                 currentUser->showMenu();
-                if (!(cin >> choice)) {
-                    cout << "Invalid choice." << endl;
-                    clearInput();
-                    continue;
-                }
+                choice = InputHandler::getInt("Selection: ");
 
                 // Admin logic
                 if (currentUser->getID()[0] == 'A')
@@ -259,7 +244,7 @@ int main()
                         case 3: admin->salePurchaseModule(fleet, users, fh); break;
                         case 4: admin->viewAllRecords(fleet, users); break;
                         case 5: logout = true; break;
-                        default: cout << "Invalid selection. Please choose 1-5." << endl;
+                        default: cout << Color::ERROR << "Invalid selection. Please choose 1-5." << Color::RESET << endl;
                     }
                 }
 
@@ -275,7 +260,7 @@ int main()
                         case 4: handleTripPlanning(planner, fleet); break;
                         case 5: customer->viewRentalHistory(); break;
                         case 6: logout = true; break;
-                        default: cout << "Invalid selection. Please choose 1-6." << endl;
+                        default: cout << Color::ERROR << "Invalid selection. Please choose 1-6." << Color::RESET << endl;
                     }
                 }
 
@@ -287,7 +272,7 @@ int main()
         }
     }
 
-    cout << "\n[SYSTEM] Saving changes and shutting down..." << endl;
+    cout << "\n" << Color::INFO << "[SYSTEM] Saving changes and shutting down..." << Color::RESET << endl;
     fh.saveVehicles(fleet);
     fh.saveUsers(users); // Now saving users too
     for (Vehicle* v : fleet) delete v;

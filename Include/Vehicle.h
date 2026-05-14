@@ -44,9 +44,13 @@ public:
     void setAvailable(bool available); // Helper for legacy code
 
     // Pure Virtual Functions
-    virtual float calculateCost(int hours) = 0;
+    virtual float calculateCost(int days) = 0;
     virtual void displayInfo() = 0;
     virtual void displayRow() const = 0; // New method for tabular view
+
+    // Discount Logic
+    float calculateDiscountedCost(int days);
+    float getDiscountPercentage(int days) const;
 };
 
 #endif // VEHICLE_H

@@ -1,5 +1,6 @@
 #include "TripPlanner.h"
 #include "Vehicle.h"
+#include "Colors.h"
 
 #include <iostream>
 #include <iomanip>
@@ -11,10 +12,11 @@
 
 void TripPlanner::planTrip(string source, string destination, float distance, float budget, int passengers, const vector<Vehicle*>& fleet)
 {
+    cout << Color::BOLD << Color::YELLOW;
     cout << "\n";
     cout << "+----------------------------------------------------------+\n";
     cout << "|                TRIP PLANNER RECOMMENDATIONS              |\n";
-    cout << "+----------------------------------------------------------+\n";
+    cout << "+----------------------------------------------------------+\n"<< Color::RESET;
 
     // Summary of User Input
     cout << "  > Route        : " << source << " to " << destination << "\n";

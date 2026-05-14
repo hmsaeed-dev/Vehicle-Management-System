@@ -1,4 +1,5 @@
 #include "Vehicle.h"
+#include "Constants.h"
 
 /**
  * @brief Constructor for the Vehicle base class.
@@ -55,4 +56,22 @@ void Vehicle::setStatus(VehicleStatus newStatus) {
  */
 void Vehicle::setAvailable(bool available) {
     status = available ? VehicleStatus::Available : VehicleStatus::Rented;
+}
+
+/**
+ * @brief Determines the discount percentage based on days.
+ */
+float Vehicle::getDiscountPercentage(int days) const {
+    if (days >= Pricing::TIER_2_DAYS) return Pricing::TIER_2_DISCOUNT; 
+    if (days >= Pricing::TIER_1_DAYS) return Pricing::TIER_1_DISCOUNT;
+    return 0.0f;
+}
+
+/**
+ * @brief Calculates the total cost after applying tiered discounts.
+ */
+float Vehicle::calculateDiscountedCost(int days) {
+    float baseTotal = calculateCost(days);
+    float discount = baseTotal * getDiscountPercentage(days);
+    return baseTotal - discount;
 }

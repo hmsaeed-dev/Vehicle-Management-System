@@ -11,7 +11,7 @@ class RentalTransaction : public Transaction {
 private:
     string startTime;
     string endTime;
-    int hoursRented;
+    int daysRented;
     float totalBill;
 
 public:
@@ -22,7 +22,7 @@ public:
     void finalise() override;
 
     // Additional methods
-    void setEndTime(string end, int hours);
+    void setEndTime(string end, int days);
     float calculateBill();
 };
 

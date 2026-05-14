@@ -10,8 +10,11 @@ using namespace std;
 Van::Van(string id, string model, int year, int capacity, float rate)
     : Vehicle(id, model, year, capacity, rate) {}
 
-float Van::calculateCost(int days)
-{
+string Van::getCategory() const {
+    return "Van/Bus";
+}
+
+float Van::calculateCost(int days) {
     return (getRentalRate() * Pricing::VAN_MULTIPLIER) * days;
 }
 

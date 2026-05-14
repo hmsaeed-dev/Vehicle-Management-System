@@ -1,9 +1,11 @@
 #include "TripPlanner.h"
 #include "Vehicle.h"
 #include "Colors.h"
+#include "Constants.h"
 
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 /**
  * @brief Plans a trip and recommends best vehicles based on budget and capacity.
@@ -21,32 +23,44 @@ void TripPlanner::planTrip(string source, string destination, float distance, fl
     // Summary of User Input
     cout << "  > Route        : " << source << " to " << destination << "\n";
     cout << "  > Distance     : " << distance << " km\n";
-    cout << "  > Requirements : Budget $" << budget << " | " << passengers << " Pax\n";
+    cout << "  > Requirements : Budget " << Pricing::CURRENCY << budget << " | " << passengers << " Pax\n";
     cout << "+----------------------------------------------------------+\n";
-    cout << "  MATCHING VEHICLES FOUND:\n\n";
 
-    int count = 0;
-
+    // 1. Filter and Collect Matching Vehicles
+    vector<Vehicle*> matches;
     for (Vehicle* v : fleet)
     {
         // Filter: Available AND Capacity >= Passengers AND (Cost estimate for 1 day <= Budget)
         if (v->getStatus() == VehicleStatus::Available && v->getCapacity() >= passengers && v->getRentalRate() <= budget)
         {
-            cout << "  [" << count + 1 << "] "
-                << left << setw(18) << v->getModel()
-                << " (ID: " << setw(6) << v->getID() << ")"
-                << " Rate: $" << setw(5) << v->getRentalRate() << "/Day\n";
-            count++;
+            matches.push_back(v);
         }
     }
 
-    if (count == 0)
+    // 2. Sort Matches by Rental Rate (Ascending)
+    sort(matches.begin(), matches.end(), [](Vehicle* a, Vehicle* b) {
+        return a->getRentalRate() < b->getRentalRate();
+    });
+
+    // 3. Display Sorted Results
+    if (matches.empty())
     {
-        cout << "  [!] No vehicles match your budget/capacity criteria.\n";
+        cout << Color::ERROR << "  [!] No vehicles match your criteria." << Color::RESET << "\n";
+        cout << "  Tip: Try increasing your budget or reducing passenger count.\n";
     }
     else
     {
-        cout << "\n  [SYSTEM] Found " << count << " suitable option(s).\n";
+        cout << "  " << Color::CYAN << left << setw(20) << "VEHICLE MODEL" << setw(12) << "ID" << "DAILY RATE" << Color::RESET << "\n";
+        cout << "+----------------------------------------------------------+\n";
+
+        for (Vehicle* v : matches)
+        {
+            cout << "  "
+                << left << setw(20) << v->getModel()
+                << " [" << setw(6) << v->getID() << "]"
+                << "  " << Pricing::CURRENCY << setw(8) << fixed << setprecision(2) << v->getRentalRate() << "\n";
+        }
+        cout << "\n  " << Color::SUCCESS << "[SYSTEM] Found " << matches.size() << " suitable option(s) (Sorted by Price)." << Color::RESET << "\n";
     }
 
     cout << "+----------------------------------------------------------+\n";

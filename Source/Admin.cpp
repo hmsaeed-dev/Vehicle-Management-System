@@ -26,16 +26,20 @@ void Admin::showMenu()
     cout << "\n";
     cout << Color::BOLD << Color::RED;
     cout << "+==========================================================+\n";
+    cout << "|                                                          |\n";
     cout << "|                  ADMIN CONTROL PANEL                     |\n";
+    cout << "|                                                          |\n";
     cout << "+==========================================================+\n" << Color::RESET;
-    cout << "|  Logged in as : " << left << setw(40)
-            << (getName() + " (ID: " + getID() + ")") << "|\n";
+    cout << "|  Logged in as " << left << setw(40)
+            << getName() << "   |\n";
     cout << "+----------------------------------------------------------+\n";
+    cout << "|                                                          |\n";
     cout << "|   [1]  Add New Vehicle                                   |\n";
     cout << "|   [2]  Remove Vehicle                                    |\n";
     cout << "|   [3]  Sale / Purchase Module                            |\n";
     cout << "|   [4]  View All Records                                  |\n";
     cout << "|   [5]  Logout                                            |\n";
+    cout << "|                                                          |\n";
     cout << "+----------------------------------------------------------+\n\n";
 }
 
@@ -302,6 +306,8 @@ void Admin::viewAllRecords(const vector<Vehicle*>& fleet, const vector<User*>& u
     cout << "|                   FULL SYSTEM RECORDS                     |\n";
     cout << "+===========================================================+\n" << Color::RESET;
 
+    cout << endl << endl;
+
     cout << Color::CYAN << "\n+------------------- VEHICLE FLEET --------------------------+\n" << Color::RESET;
     cout << "| Total Vehicles : " << left << setw(41) << fleet.size() << "|\n";
 
@@ -332,11 +338,7 @@ void Admin::viewAllRecords(const vector<Vehicle*>& fleet, const vector<User*>& u
 
     cout << "\n";
 
-    cout << Color::MAGENTA;
-    cout << "+==========================================================+";
-    cout << "                       REGISTERED USERS                     ";
-    cout << "+==========================================================+";
-    cout << Color::RESET;
+    cout << Color::CYAN << "\n+------------------ Registered Users ----------------------+\n" << Color::RESET;
     cout << "| Total Users    : " << left << setw(41) << users.size() << "|" << endl;
 
     if (users.empty())

@@ -17,5 +17,44 @@ Extra Features TO BE Added in the Demo-Proposal
 2. Rent a Vehicle
     Before asking for vehicle id, show the list of vehicles available based on categories, so they remember the id number to rent that car.
 
-3. 
+3.
 
+
+
+
+IN PROGRESS SHUTDOWN (Check this Feature Implementation)
+
+#####################################
+Adding a Category column to the "View All Records" display is an excellent
+  idea. It provides immediate context about the vehicle type (Economy, Luxury,
+  SUV, etc.) without having to cross-reference the ID prefix.
+
+  My Recommendation: How I will implement this
+  Since the system already uses polymorphism (base class Vehicle with derived
+  categories), I can implement this in three surgical steps:
+
+   1. Add getCategory() to the Base Class:
+      I will add a virtual function virtual string getCategory() const = 0; to
+  the Vehicle class. Each derived class (Economy, Luxury, etc.) will override
+  this to return its specific name (e.g., "Economy Car").
+
+   2. Update the Header Table in Admin.cpp:
+      I will expand the "View All Records" table structure to include a new
+  column. I'll adjust the padding to ensure the UI remains symmetrical.
+       * Current Headings: | ID | Model | Year | Status |
+       * New Headings: | ID | Model | Year | Category | Status |
+
+   3. Color-Code the Categories:
+      To make the records even easier to read, I'll use the existing Color class  to differentiate categories (e.g., Luxury in Purple, SUV in Blue, Economy in
+  Green).
+
+  Why this is better:
+   * Operational Clarity: Admins can quickly see if their fleet is balanced
+     between categories.
+   * Visual Organization: The color-coded categories help in scanning large
+     lists much faster than plain text.
+   * Consistency: It aligns with the "Search" module which already allows
+     searching by category.
+
+  Shall I proceed with these changes?
+#####################################

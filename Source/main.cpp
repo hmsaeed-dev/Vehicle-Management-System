@@ -11,6 +11,7 @@
 #include "Colors.h"
 #include "Customer.h"
 #include "InputHandler.h"
+#include "Constants.h"
 
 using namespace std;
 
@@ -106,11 +107,11 @@ void handleTripPlanning(TripPlanner& planner, vector<Vehicle*>& fleet)
     cout << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "  Please provide your travel details:\n\n";
     
-    string src = InputHandler::getString("  > Starting Point   : ");
-    string dest = InputHandler::getString("  > Destination      : ");
-    float dist = InputHandler::getFloat("  > Distance (km)    : ");
-    float budget = InputHandler::getFloat("  > Your Budget ($)  : ");
-    int pax = InputHandler::getInt("  > Passenger Count  : ");
+    string src = InputHandler::getAlphaString("  > Starting Point   : ");
+    string dest = InputHandler::getAlphaString("  > Destination      : ");
+    float dist = InputHandler::getFloat("  > Distance (km)    : ", 1.0f, 5000.0f);
+    float budget = InputHandler::getFloat("  > Your Budget (" + Pricing::CURRENCY + ") : ", 100.0f, 1000000.0f);
+    int pax = InputHandler::getInt("  > Passenger Count  : ", 1, 20);
 
     cout << "\n" << Color::YELLOW << "+----------------------------------------------------------+\n" << Color::RESET;
 

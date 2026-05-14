@@ -10,6 +10,7 @@
 class Van : public Vehicle {
 public:
     Van(string id, string model, int year, int capacity, float rate);
+    string getCategory() const override;
     float calculateCost(int days) override;
     void displayInfo() override;
     void displayRow() const override;

@@ -13,6 +13,7 @@ public:
     SUV(string id, string model, int year, int capacity, float rate);
 
     // Polymorphic overrides
+    string getCategory() const override;
     float calculateCost(int hours) override;
     void displayInfo() override;
     void displayRow() const override;

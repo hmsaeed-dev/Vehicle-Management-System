@@ -74,6 +74,39 @@ namespace InputHandler
         }
     }
 
+    string getAlphaString(const string& prompt, bool allowCancel)
+    {
+        string value;
+        while (true)
+        {
+            cout << prompt;
+            if (allowCancel) cout << " (type '0' to cancel): ";
+
+            getline(cin >> ws, value);
+
+            if (allowCancel && value == "0") return CANCEL_STR;
+            if (value.empty())
+            {
+                cout << Color::ERROR << "[ERROR] Input cannot be empty." << Color::RESET << endl;
+                continue;
+            }
+
+            bool allAlpha = true;
+            for (char c : value)
+            {
+                if (!isalpha(c) && !isspace(c))
+                {
+                    allAlpha = false;
+                    break;
+                }
+            }
+
+            if (allAlpha) return value;
+
+            cout << Color::ERROR << "[ERROR] Invalid input. Use only letters and spaces." << Color::RESET << endl;
+        }
+    }
+
     string getString(const string& prompt, bool fullLine, bool allowCancel)
     {
         string value;

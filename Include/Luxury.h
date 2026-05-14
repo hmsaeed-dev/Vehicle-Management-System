@@ -20,6 +20,7 @@ class Luxury : public Vehicle
     string getLuxuryFeatures() const;
 
     // Polymorphic overrides
+    string getCategory() const override;
     float calculateCost(int hours) override;
     void displayInfo() override;
     void displayRow() const override;

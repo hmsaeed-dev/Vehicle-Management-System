@@ -31,6 +31,11 @@ namespace InputHandler
     float getFloat(const std::string& prompt, float min = 0.0f, float max = 1000000.0f, bool allowCancel = false);
 
     /**
+     * @brief Reads a string and ensures it only contains alphabetic characters and spaces.
+     */
+    std::string getAlphaString(const std::string& prompt, bool allowCancel = false);
+
+    /**
      * @brief Reads a single word or a full line of text.
      */
     std::string getString(const std::string& prompt, bool fullLine = true, bool allowCancel = false);

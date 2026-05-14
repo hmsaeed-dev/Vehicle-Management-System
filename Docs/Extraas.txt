@@ -1,0 +1,51 @@
+Extra Features TO BE Added in the Demo-Proposal
+
+1. Sale / Purchase System
+2. 10+ Vehicle Types
+3. Inspection Sheet
+4. Evaluation Remarks
+5. Trip Planner
+6. Vehicle Search Feature
+
+????
+Plan A Trip
+Rent a Vehicle Car Dashboard
+
+Terminal Commands
+
+g++ Source/*.cpp -I Include -o CarRentalSystem.exe
+
+.\CarRentalSystem.exe
+
+
+
+E|E001|Toyota Corolla|2020|5|15|0
+L|L001|BMW 7 Series|2022|4|75|0
+S|S001|Toyota Fortuner|2021|7|45|0
+E|E002|Honda Civic|2019|5|18|0
+L|L002|Mercedes S-Class|2023|4|85|0
+S|S002|Ford Endeavour|2021|7|50|0
+E|E003|Suzuki Swift|2018|5|10|0
+L|L003|Audi A8|2022|4|80|0
+S|S003|Jeep Compass|2020|5|40|0
+E|E004|Hyundai Elantra|2021|5|14|0
+E|E005|Kia Cerato|2022|5|16|0
+E|E006|Nissan Sentra|2021|5|13|0
+E|E007|Mazda 3|2020|5|17|0
+E|E008|Volkswagen Jetta|2021|5|19|0
+E|E009|Ford Focus|2018|5|12|0
+E|E010|Toyota Yaris|2022|5|11|0
+L|L004|Porsche Panamera|2023|4|120|0
+L|L005|Lexus LS 500|2022|5|90|0
+L|L006|Range Rover|2023|5|150|0
+L|L007|Tesla Model S|2022|5|95|0
+L|L008|Jaguar XJ|2021|5|85|0
+S|S004|Mitsubishi Pajero|2020|7|42|0
+S|S005|Chevrolet Tahoe|2022|8|65|0
+S|S006|Nissan Patrol|2021|7|55|0
+S|S007|Toyota Land Cruiser|2023|7|80|0
+S|S008|Hyundai Santa Fe|2021|7|38|0
+V|V001|Toyota Hiace|2021|12|60|0
+V|V002|Mercedes Sprinter|2022|15|90|0
+V|V003|Ford Transit|2020|10|55|0
+V|V004|Hyundai H1|2021|9|50|0

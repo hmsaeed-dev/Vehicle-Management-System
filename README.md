@@ -23,6 +23,16 @@ The Vehicle Management System is a full-featured platform designed for managing 
 
 ---
 
+## 🎥 Demo Showcase
+* Experience the system in action without cloning the repository! *
+
+* **Interactive Online Demo:** [Run the Application on Replit](YOUR_REPLIT_LINK)
+* **Pre-compiled Binary:** [Download the Windows Executable (.zip)](YOUR_GITHUB_RELEASES_LINK)
+
+(Insert your demo GIF here)
+---
+
+
 ## Key Features
 
 - **🚗 Vehicle Inventory Management** – Add, remove, and track vehicles
@@ -36,6 +46,7 @@ The Vehicle Management System is a full-featured platform designed for managing 
 - **💾 Data Persistence** – All system data automatically saved to files
 
 ---
+
 
 ## System Architecture
 

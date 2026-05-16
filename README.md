@@ -31,7 +31,7 @@ The Vehicle Management System is a full-featured platform designed for managing 
 - **🛒 Sales Module** – Process vehicle purchases with transaction recording and fleet status updates
 - **🔍 Advanced Search** – Multi-criteria filtering by category, price range, year, availability, and passenger capacity
 - **📋 Vehicle Inspections** – Post-rental condition assessments including fuel level, mileage, damage evaluation, and condition grading
-- **📍 Trip Planner** – Intelligent vehicle recommendations based on trip distance, budget constraints, and passenger requirements
+- **📍 Trip Planner** – Vehicle recommendations based on trip distance, budget constraints, and passenger requirements
 - **💰 Dynamic Pricing & Discounts** – Category-based rate multipliers with tiered discounts (10% for 4+ days, 20% for 8+ days)
 - **👥 Dual-Role Authentication** – Separate admin and customer login systems with secure credentials
 - **📊 Comprehensive Reporting** – Admin dashboard, rental history tracking, transaction records, and inspection reports
@@ -42,26 +42,27 @@ The Vehicle Management System is a full-featured platform designed for managing 
 ## System Architecture
 
 ```
-┌────────────────────────────────────────────────────────┐
-│         MenuHandler (UI Orchestration)                 │
-│    Manages menus, login, user sessions, workflows      │
-└────────────────────┬─────────────────────────────────┘
-                     │
-        ┌────────────┼────────────┐
-        │            │            │
-    ┌───▼────┐  ┌───▼────┐  ┌───▼──────────┐
-    │ Admin  │  │Customer│  │SearchEngine  │
-    │Session │  │Session │  │TripPlanner   │
-    └────────┘  └────────┘  └──────────────┘
-        │            │              │
-        │            └──────┬───────┘
-        │                   │
-    ┌───▼──────────────┐   ┌▼──────────────┐
-    │  Admin Features  │   │  Transactions │
-    │ - Dashboard      │   │ - Rentals     │
-    │ - Fleet CRUD     │   │ - Sales       │
-    │ - User Manag     │   │ - Inspections │
-    └──────────────────┘   └───────────────┘
+┌──────────────────────────────────────────────────────────┐
+│           MenuHandler (UI Orchestration)                 │
+│      Manages menus, login, user sessions, workflows      │
+└──────────────────────┬───────────────────────────────────┘
+                       │
+          ┌────────────┼──────────────────┐
+          │            │                  │
+     ┌────▼──────┐   ┌─▼──────────┐   ┌───▼────────────┐
+     │   Admin   │   │  Customer  │   │  SearchEngine  │
+     │  Session  │   │  Session   │   │  TripPlanner   │
+     └───────────┘   └────────────┘   └────────────────┘
+          │             │                │
+          │             └────────┬───────┘
+          │                      │
+          │                      │
+      ┌───▼──────────────┐    ┌──▼──────────────┐
+      │  Admin Features  │    │  Transactions   │
+      │ - Dashboard      │    │ - Rentals       │
+      │ - Fleet CRUD     │    │ - Sales         │
+      │ - User Manag     │    │ - Inspections   │
+      └──────────────────┘    └─────────────────┘
 ```
 
 **Core Components:**
@@ -83,21 +84,10 @@ The Vehicle Management System is a full-featured platform designed for managing 
 
 ### Installation & Build
 
-**Option 1: Using build.bat (Recommended for Windows)**
+**Using build.bat (Recommended for Windows)**
 ```batch
 cd Vehicle Manag Sys
 build.bat
-```
-
-**Option 2: Manual g++ Compilation**
-```bash
-cd Vehicle Manag Sys
-g++ -IInclude Source/*.cpp -o VehicleManagementSystem.exe
-```
-
-**Option 3: With Debug Flags (For Development)**
-```bash
-g++ -std=c++17 -Wall -Wextra -g -IInclude Source/*.cpp -o VehicleManagementSystem.exe
 ```
 
 ### Running the System
@@ -124,7 +114,7 @@ VehicleManagementSystem.exe
 4. **Rent Vehicle** – Select vehicle and complete rental transaction
 5. **Return & Inspect** – Return vehicle and complete post-rental inspection report
 6. **View History** – Review rental history and inspection records
-7. **Purchase Option** – Buy vehicle outright (converts to Sales transaction)
+7. **Purchase Option** – Buy vehicle outright (Sales transaction)
 
 ---
 
@@ -147,11 +137,6 @@ VehicleManagementSystem.exe
 | 1-3 days | 0% | 200 PKR/day |
 | 4-7 days | 10% | 180 PKR/day |
 | 8+ days | 20% | 160 PKR/day |
-
-### Inspection Damage Fees
-- **Good Condition** – No additional fees
-- **Fair Condition** – 50% of daily rental rate
-- **Poor Condition** – 100% of daily rental rate (plus fuel surcharge if needed)
 
 ---
 
@@ -191,7 +176,7 @@ Vehicle Manag Sys/
 │   ├── main.cpp               # Application entry point
 │   ├── Admin.cpp              # Admin implementation
 │   ├── Customer.cpp           # Customer implementation
-│   └── [Corresponding .cpp files]
+│   └── [Other .cpp files]
 │
 ├── Data/                       # Persistent storage (text files)
 │   ├── Vehicle.txt            # Fleet inventory database

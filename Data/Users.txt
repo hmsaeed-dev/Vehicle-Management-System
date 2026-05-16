@@ -6,3 +6,4 @@ C|C454|hafid|Hafid Mughal|0342-7676543|hafid
 C|C005|waseem|Arham|0344-7678463|waseem
 C|C009|aamina|aamina|864534234|aamina
 C|C909|taha|Taha Imran Liaqat|234567|taha
+C|C006|hamid|Hamid Ahmed|782345|hamid

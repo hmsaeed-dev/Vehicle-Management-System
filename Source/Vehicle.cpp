@@ -55,6 +55,7 @@ void Vehicle::setStatus(VehicleStatus newStatus) {
  * @param status true if available for rent, false if currently rented/sold.
  */
 void Vehicle::setAvailable(bool available) {
+    if (status == VehicleStatus::Sold) return; // SOLD is a terminal state for rentals
     status = available ? VehicleStatus::Available : VehicleStatus::Rented;
 }
 
@@ -71,7 +72,8 @@ float Vehicle::getDiscountPercentage(int days) const {
  * @brief Calculates the total cost after applying tiered discounts.
  */
 float Vehicle::calculateDiscountedCost(int days) {
-    float baseTotal = calculateCost(days);
+    float baseTotal = calculateCost(days); // This already applies multipliers in derived classes
     float discount = baseTotal * getDiscountPercentage(days);
     return baseTotal - discount;
 }
+

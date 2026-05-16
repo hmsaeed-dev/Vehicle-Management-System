@@ -1,5 +1,6 @@
 #include "InputHandler.h"
 #include "Colors.h"
+#include "Validator.h"
 #include <iostream>
 #include <limits>
 #include <algorithm>
@@ -10,66 +11,83 @@ namespace InputHandler
 {
     void clearBuffer()
     {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        // When using getline consistently, the buffer is usually clean.
+        // We only clear if the fail bit is set.
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
     }
 
     void waitForEnter()
     {
         cout << "\n" << Color::INFO << "Press Enter to continue..." << Color::RESET;
-        // If there was something in the buffer, we might need to clear it first or ignore it
-        // cin.get() often picks up the newline from the previous entry
-        cin.get();
+        string dummy;
+        getline(cin, dummy);
+    }
+
+    bool isBackKey(const string& input)
+    {
+        if (input.empty()) return false;
+        string upper = input;
+        transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
+        return (upper == "Z");
     }
 
     int getInt(const string& prompt, int min, int max, bool allowCancel)
     {
-        int value;
+        string input;
         while (true)
         {
             cout << prompt;
-            if (allowCancel) cout << " (or 0 to cancel): ";
+            if (allowCancel) cout << Color::CYAN << " [Z:Back]" << Color::RESET;
+            cout << ": ";
             
-            if (cin >> value)
-            {
-                if (allowCancel && value == 0) return CANCEL_INT;
-                if (value >= min && value <= max)
-                {
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    return value;
+            if (!getline(cin, input)) { clearBuffer(); continue; }
+            if (input.empty()) continue; 
+
+            if (allowCancel && isBackKey(input)) return CANCEL_INT;
+
+            try {
+                size_t pos;
+                int value = stoi(input, &pos);
+                if (pos == input.length()) {
+                    if (Validator::inRange(value, min, max)) return value;
+                    cout << Color::ERR << "[ERROR] Out of range (" << min << "-" << max << ")." << Color::RESET << endl;
+                } else {
+                    throw invalid_argument("Extra characters");
                 }
-                cout << Color::ERROR << "[ERROR] Input out of range (" << min << "-" << max << ")." << Color::RESET << endl;
-            }
-            else
-            {
-                cout << Color::ERROR << "[ERROR] Invalid input. Please enter a number." << Color::RESET << endl;
-                clearBuffer();
+            } catch (...) {
+                cout << Color::ERR << "[ERROR] Invalid numeric input. Please enter a whole number." << Color::RESET << endl;
             }
         }
     }
 
     float getFloat(const string& prompt, float min, float max, bool allowCancel)
     {
-        float value;
+        string input;
         while (true)
         {
             cout << prompt;
-            if (allowCancel) cout << " (or 0 to cancel): ";
+            if (allowCancel) cout << Color::CYAN << " [Z:Back]" << Color::RESET;
+            cout << ": ";
 
-            if (cin >> value)
-            {
-                if (allowCancel && value == 0.0f) return CANCEL_FLOAT;
-                if (value >= min && value <= max)
-                {
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    return value;
+            if (!getline(cin, input)) { clearBuffer(); continue; }
+            if (input.empty()) continue;
+
+            if (allowCancel && isBackKey(input)) return CANCEL_FLOAT;
+
+            try {
+                size_t pos;
+                float value = stof(input, &pos);
+                if (pos == input.length()) {
+                    if (Validator::inRange(value, min, max)) return value;
+                    cout << Color::ERR << "[ERROR] Out of range." << Color::RESET << endl;
+                } else {
+                    throw invalid_argument("Extra characters");
                 }
-                cout << Color::ERROR << "[ERROR] Input out of range." << Color::RESET << endl;
-            }
-            else
-            {
-                cout << Color::ERROR << "[ERROR] Invalid input. Please enter a decimal number." << Color::RESET << endl;
-                clearBuffer();
+            } catch (...) {
+                cout << Color::ERR << "[ERROR] Invalid decimal input. Please enter a number." << Color::RESET << endl;
             }
         }
     }
@@ -80,78 +98,66 @@ namespace InputHandler
         while (true)
         {
             cout << prompt;
-            if (allowCancel) cout << " (type '0' to cancel): ";
+            if (allowCancel) cout << Color::CYAN << " [Z:Back]" << Color::RESET;
+            cout << ": ";
 
-            getline(cin >> ws, value);
+            if (!getline(cin, value)) { clearBuffer(); continue; }
 
-            if (allowCancel && value == "0") return CANCEL_STR;
-            if (value.empty())
-            {
-                cout << Color::ERROR << "[ERROR] Input cannot be empty." << Color::RESET << endl;
+            if (allowCancel && isBackKey(value)) return CANCEL_STR;
+            if (value.empty()) {
+                cout << Color::ERR << "[ERROR] Input cannot be empty." << Color::RESET << endl;
                 continue;
             }
+            
+            if (Validator::isAlphaOnly(value, true)) return value;
 
-            bool allAlpha = true;
-            for (char c : value)
-            {
-                if (!isalpha(c) && !isspace(c))
-                {
-                    allAlpha = false;
-                    break;
-                }
-            }
-
-            if (allAlpha) return value;
-
-            cout << Color::ERROR << "[ERROR] Invalid input. Use only letters and spaces." << Color::RESET << endl;
+            cout << Color::ERR << "[ERROR] Invalid input. Please use only letters and spaces." << Color::RESET << endl;
         }
     }
 
-    string getString(const string& prompt, bool fullLine, bool allowCancel)
+    string getString(const string& prompt, bool fullLine, bool allowCancel, bool allowEmpty)
     {
         string value;
         while (true)
         {
             cout << prompt;
-            if (allowCancel) cout << " (type '0' to cancel): ";
+            if (allowCancel) cout << Color::CYAN << " [Z:Back]" << Color::RESET;
+            cout << ": ";
             
-            // ws discards leading whitespace (including leftover newlines)
-            if (fullLine)
-                getline(cin >> ws, value);
-            else
-                cin >> value;
+            if (!getline(cin, value)) { clearBuffer(); continue; }
 
-            if (allowCancel && value == "0") return CANCEL_STR;
-            if (!value.empty()) return value;
+            if (allowCancel && isBackKey(value)) return CANCEL_STR;
+            if (allowEmpty || !value.empty()) return value;
 
-            cout << Color::ERROR << "[ERROR] Input cannot be empty." << Color::RESET << endl;
+            cout << Color::ERR << "[ERROR] Input cannot be empty." << Color::RESET << endl;
         }
     }
 
     char getChar(const string& prompt, const string& allowedOptions, bool allowCancel)
     {
-        char value;
+        string input;
         string options = allowedOptions;
         transform(options.begin(), options.end(), options.begin(), ::toupper);
 
         while (true)
         {
             cout << prompt;
-            if (allowCancel) cout << " (or '0' to cancel): ";
+            if (allowCancel) cout << Color::CYAN << " [Z:Back]" << Color::RESET;
+            cout << ": ";
             
-            cin >> value;
-            value = toupper(value);
+            if (!getline(cin, input)) { clearBuffer(); continue; }
+            if (input.empty()) continue;
 
-            if (allowCancel && value == '0') return '0'; // We use '0' as a signal
+            if (allowCancel && isBackKey(input)) return 'Z'; 
             
-            if (options.find(value) != string::npos)
-            {
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                return value;
+            if (input.length() == 1) {
+                char value = toupper(input[0]);
+                if (options.find(value) != string::npos) return value;
             }
 
-            cout << Color::ERROR << "[ERROR] Invalid choice. Allowed: " << allowedOptions << Color::RESET << endl;
-            clearBuffer();
+            cout << Color::ERR << "[ERROR] Invalid choice. Allowed: [" << allowedOptions << "]" << (allowCancel ? " or 'Z'." : ".") << Color::RESET << endl;
         }
     }
 }
+
+

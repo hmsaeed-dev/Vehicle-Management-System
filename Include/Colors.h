@@ -21,9 +21,10 @@ namespace Color
 
     // Semantic helpers
     const std::string SUCCESS = GREEN;
-    const std::string ERROR   = RED;
+    const std::string ERR     = RED;
     const std::string WARNING = YELLOW;
     const std::string INFO    = CYAN;
 }
+
 
 #endif // COLORS_H

@@ -27,6 +27,7 @@ public:
     void viewRentalHistory();
     void addToHistory(const string& record);
     void rentVehicle(vector<Vehicle*>& fleet, FileHandler& fh);
+    bool processRental(string vehicleID, vector<Vehicle*>& fleet, FileHandler& fh);
     void returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh);
 };
 

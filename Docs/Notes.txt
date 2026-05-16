@@ -1,0 +1,23 @@
+### Observations ###
+
+1. When renting a vehicle, a Dashboard shows up for list of available vehicles, there is this heading Status Available that has no meaning to be here.
+
+2. The Year feature of Car Model is of No use , its just there with no Utility
+
+3. There should be one more property for each vehicle, i.e Number of Units remaining, like cant rent out more than available, and sell and buy also effects this.
+
+4. Can one person rent out more than 1 vehicle or its units?
+
+5. Currently there is unrealistic Rates, of daily rents and sale purchase
+
+6. When return a vehicle, for Inspection report Menu display and user entry form format and UX
+[
+    Asks for total days after printing "[SYSTEM] Inspection report completed successfully."
+    Should print at last
+]
+
+7. Final Rental Receipt after Return a vehicle needs UI colors and formatting
+
+8. Rental History Display could be much Better
+
+9. Admin should be authorized to delete a Costumer user completely

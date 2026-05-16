@@ -24,7 +24,8 @@ void TripPlanner::planTrip(string source, string destination, float distance, fl
     cout << "  > Route        : " << source << " to " << destination << "\n";
     cout << "  > Distance     : " << distance << " km\n";
     cout << "  > Requirements : Budget " << Pricing::CURRENCY << budget << " | " << passengers << " Pax\n";
-    cout << "+----------------------------------------------------------+\n";
+    cout << Color::BOLD << Color::YELLOW;
+    cout << "+----------------------------------------------------------+\n" << Color::RESET;
 
     // 1. Filter and Collect Matching Vehicles
     vector<Vehicle*> matches;
@@ -38,20 +39,25 @@ void TripPlanner::planTrip(string source, string destination, float distance, fl
     }
 
     // 2. Sort Matches by Rental Rate (Ascending)
-    sort(matches.begin(), matches.end(), [](Vehicle* a, Vehicle* b) {
-        return a->getRentalRate() < b->getRentalRate();
-    });
+    sort
+    (
+        matches.begin(), matches.end(), [](Vehicle* a, Vehicle* b)
+        {
+            return a->getRentalRate() < b->getRentalRate();
+        }
+    );
 
     // 3. Display Sorted Results
     if (matches.empty())
     {
-        cout << Color::ERROR << "  [!] No vehicles match your criteria." << Color::RESET << "\n";
+        cout << Color::ERR << "  [!] No vehicles match your criteria." << Color::RESET << "\n";
         cout << "  Tip: Try increasing your budget or reducing passenger count.\n";
     }
     else
     {
         cout << "  " << Color::CYAN << left << setw(20) << "VEHICLE MODEL" << setw(12) << "ID" << "DAILY RATE" << Color::RESET << "\n";
-        cout << "+----------------------------------------------------------+\n";
+        cout << Color::BOLD << Color::YELLOW;
+        cout << "+----------------------------------------------------------+\n" << Color::RESET;
 
         for (Vehicle* v : matches)
         {
@@ -60,8 +66,8 @@ void TripPlanner::planTrip(string source, string destination, float distance, fl
                 << " [" << setw(6) << v->getID() << "]"
                 << "  " << Pricing::CURRENCY << setw(8) << fixed << setprecision(2) << v->getRentalRate() << "\n";
         }
-        cout << "\n  " << Color::SUCCESS << "[SYSTEM] Found " << matches.size() << " suitable option(s) (Sorted by Price)." << Color::RESET << "\n";
+        cout << "\n  " << Color::SUCCESS << "[SYSTEM] Found " << matches.size() << " suitable options [Sorted by Price]." << Color::RESET << "\n";
     }
-
-    cout << "+----------------------------------------------------------+\n";
+    cout << Color::BOLD << Color::YELLOW;
+    cout << "+----------------------------------------------------------+\n" << Color::RESET;
 }

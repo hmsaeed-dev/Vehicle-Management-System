@@ -35,6 +35,8 @@ public:
     void displayReport() const;     // Show report details
     void saveToFile(ofstream& out) const; // Write to Inspections.txt
     float getDamageFee() const;
+    std::string getDate() const { return date; }
 };
+
 
 #endif // INSPECTION_REPORT_H

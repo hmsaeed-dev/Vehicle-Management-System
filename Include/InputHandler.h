@@ -12,9 +12,14 @@
 namespace InputHandler
 {
     // Special constants for "Go Back" / "Cancel" actions
-    const int CANCEL_INT = -1;
-    const float CANCEL_FLOAT = -1.0f;
-    const std::string CANCEL_STR = "__CANCEL__";
+    const int CANCEL_INT = -999;
+    const float CANCEL_FLOAT = -999.0f;
+    const std::string CANCEL_STR = "__BACK__";
+
+    /**
+     * @brief Checks if a string input represents the back key 'Z'.
+     */
+    bool isBackKey(const std::string& input);
 
     /**
      * @brief Reads an integer from console with validation.
@@ -37,8 +42,12 @@ namespace InputHandler
 
     /**
      * @brief Reads a single word or a full line of text.
+     * @param prompt The message shown to user.
+     * @param fullLine If true, reads entire line; if false, reads one word.
+     * @param allowCancel If true, typing '0' returns CANCEL_STR.
+     * @param allowEmpty If true, pressing Enter (empty string) is allowed.
      */
-    std::string getString(const std::string& prompt, bool fullLine = true, bool allowCancel = false);
+    std::string getString(const std::string& prompt, bool fullLine = true, bool allowCancel = false, bool allowEmpty = false);
 
     /**
      * @brief Reads a single character and validates against a list of allowed options.

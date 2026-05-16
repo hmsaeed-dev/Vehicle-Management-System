@@ -1,12 +1,18 @@
 #include "Economy.h"
 #include "Colors.h"
+#include "Constants.h"
 #include <iostream>
 #include <iomanip>
+
 
 using namespace std;
 
 Economy::Economy(string id, string model, int year, int capacity, float rate)
     : Vehicle(id, model, year, capacity, rate) {}
+
+string Economy::getCategory() const {
+    return "Economy";
+}
 
 /**
  * @brief Simple billing for economy cars.
@@ -15,7 +21,16 @@ Economy::Economy(string id, string model, int year, int capacity, float rate)
 
 float Economy::calculateCost(int days)
 {
-    return getRentalRate() * days;
+    float total = getRentalRate() * days;
+    float discount = 0.0f;
+
+    if (days >= Pricing::TIER_2_DAYS) {
+        discount = Pricing::TIER_2_DISCOUNT;
+    } else if (days >= Pricing::TIER_1_DAYS) {
+        discount = Pricing::TIER_1_DISCOUNT;
+    }
+
+    return total * (1.0f - discount);
 }
 
 /**
@@ -24,6 +39,11 @@ float Economy::calculateCost(int days)
 
 void Economy::displayInfo()
 {
+    string statusStr;
+    if (getStatus() == VehicleStatus::Available) statusStr = Color::GREEN + "AVAILABLE" + Color::RESET;
+    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::RED + "RENTED" + Color::RESET;
+    else statusStr = Color::YELLOW + "SOLD" + Color::RESET;
+
     cout << "\n";
     cout << "+------------------------------------------------------+\n";
     cout << "| [ECONOMY CLASS]                                      |\n";
@@ -32,23 +52,30 @@ void Economy::displayInfo()
     cout << "| Model         :  " << left << setw(36) << getModel() << "|\n";
     cout << "| Year          :  " << left << setw(36) << getYear() << "|\n";
     cout << "| Capacity      :  " << left << setw(28) << getCapacity() << " Person(s) |" << "\n";
-    cout << "| Daily Rate    :  $" << left << setw(35) << getRentalRate() << "|\n";
+    cout << "| Daily Rate    :  " << left << Pricing::CURRENCY << setw(35-Pricing::CURRENCY.length()) << getRentalRate() << "|\n";
     cout << "+------------------------------------------------------+\n";
-    cout << "| [PROMO] 4-7 Days: 10% OFF | 8+ Days: 20% OFF         |\n";
+    cout << "| [PROMO] " << Pricing::TIER_1_DAYS << "-" << (Pricing::TIER_2_DAYS-1) << " Days: " << (int)(Pricing::TIER_1_DISCOUNT*100) << "% OFF | " << Pricing::TIER_2_DAYS << "+ Days: " << (int)(Pricing::TIER_2_DISCOUNT*100) << "% OFF |\n";
     cout << "+------------------------------------------------------+\n";
-    cout << "| Status        :  " << left << setw(36) << (getAvailable() ? Color::GREEN + "AVAILABLE" + Color::RESET : Color::RED + "RENTED" + Color::RESET) << "|\n";
+    cout << "| Status        :  " << left << setw(45) << statusStr << "|\n";
     cout << "+------------------------------------------------------+\n";
 }
 
 void Economy::displayRow() const
 {
-    string coloredStatus = getAvailable() ? Color::GREEN + "Available " + Color::RESET : Color::RED + "Rented    " + Color::RESET;
-    
+    string statusStr;
+    if (getStatus() == VehicleStatus::Available) statusStr = Color::GREEN + "Available " + Color::RESET;
+    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::RED + "Rented    " + Color::RESET;
+    else statusStr = Color::YELLOW + "Sold      " + Color::RESET;
+
+    string category = Color::GREEN + "Economy   " + Color::RESET;
+
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()
          << "| " << left << setw(6) << getYear()
          << "| " << left << setw(6) << getCapacity()
-         << "| $" << left << setw(7) << fixed << setprecision(2) << getRentalRate()
-         << "| " << left << coloredStatus
-         << " | " << left << setw(10) << "Economy" << " |" << endl;
+         << "| " << Pricing::CURRENCY << left << setw(10-Pricing::CURRENCY.length()) << fixed << setprecision(2) << getRentalRate()
+         << "| " << left << statusStr
+         << "| " << left << category
+         << " |" << endl;
 }
+

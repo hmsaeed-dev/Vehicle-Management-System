@@ -27,7 +27,9 @@ public:
     void showMenu() override;
 
     // Administrative capabilities
+    void showDashboard(const std::vector<Vehicle*>& fleet);
     void addVehicle(std::vector<Vehicle*>& fleet);
+
     void removeVehicle(std::vector<Vehicle*>& fleet);
     void salePurchaseModule(std::vector<Vehicle*>& fleet, std::vector<User*>& users, FileHandler& fh);
     void viewAllRecords(const std::vector<Vehicle*>& fleet, const std::vector<User*>& users);

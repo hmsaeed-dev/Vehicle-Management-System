@@ -8,53 +8,144 @@ Extra Features TO BE Added in the Demo-Proposal
 6. Vehicle Search Feature
 
 
-### Suggestions:
+### Fixes / Bugs:
 
 1. Plan A Trip Feature
     After trip car recommendations, should appear the rent a car option to direct users to rent a car
-
-
 2. Rent a Vehicle
     Before asking for vehicle id, show the list of vehicles available based on categories, so they remember the id number to rent that car.
+3. Hardcoded Date everywhere
+4. Return Vehicle Feature does not exists
+5. Discount logic not applied during rental
+6. Sold Vehicles still Searchable, No validity for SOLD Status in Rental
+7. File Format Compatibility Fragile
+8. Zero or Negative values allowed in prices
+9. Damage fee hardcoded to 50-100 dollars, No consideration of Cheap or Expensive cars, No currency PKR
+10. Luxury Cars are not applied Discounts Properly
 
-3.
+
+
+## Exception Handling
+
+1. No try-catch in File Handler for I/O
+2. No try-catch for stoi-stof conversions
+
+
+## UI / UX Problems
+
+1. ANSI colors do not render on Windows CMD
+2. Inconsistent Cancel Keys
+3. No Loading Indicators
+4. No "Are you sure?" before delete
+5. Inconsistent Status display and formatting
+6. No Dashboard Summary, Admin Can't see fleet at a glance
+
+
+## Architechtural Weaknessess
+
+1. God Object _ main.cpp is 400++ lines
+2. Hardcodded Consants everywhere _ should be in config.json
+3. Validation rules scattered where needed _ should be Validator class with all rules
 
 
 
 
-IN PROGRESS SHUTDOWN (Check this Feature Implementation)
 
-#####################################
-Adding a Category column to the "View All Records" display is an excellent
-  idea. It provides immediate context about the vehicle type (Economy, Luxury,
-  SUV, etc.) without having to cross-reference the ID prefix.
 
-  My Recommendation: How I will implement this
-  Since the system already uses polymorphism (base class Vehicle with derived
-  categories), I can implement this in three surgical steps:
+===================================================================
 
-   1. Add getCategory() to the Base Class:
-      I will add a virtual function virtual string getCategory() const = 0; to
-  the Vehicle class. Each derived class (Economy, Luxury, etc.) will override
-  this to return its specific name (e.g., "Economy Car").
+System Stabilization & Logic Overhaul Plan
 
-   2. Update the Header Table in Admin.cpp:
-      I will expand the "View All Records" table structure to include a new
-  column. I'll adjust the padding to ensure the UI remains symmetrical.
-       * Current Headings: | ID | Model | Year | Status |
-       * New Headings: | ID | Model | Year | Category | Status |
+  1. Objective
+  Transform the current prototype into a stable, production-ready CLI  application by fixing critical crashes, correcting business logic,
+  and improving the developer experience through refactoring.
 
-   3. Color-Code the Categories:
-      To make the records even easier to read, I'll use the existing Color class  to differentiate categories (e.g., Luxury in Purple, SUV in Blue, Economy in
-  Green).
+  ---
 
-  Why this is better:
-   * Operational Clarity: Admins can quickly see if their fleet is balanced
-     between categories.
-   * Visual Organization: The color-coded categories help in scanning large
-     lists much faster than plain text.
-   * Consistency: It aligns with the "Search" module which already allows
-     searching by category.
+  2. Phase 1: Foundation & Stability (The "Bulletproof" Phase)
+  Goal: Prevent crashes and ensure data integrity.
 
-  Shall I proceed with these changes?
-#####################################
+  Changes:
+   - Centralized Validator: Create Include/Validator.h and
+     Source/Validator.cpp to house all rules (e.g., isNonNegative,
+     isValidID, isValidDate).
+   - Robust Input Handling:
+       - Update InputHandler::getInt and getFloat to use try-catch
+         blocks for std::stoi and std::stof.
+       - Implement a loop that re-prompts the user on invalid input
+         instead of crashing.
+   - File I/O Safety:
+       - Wrap ifstream and ofstream operations in FileHandler with
+         basic error checking.
+       - Improve the split function in FileHandler.cpp to be more
+         resilient to trailing spaces or empty lines.
+
+  ---
+
+  3. Phase 2: Core Business Logic (The "Functional" Phase)
+  Goal: Fix the broken rental/sales rules.
+
+  Changes:
+   - Sold Status Enforcement:
+       - Update SearchEngine to exclude vehicles with status SOLD.
+       - Add a check in the Rental process: "If vehicle is SOLD, do
+         not allow rental."
+   - Return Vehicle Feature:
+       - Expose the existing RentalTransaction::setEndTime logic to
+         the UI.
+       - Add a "Return a Vehicle" option to the Customer/Admin menus.   - Discount & Pricing Logic:
+       - Fix the Luxury::calculateCost and Economy::calculateCost
+         methods to correctly apply discounts.
+       - Ensure zero or negative prices are blocked at the input
+         level using the new Validator.
+   - Consistent Dates:
+       - Replace hardcoded dates with a helper that fetches system
+         time or requires a valid DD-MM-YYYY input.
+
+  ---
+
+  4. Phase 3: Architecture & Scalability (The "Clean" Phase)
+  Goal: Reduce technical debt and improve maintainability.
+
+  Changes:
+   - Decouple main.cpp:
+       - Move sub-menu logic (e.g., handleSearch, handleRental) into
+         dedicated classes (e.g., MenuHandler or methods within
+         Admin/Customer).
+       - Aim to reduce main.cpp to under 150 lines.
+   - Constants & Configuration:
+       - Move all "Magic Numbers" (like the $50-$100 damage fee) into         Include/Constants.h.
+       - Update the damage fee to be a percentage of the car's value
+         rather than a flat rate.
+   - Currency & Localization:
+       - Change all currency displays from $ to PKR.
+
+  ---
+
+  5. Phase 4: UI/UX & Polish (The "Professional" Phase)
+  Goal: Improve the look and feel for the end-user.
+
+  Changes:
+   - Windows CMD Color Fix:
+       - Implement a check to enable
+         ENABLE_VIRTUAL_TERMINAL_PROCESSING on Windows so ANSI colors         render correctly.
+   - Improved Rental Flow:
+       - In the "Rent a Vehicle" menu, automatically display the
+         available vehicles in the selected category before asking
+         for the Vehicle ID.
+   - Safety Prompts:
+       - Add "Are you sure you want to delete/finalize?" prompts for
+         critical actions.
+   - Feature Integration:
+       - Add a prompt at the end of "Plan a Trip" asking: "Would you
+         like to rent one of these recommended vehicles now?"
+
+  ---
+
+  6. Verification & Testing
+   - Unit Tests: Create a small test suite to verify Validator logic.   - Manual Regression:
+       - Attempt to break the system with invalid inputs (letters in
+         price, negative days).
+       - Verify that a SOLD car can no longer be rented.
+       - Verify that discounts are calculated correctly on the final
+         bill.

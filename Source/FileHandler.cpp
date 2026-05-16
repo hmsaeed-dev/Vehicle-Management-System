@@ -21,67 +21,83 @@
 
 
 /**
- * @brief Helper to split a string by a delimiter
+ * @brief Helper to split a string by a delimiter and trim whitespace.
  */
-
 vector<string> split(const string& s, char delimiter)
 {
-    vector<string> tokens;          // A container for the split words
-    string token;                   // A temporary string for each piece
-    istringstream tokenStream(s);   // Treats the input string like a "file" stream
+    vector<string> tokens;
+    string token;
+    istringstream tokenStream(s);
 
-    // Reads the stream until it hits the delimiter (the '|')
     while (getline(tokenStream, token, delimiter))
     {
-        tokens.push_back(token);    // Adds "V001", "Toyota", etc., to the list
+        // Trim leading and trailing whitespace from the token
+        size_t first = token.find_first_not_of(" \t\r\n");
+        if (string::npos != first)
+        {
+            size_t last = token.find_last_not_of(" \t\r\n");
+            tokens.push_back(token.substr(first, (last - first + 1)));
+        }
+        else
+        {
+            tokens.push_back(""); // Add empty string for consecutive delimiters or whitespace-only tokens
+        }
     }
     return tokens;
 }
 
-
-
-
+#include "Constants.h"
 
 /**
- * @brief Loads vehicles from Data/Vehicle.txt.
+ * @brief Loads vehicles from Config::VEHICLE_FILE.
  * Uses factory-style logic to instantiate derived classes.
  */
-
 vector<Vehicle*> FileHandler::loadVehicles()
 {
     vector<Vehicle*> fleet;
-    ifstream file("Data/Vehicle.txt");
+    ifstream file(Config::VEHICLE_FILE);
     string line;
 
-    if (!file.is_open()) return fleet;
+    if (!file.is_open()) {
+        cerr << "[ERROR] Could not open " << Config::VEHICLE_FILE << " for reading." << endl;
+        return fleet;
+    }
 
     while (getline(file, line))
     {
         if (line.empty()) continue;
         vector<string> data = split(line, '|');
 
-        // Format: Type|ID|Model|Year|Capacity|Rate|Status
-        char type = data[0][0];
-        string id = data[1];
-        string model = data[2];
-        int year = stoi(data[3]);           // stoi : String to Integer
-        int capacity = stoi(data[4]);
-        float rate = stof(data[5]);         // stof : String to Float
-        int statusInt = stoi(data[6]);
+        if (data.size() < 7) {
+            cerr << "[WARNING] Skipping malformed vehicle data: " << line << endl;
+            continue;
+        }
 
-        // Converts the number back into the Enum (Available, Rented, Sold)
-        VehicleStatus status = static_cast<VehicleStatus>(statusInt);
+        try {
+            // Format: Type|ID|Model|Year|Capacity|Rate|Status
+            char type = data[0][0];
+            string id = data[1];
+            string model = data[2];
+            int year = stoi(data[3]);
+            int capacity = stoi(data[4]);
+            float rate = stof(data[5]);
+            int statusInt = stoi(data[6]);
 
-        Vehicle* v = nullptr;
-        // Logic to create the specific child object
-        if      (type == 'E') v = new Economy(id, model, year, capacity, rate);
-        else if (type == 'L') v = new Luxury(id, model, year, capacity, rate, "Standard Luxury Pack");
-        else if (type == 'S') v = new SUV(id, model, year, capacity, rate);
-        else if (type == 'V') v = new Van(id, model, year, capacity, rate);
-        if (v)
-        {
-            v->setStatus(status);
-            fleet.push_back(v);
+            VehicleStatus status = static_cast<VehicleStatus>(statusInt);
+
+            Vehicle* v = nullptr;
+            if      (type == 'E') v = new Economy(id, model, year, capacity, rate);
+            else if (type == 'L') v = new Luxury(id, model, year, capacity, rate, "Standard Luxury Pack");
+            else if (type == 'S') v = new SUV(id, model, year, capacity, rate);
+            else if (type == 'V') v = new Van(id, model, year, capacity, rate);
+            
+            if (v)
+            {
+                v->setStatus(status);
+                fleet.push_back(v);
+            }
+        } catch (...) {
+            cerr << "[ERROR] Exception parsing vehicle data: " << line << endl;
         }
     }
     file.close();
@@ -91,17 +107,15 @@ vector<Vehicle*> FileHandler::loadVehicles()
 
 
 
+
 /**
-    * @brief Saves current fleet to Data/Vehicle.txt
-    Saving Vehicles (State Persistence)
-    (This writes the current state of your fleet vector back to the text file, overwriting the old data so it stays updated.)
+    * @brief Saves current fleet to Config::VEHICLE_FILE
  */
 
 
 void FileHandler::saveVehicles(const vector<Vehicle*>& fleet)
 {
-    // Opens and Clear the File
-    ofstream file("Data/Vehicle.txt");
+    ofstream file(Config::VEHICLE_FILE);
 
     for (Vehicle* v : fleet)
     {
@@ -116,48 +130,46 @@ void FileHandler::saveVehicles(const vector<Vehicle*>& fleet)
 
 
 /**
-    * @brief Loads users from Data/Users.txt
-    User Management (Admin vs. Customer)
+    * @brief Loads users from Config::USERS_FILE
  */
 
 vector<User*> FileHandler::loadUsers()
 {
     vector<User*> users;
-    ifstream file("Data/Users.txt");
+    ifstream file(Config::USERS_FILE);
     string line;
 
-    if (!file.is_open()) return users;
+    if (!file.is_open()) {
+        cerr << "[ERROR] Could not open " << Config::USERS_FILE << " for reading." << endl;
+        return users;
+    }
 
     while (getline(file, line))
     {
         if (line.empty()) continue;
         vector<string> data = split(line, '|');
 
+        if (data.size() < 4) {
+            cerr << "[WARNING] Skipping malformed user data: " << line << endl;
+            continue;
+        }
+
         char type = data[0][0];
         string id = data[1];
         string username, name, phone, password;
 
-        // Smart Detection:
-        // If 6 columns exist AND the 3rd column is lowercase/alphanumeric (like a username)
-        // AND the 4th column isn't a phone number... we handle it.
-        // For simplicity: If column 4 contains a dash, it's likely a phone number, meaning column 3 is the Name.
-        
         if (data.size() >= 6 && data[3].find('-') == string::npos) {
-            // Likely New Format: ID|Username|Name|Phone|Password
             username = data[2];
             name = data[3];
             phone = data[4];
             password = data[5];
         } else {
-            // Likely Old or Corrupted Format: ID|Name|Phone|Password
-            // We use the ID as a fallback username to prevent data shifting
             username = id; 
             name = data[2];
             phone = data[3];
             password = (data.size() > 4) ? data[4] : "1111";
         }
 
-        // Final cleanup: Ensure no one has "Admin" as a username if it was a shift error
         if (username == "Admin" && name.find('-') != string::npos) {
              username = "admin";
              name = "Admin User";
@@ -172,9 +184,10 @@ vector<User*> FileHandler::loadUsers()
 }
 
 
+
 void FileHandler::saveUsers(const vector<User*>& users)
 {
-    ofstream file("Data/Users.txt");
+    ofstream file(Config::USERS_FILE);
     for (User* u : users)
     {
         char type = u->getID()[0];
@@ -197,7 +210,7 @@ void FileHandler::saveTransactions(const vector<Transaction*>& txns)
 
 void FileHandler::appendTransaction(const string& type, const string& vID, const string& cID, float amount, const string& date)
 {
-    ofstream file("Data/Transactions.txt", ios::app);
+    ofstream file(Config::TRANSACTIONS_FILE, ios::app);
     if (file.is_open())
     {
         file << type << "|" << vID << "|" << cID << "|" << amount << "|" << date << endl;
@@ -207,7 +220,7 @@ void FileHandler::appendTransaction(const string& type, const string& vID, const
 
 void FileHandler::loadTransactionsIntoHistory(vector<User*>& users)
 {
-    ifstream file("Data/Transactions.txt");
+    ifstream file(Config::TRANSACTIONS_FILE);
     string line;
     if (!file.is_open()) return;
 
@@ -229,9 +242,9 @@ void FileHandler::loadTransactionsIntoHistory(vector<User*>& users)
             {
                 Customer* customer = static_cast<Customer*>(u);
                 string record;
-                if (type == "SALE") record = "Purchased Vehicle " + vID + " for $" + amount + " on " + date;
+                if (type == "SALE") record = "Purchased Vehicle " + vID + " for " + Pricing::CURRENCY + amount + " on " + date;
                 else if (type == "RENT_START") record = "Started Rental of " + vID + " on " + date;
-                else if (type == "RENT_RETURN") record = "Returned " + vID + " (Bill: $" + amount + ") on " + date;
+                else if (type == "RENT_RETURN") record = "Returned " + vID + " (Bill: " + Pricing::CURRENCY + amount + ") on " + date;
                 
                 if (!record.empty()) {
                     customer->addToHistory(record);
@@ -246,14 +259,15 @@ void FileHandler::loadTransactionsIntoHistory(vector<User*>& users)
 
 
 /**
- * @brief Appends an inspection report to Data/Inspections.txt.
+ * @brief Appends an inspection report to Config::INSPECTIONS_FILE.
  */
 void FileHandler::saveInspection(const InspectionReport& report)
 {
-    ofstream file("Data/Inspections.txt", ios::app);
+    ofstream file(Config::INSPECTIONS_FILE, ios::app);
     if (file.is_open())
     {
         report.saveToFile(file);
         file.close();
     }
 }
+

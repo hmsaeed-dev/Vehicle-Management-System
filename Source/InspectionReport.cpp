@@ -16,6 +16,9 @@ using namespace std;
 InspectionReport::InspectionReport(Vehicle* v, Customer* c)
     : inspectedVehicle(v), inspector(c), mileage(0.0f) {}
 
+#include "Validator.h"
+#include "Constants.h"
+
 /**
  * @brief Interactively fills the inspection report via console.
  */
@@ -23,22 +26,41 @@ void InspectionReport::fillReport() {
     cout << "\n" << Color::BOLD << Color::CYAN << "--- FILLING INSPECTION REPORT ---" << Color::RESET << endl;
     cout << "Vehicle ID: " << (inspectedVehicle ? inspectedVehicle->getID() : "Unknown") << endl;
 
-    date = InputHandler::getString("Enter Return Date (DD/MM/YYYY): ");
-    fuelLevel = InputHandler::getString("Enter Fuel Level (e.g., Full, Half, 10%): ");
-    mileage = InputHandler::getFloat("Enter Current Mileage: ");
-    damageNotes = InputHandler::getString("Enter Damage Notes (type 'None' if clear): ");
-    condition = InputHandler::getString("Enter Vehicle Condition (Good / Fair / Poor): ");
-    evaluationRemarks = InputHandler::getString("Enter Additional Evaluator Remarks: ");
+    while (true) {
+        date = InputHandler::getString("Enter Return Date (DD-MM-YYYY)");
+        if (Validator::isValidDate(date)) break;
+        cout << Color::ERR << "[ERROR] Please enter date in DD-MM-YYYY format." << Color::RESET << endl;
+    }
+
+    fuelLevel = InputHandler::getString("Enter Fuel Level (e.g., Full, Half, 10%)");
+    mileage = InputHandler::getFloat("Enter Current Mileage", 0.0f, 1000000.0f);
+    damageNotes = InputHandler::getString("Enter Damage Notes (type 'None' if clear)");
+    
+    while (true) {
+        condition = InputHandler::getString("Enter Vehicle Condition (Good / Fair / Poor)");
+        // Normalize condition for easier checking
+        if (condition == "Good" || condition == "Fair" || condition == "Poor") break;
+        cout << Color::ERR << "[ERROR] Invalid condition. Use: Good, Fair, or Poor." << Color::RESET << endl;
+    }
+    
+    evaluationRemarks = InputHandler::getString("Enter Additional Evaluator Remarks");
 
     cout << Color::SUCCESS << "[SYSTEM] Inspection report completed successfully." << Color::RESET << endl;
 }
 
 float InspectionReport::getDamageFee() const
 {
-    if (condition == "Poor") return 100.0f;
-    if (condition == "Fair") return 50.0f;
+    if (!inspectedVehicle) return 0.0f;
+    
+    float baseRate = inspectedVehicle->getRentalRate();
+    
+    // Dynamic fee based on daily rate and constants
+    if (condition == "Poor") return baseRate * Pricing::DAMAGE_FEE_POOR;
+    if (condition == "Fair") return baseRate * Pricing::DAMAGE_FEE_FAIR;
     return 0.0f;
 }
+
+
 
 /**
  * @brief Displays the report details to the console.

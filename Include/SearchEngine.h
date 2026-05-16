@@ -21,11 +21,13 @@ public:
     SearchEngine(vector<Vehicle*>& f);
 
     // Overloaded search methods
-    vector<Vehicle*> searchByName(string name);
     vector<Vehicle*> searchByPriceRange(float min, float max);
     vector<Vehicle*> searchByCategory(char type);
     vector<Vehicle*> searchByAvailability();
     vector<Vehicle*> searchByYearRange(int minYear, int maxYear);
+    
+    // Multi-criteria search
+    vector<Vehicle*> smartSearch(char type, float maxPrice, bool onlyAvailable);
 };
 
 #endif // SEARCH_ENGINE_H

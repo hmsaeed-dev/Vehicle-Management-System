@@ -1,0 +1,89 @@
+%% Flowchart.mmd
+%% Mermaid flowchart describing the current User workflow for the Vehicle Management System
+
+flowchart TD
+  Start([Start])
+  Start --> LoadData("Load data: vehicles, users, transactions (FileHandler)")
+  LoadData --> MainMenu{{"Main Menu
+  1 Register
+  2 Login
+  Z Exit"}}
+
+  MainMenu --> Register("Register New Account (MenuHandler::handleRegistration)")
+  Register --> CreateAccount["Create Customer object and add to users"]
+  CreateAccount --> MainMenu
+
+  MainMenu --> Login("Login (MenuHandler::handleLogin)")
+  Login --> AuthCheck{Valid credentials?}
+  AuthCheck -- No --> LoginError["Show error & retry"] --> MainMenu
+  AuthCheck -- Yes --> RoleCheck{User ID starts with 'A'?}
+  RoleCheck -- Yes --> AdminSession["Admin Session
+  (MenuHandler::adminSession)"]
+  RoleCheck -- No --> CustomerSession["Customer Session
+  (MenuHandler::customerSession)"]
+
+  subgraph ADMIN ["Admin Workflow"]
+    AdminSession --> AdminMenu{{"Admin Menu
+    1 Add Vehicle
+    2 Remove Vehicle
+    3 Remove User
+    4 Sale Purchase Module
+    5 View All Records"}}
+    AdminMenu --> AddVehicle["Admin::addVehicle(fleet)"]
+    AdminMenu --> RemoveVehicle["Admin::removeVehicle(fleet)"]
+    AdminMenu --> RemoveUser["Admin::removeUser(users, fh)"]
+    AdminMenu --> SalePurchase["Admin::salePurchaseModule(fleet, users, fh)"]
+    AdminMenu --> ViewRecords["Admin::viewAllRecords(fleet, users)"]
+    AdminMenu --> AdminLogout["Logout"] --> MainMenu
+  end
+
+  subgraph CUSTOMER ["Customer Workflow"]
+    CustomerSession --> CustomerMenu{{"Customer Menu
+    1 Search
+    2 Rent
+    3 Return
+    4 Trip Planner
+    5 View Rental History"}}
+    CustomerMenu --> SearchFlow["Search Vehicles (MenuHandler::handleSearch)"]
+    CustomerMenu --> RentFlow["Rent Vehicle (Customer::rentVehicle)"]
+    CustomerMenu --> ReturnFlow["Return Vehicle (Customer::returnVehicle)"]
+    CustomerMenu --> TripPlannerFlow["Trip Planner (MenuHandler::handleTripPlanning)"]
+    CustomerMenu --> ViewHistory["viewRentalHistory()"]
+
+    subgraph SEARCH ["Search Flow"]
+      SearchFlow --> SearchOptions{{"Search Options
+      1 Browse All
+      2 Filter by Category
+      3 Price Range
+      4 Advanced Smart Search"}}
+      SearchOptions --> BrowseAll["Browse all results fleet"]
+      SearchOptions --> ByCategory["SearchEngine::searchByCategory(type)"]
+      SearchOptions --> ByPrice["SearchEngine::searchByPriceRange(min,max)"]
+      SearchOptions --> SmartSearch["SearchEngine::smartSearch(type,maxPrice,onlyAvail)"]
+      BrowseAll --> ShowResults["Display results (table)"]
+      ByCategory --> ShowResults
+      ByPrice --> ShowResults
+      SmartSearch --> ShowResults
+      ShowResults --> RentFromSearch{Customer chooses an ID to RENT?}
+      RentFromSearch -- Yes --> ProcessRental["customer processRental(id, fleet, fh)
+      (create RentalTransaction, update vehicle status, save via FileHandler)"]
+      RentFromSearch -- No --> ReturnToCustomer["Back to Customer Menu"]
+      ProcessRental --> ReturnToCustomer
+      ReturnToCustomer --> CustomerMenu
+    end
+
+    subgraph TRIP ["Trip Planner Flow"]
+      TripPlannerFlow --> TripInputs["Input: src, dest, distance, budget, pax"]
+      TripInputs --> PlanTrip["planner.planTrip show suggested vehicles"]
+      PlanTrip --> RentFromTrip{Rent one of suggested vehicles?}
+      RentFromTrip -- Yes --> ProcessRental
+      RentFromTrip -- No --> ReturnToCustomer
+    end
+  end
+
+  MainMenu --> Exit["Exit System (Z)"]
+  Exit --> SaveData("Save Vehicles & Users (FileHandler saveVehicles/saveUsers)")
+  SaveData --> End([End])
+
+  classDef system fill:#f2f8ff,stroke:#333,stroke-width:1px;
+  class LoadData,SaveData system

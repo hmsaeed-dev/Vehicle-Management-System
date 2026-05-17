@@ -166,12 +166,6 @@ System Stabilization & Logic Overhaul Plan
        - In the "Rent a Vehicle" menu, automatically display the
          available vehicles in the selected category before asking
          for the Vehicle ID.
-   - Safety Prompts:
-       - Add "Are you sure you want to delete/finalize?" prompts for
-         critical actions.
-   - Feature Integration:
-       - Add a prompt at the end of "Plan a Trip" asking: "Would you
-         like to rent one of these recommended vehicles now?"
 
   ---
 

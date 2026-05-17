@@ -11,6 +11,7 @@
 #include "RentalTransaction.h"
 #include "SaleTransaction.h"
 #include "InspectionReport.h"
+#include "Constants.h"
 
 #include <iomanip>
 #include <fstream>
@@ -46,7 +47,6 @@ vector<string> split(const string& s, char delimiter)
     return tokens;
 }
 
-#include "Constants.h"
 
 /**
  * @brief Loads vehicles from Config::VEHICLE_FILE.
@@ -90,7 +90,7 @@ vector<Vehicle*> FileHandler::loadVehicles()
             else if (type == 'L') v = new Luxury(id, model, year, capacity, rate, "Standard Luxury Pack");
             else if (type == 'S') v = new SUV(id, model, year, capacity, rate);
             else if (type == 'V') v = new Van(id, model, year, capacity, rate);
-            
+
             if (v)
             {
                 v->setStatus(status);
@@ -164,7 +164,7 @@ vector<User*> FileHandler::loadUsers()
             phone = data[4];
             password = data[5];
         } else {
-            username = id; 
+            username = id;
             name = data[2];
             phone = data[3];
             password = (data.size() > 4) ? data[4] : "1111";
@@ -245,7 +245,7 @@ void FileHandler::loadTransactionsIntoHistory(vector<User*>& users)
                 if (type == "SALE") record = "Purchased Vehicle " + vID + " for " + Pricing::CURRENCY + amount + " on " + date;
                 else if (type == "RENT_START") record = "Started Rental of " + vID + " on " + date;
                 else if (type == "RENT_RETURN") record = "Returned " + vID + " (Bill: " + Pricing::CURRENCY + amount + ") on " + date;
-                
+
                 if (!record.empty()) {
                     customer->addToHistory(record);
                 }

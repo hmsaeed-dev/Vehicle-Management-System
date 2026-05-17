@@ -10,6 +10,7 @@
 #include "Colors.h"
 #include "Constants.h"
 #include "Validator.h"
+
 #include <iostream>
 #include <iomanip>
 
@@ -35,7 +36,7 @@ void MenuHandler::runMainMenu()
         cout << "|   [Z]   Exit System                                      |\n";
         cout << "|                                                          |\n";
         cout << Color::YELLOW << "+----------------------------------------------------------+\n\n" << Color::RESET;
-        
+
         int mainChoice = InputHandler::getInt("Selection", 1, 2, true);
 
         if (mainChoice == InputHandler::CANCEL_INT) break;
@@ -54,7 +55,7 @@ void MenuHandler::handleRegistration()
     cout << "|                 ACCOUNT REGISTRATION                     |\n";
     cout << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "  Please enter your details to create an account:\n\n";
-    
+
     name = InputHandler::getString("  > Full Name");
     username = InputHandler::getString("  > Username", false);
 
@@ -102,10 +103,10 @@ void MenuHandler::handleLogin()
     cout << "|                    SYSTEM LOGIN                          |\n";
     cout << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "  Please verify your identity to continue:\n";
-    
+
     string username = InputHandler::getString("  > Username", false);
     string pass = InputHandler::getString("  > Password", false);
-    
+
     cout << Color::YELLOW << "+----------------------------------------------------------+\n" << Color::RESET;
 
     User* currentUser = nullptr;
@@ -136,7 +137,7 @@ void MenuHandler::adminSession(User* currentUser)
     do {
         admin->showDashboard(fleet);
         admin->showMenu();
-        int choice = InputHandler::getInt("Selection", 1, 5, true); 
+        int choice = InputHandler::getInt("Selection", 1, 5, true);
 
         if (choice == InputHandler::CANCEL_INT) { logout = true; break; }
 
@@ -161,7 +162,7 @@ void MenuHandler::customerSession(User* currentUser)
     bool logout = false;
     do {
         customer->showMenu();
-        int choice = InputHandler::getInt("Selection", 1, 5, true); 
+        int choice = InputHandler::getInt("Selection", 1, 5, true);
 
         if (choice == InputHandler::CANCEL_INT) { logout = true; break; }
 
@@ -196,7 +197,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
         cout << "|   [Z]   Back to Dashboard                                |\n";
         cout << "|                                                          |\n";
         cout << Color::CYAN << "+----------------------------------------------------------+\n\n" << Color::RESET;
-    
+
         choice = InputHandler::getInt("Selection", 1, 4, true);
 
         vector<Vehicle*> results;
@@ -227,7 +228,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
             cout << "4. Luxury   - Above 250\n";
             cout << "5. Custom Range\n";
             int priceChoice = InputHandler::getInt("Choice", 1, 5);
-            
+
             float minP = 0, maxP = 1000000;
             if (priceChoice == 1) maxP = 50;
             else if (priceChoice == 2) { minP = 50; maxP = 100; }
@@ -248,7 +249,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
 
             cout << "\nStep 2: Set Maximum Budget (" << Pricing::CURRENCY << ")\n";
             float maxPrice = InputHandler::getFloat("Max Price per day", 0, 1000000);
-            
+
             cout << "\nStep 3: Availability Check\n";
             bool onlyAvail = (InputHandler::getChar("Only show available vehicles? (Y/N)", "YN") == 'Y');
             onlyAvailFilter = onlyAvail;
@@ -262,7 +263,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
                 InputHandler::waitForEnter();
             } else {
                 cout << "\n" << Color::INFO << "[SYSTEM] Found " << results.size() << " vehicles matching your criteria:" << Color::RESET << "\n";
-                
+
                 if (onlyAvailFilter) {
                     cout << "+-------+-------------------+-------+-------+------------+------------+\n";
                     cout << "| ID    | Model             | Year  | Cap.  | Rate       | Category   |\n";
@@ -301,7 +302,7 @@ void MenuHandler::handleTripPlanning(TripPlanner& planner, vector<Vehicle*>& fle
     cout << "|                    TRIP PLANNER MODULE                   |\n";
     cout << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "  Please provide your travel details:\n\n";
-    
+
     string src = InputHandler::getAlphaString("  > Starting Point");
     string dest = InputHandler::getAlphaString("  > Destination");
     float dist = InputHandler::getFloat("  > Distance (km)", 1.0f, 5000.0f);
@@ -310,9 +311,9 @@ void MenuHandler::handleTripPlanning(TripPlanner& planner, vector<Vehicle*>& fle
 
     cout << "\n" << Color::YELLOW << "+----------------------------------------------------------+\n" << Color::RESET;
     planner.planTrip(src, dest, dist, budget, pax, fleet);
-    
+
     if (customer && fh) {
-        string rentID = InputHandler::getString("\nWould you like to RENT one of these vehicles? Enter ID (or press Enter to skip)", true, false, true);
+        string rentID = InputHandler::getString("\nWould you like to RENT one of these? Enter ID (or press Enter to skip)", true, false, true);
         if (!rentID.empty()) { customer->processRental(rentID, fleet, *fh); InputHandler::waitForEnter(); }
         else InputHandler::waitForEnter();
     } else InputHandler::waitForEnter();

@@ -1,17 +1,18 @@
 ### Observations ###
 
-1. Must restrict user to not have the same username, or ID as used before in the system.
+1. Must restrict user to not have the same ID as used before in the system.
 
 2. Full Name should be 3 or moe characters logging
 
 3. Validation Checks for ID making, is it three character, or alphanumeric, alpha only....
 
-4. 
+4. In trip Planner Module, when distance asked, 5677 it says out of range , WHY?
 
+5. Trip Planner Recommendation Logic, How is it calculating what to suggest, what parameters is it considering?
 
+6. Transaction History Activity Record can be polished and with more info showcase
 
-
-
+7. Full System Records UI Colors matching
 
 
 

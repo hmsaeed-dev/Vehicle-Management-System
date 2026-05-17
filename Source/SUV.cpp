@@ -35,60 +35,13 @@ float SUV::calculateCost(int days)
  * @brief Displays SUV-specific info including seating capacity.
  */
 
-void SUV::displayInfo()
-{
-    string statusStr;
-    if (getStatus() == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "AVAILABLE" + Color::RESET;
-    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "RENTED" + Color::RESET;
-    else statusStr = Color::STATUS_SOLD + "SOLD" + Color::RESET;
+string SUV::getCategoryDisplay() const {
+    return Color::CATEGORY_SUV + "SUV       " + Color::RESET;
+}
 
-    cout << "\n";
-    cout << Color::SUBHEADER;
-    cout << "+------------------------------------------------------+\n";
-    cout << "| [SUV CATEGORY]                                       |\n";
-    cout << "+------------------------------------------------------+\n" << Color::RESET;
-    cout << "| Vehicle ID    :  " << left << setw(36) << getID() << "|\n";
-    cout << "| Model         :  " << left << setw(36) << getModel() << "|\n";
-    cout << "| Year          :  " << left << setw(36) << getYear() << "|\n";
-    cout << "| Seating       :  " << left << setw(29) << getCapacity() << " Seats |" << "\n";
-    cout << "| Daily Rate    :  " << left << Pricing::CURRENCY << setw(35-Pricing::CURRENCY.length()) << getRentalRate() << "|\n";
-    cout << "+------------------------------------------------------+\n";
+void SUV::displayExtraInfo() const {
     cout << "| [PROMO] " << Pricing::TIER_1_DAYS << "-" << (Pricing::TIER_2_DAYS-1) << " Days: " << (int)(Pricing::TIER_1_DISCOUNT*100) << "% OFF | " << Pricing::TIER_2_DAYS << "+ Days: " << (int)(Pricing::TIER_2_DISCOUNT*100) << "% OFF |\n";
     cout << "+------------------------------------------------------+\n";
-    cout << "| Status        :  " << left << setw(45) << statusStr << "|\n";
-    cout << "+------------------------------------------------------+\n";
-}
-
-void SUV::displayRow() const
-{
-    string statusStr;
-    if (getStatus() == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "Available " + Color::RESET;
-    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "Rented    " + Color::RESET;
-    else statusStr = Color::STATUS_SOLD + "Sold      " + Color::RESET;
-
-    string category = Color::CATEGORY_SUV + "SUV       " + Color::RESET;
-
-    cout << "| " << left << setw(6) << getID()
-         << "| " << left << setw(18) << getModel()
-         << "| " << left << setw(6) << getYear()
-         << "| " << left << setw(6) << getCapacity()
-         << "| " << Pricing::CURRENCY << left << setw(10-Pricing::CURRENCY.length()) << fixed << setprecision(2) << getRentalRate()
-         << "| " << left << statusStr
-         << "| " << left << category
-         << " |" << endl;
-}
-
-void SUV::displayRowSimple() const
-{
-    string category = Color::CATEGORY_SUV + "SUV       " + Color::RESET;
-
-    cout << "| " << left << setw(6) << getID()
-         << "| " << left << setw(18) << getModel()
-         << "| " << left << setw(6) << getYear()
-         << "| " << left << setw(6) << getCapacity()
-         << "| " << Pricing::CURRENCY << left << setw(10-Pricing::CURRENCY.length()) << fixed << setprecision(2) << getRentalRate()
-         << "| " << left << category
-         << " |" << endl;
 }
 
 

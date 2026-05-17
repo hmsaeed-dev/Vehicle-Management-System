@@ -32,7 +32,8 @@
 
 =============================================================================
 
-
+# Fix discount inconsistency
+  Choose one pattern (either make calculateCost return pre-discount and apply discount in one caller, or have calculateCost always return final bill and remove extra discount application). Files: Economy.cpp, Luxury.cpp, Customer.cpp, RentalTransaction.cpp.
 
 
 Extra Features TO BE Added in the Demo-Proposal

@@ -15,9 +15,13 @@ public:
     // Polymorphic overrides
     string getCategory() const override;
     float calculateCost(int hours) override;
-    void displayInfo() override;
-    void displayRow() const override;
-    void displayRowSimple() const override;
+
+protected:
+    // UI Hooks
+    string getHeaderTitle() const override { return "[SUV CATEGORY]"; }
+    string getCategoryDisplay() const override;
+    string getCapacityUnit() const override { return "Seats"; }
+    void displayExtraInfo() const override;
 };
 
 

@@ -11,14 +11,14 @@ E|E010|Toyota Yaris|2022|5|11|0
 L|L001|BMW 7 Series|2022|4|75|0
 L|L002|Mercedes S-Class|2023|4|85|0
 L|L003|Audi A8|2022|4|80|0
-L|L004|Porsche Panamera|2023|4|120|0
+L|L004|Porsche Panamera|2023|4|120|1
 L|L005|Lexus LS 500|2022|5|90|0
 L|L006|Range Rover|2023|5|150|0
 L|L007|Tesla Model S|2022|5|95|0
 L|L008|Jaguar XJ|2021|5|85|0
 S|S001|Toyota Fortuner|2021|7|45|0
 S|S002|Ford Endeavour|2021|7|50|0
-S|S003|Jeep Compass|2020|5|40|0
+S|S003|Jeep Compass|2020|5|40|1
 S|S004|Mitsubishi Pajero|2020|7|42|0
 S|S005|Chevrolet Tahoe|2022|8|65|0
 S|S006|Nissan Patrol|2021|7|55|0
@@ -28,3 +28,4 @@ V|V001|Toyota Hiace|2021|12|60|0
 V|V002|Mercedes Sprinter|2022|15|90|0
 V|V003|Ford Transit|2020|10|55|0
 V|V004|Hyundai H1|2021|9|50|0
+S|S009|pajero|2002|8|100|0

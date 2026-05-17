@@ -10,12 +10,17 @@
 class Van : public Vehicle {
 public:
     Van(string id, string model, int year, int capacity, float rate);
+    // Polymorphic overrides
     string getCategory() const override;
     float calculateCost(int days) override;
-    void displayInfo() override;
-    void displayRow() const override;
-    void displayRowSimple() const override;
-};
+
+    protected:
+    // UI Hooks
+    string getHeaderTitle() const override { return "[VAN / BUS CATEGORY]"; }
+    string getCategoryDisplay() const override;
+    string getCapacityUnit() const override { return "Pax"; }
+    void displayExtraInfo() const override;
+    };
 
 
 #endif // VAN_H

@@ -46,14 +46,25 @@ public:
     // Pure Virtual Functions
     virtual string getCategory() const = 0;
     virtual float calculateCost(int days) = 0;
-    virtual void displayInfo() = 0;
-    virtual void displayRow() const = 0; // Tabular view with status
-    virtual void displayRowSimple() const = 0; // Tabular view without status column
+    
+    // UI Methods (Template Methods)
+    virtual void displayInfo();
+    virtual void displayRow() const; // Tabular view with status
+    virtual void displayRowSimple() const; // Tabular view without status column
 
     // Discount Logic
-
     float calculateDiscountedCost(int days);
     float getDiscountPercentage(int days) const;
+
+protected:
+    // Hooks for Template Method Pattern (UI)
+    virtual string getHeaderTitle() const = 0;
+    virtual string getCategoryDisplay() const = 0;
+    virtual string getCapacityUnit() const { return "Person(s)"; }
+    virtual void displayExtraInfo() const {}
+
+    // Helper for status string formatting
+    string getStatusString() const;
 };
 
 #endif // VEHICLE_H

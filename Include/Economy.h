@@ -16,9 +16,12 @@ public:
     // Polymorphic overrides
     string getCategory() const override;
     float calculateCost(int hours) override;
-    void displayInfo() override;
-    void displayRow() const override;
-    void displayRowSimple() const override;
+
+protected:
+    // UI Hooks
+    string getHeaderTitle() const override { return "[ECONOMY CLASS]"; }
+    string getCategoryDisplay() const override;
+    void displayExtraInfo() const override;
 };
 
 

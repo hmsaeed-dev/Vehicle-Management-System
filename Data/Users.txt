@@ -2,4 +2,3 @@ A|A001|admin|Admin|0300-1122334|1111
 C|C002|salman|Salman|0322-9900112|1111
 C|C003|saeed|Saeed|0321-9798860|hmsaeed
 C|C005|waseem|Arham|0344-7678463|waseem
-C|C009|aamina|aamina|864534234|aamina

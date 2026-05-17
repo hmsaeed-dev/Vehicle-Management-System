@@ -41,12 +41,12 @@ float Luxury::calculateCost(int days) {
 void Luxury::displayInfo()
 {
     string statusStr;
-    if (getStatus() == VehicleStatus::Available) statusStr = Color::GREEN + "AVAILABLE" + Color::RESET;
-    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::RED + "RENTED" + Color::RESET;
-    else statusStr = Color::YELLOW + "SOLD" + Color::RESET;
+    if (getStatus() == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "AVAILABLE" + Color::RESET;
+    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "RENTED" + Color::RESET;
+    else statusStr = Color::STATUS_SOLD + "SOLD" + Color::RESET;
 
     cout << "\n";
-    cout << Color::BOLD << Color::MAGENTA;
+    cout << Color::SUBHEADER;
     cout << "+======================================================+\n";
     cout << "| [PREMIUM LUXURY CLASS]                               |\n";
     cout << "+======================================================+\n" << Color::RESET;
@@ -64,11 +64,11 @@ void Luxury::displayInfo()
 void Luxury::displayRow() const
 {
     string statusStr;
-    if (getStatus() == VehicleStatus::Available) statusStr = Color::GREEN + "Available " + Color::RESET;
-    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::RED + "Rented    " + Color::RESET;
-    else statusStr = Color::YELLOW + "Sold      " + Color::RESET;
+    if (getStatus() == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "Available " + Color::RESET;
+    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "Rented    " + Color::RESET;
+    else statusStr = Color::STATUS_SOLD + "Sold      " + Color::RESET;
 
-    string category = Color::MAGENTA + "Luxury    " + Color::RESET;
+    string category = Color::CATEGORY_LUXURY + "Luxury    " + Color::RESET;
 
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()
@@ -82,7 +82,7 @@ void Luxury::displayRow() const
 
 void Luxury::displayRowSimple() const
 {
-    string category = Color::MAGENTA + "Luxury    " + Color::RESET;
+    string category = Color::CATEGORY_LUXURY + "Luxury    " + Color::RESET;
 
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()

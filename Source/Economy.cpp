@@ -41,14 +41,15 @@ float Economy::calculateCost(int days)
 void Economy::displayInfo()
 {
     string statusStr;
-    if (getStatus() == VehicleStatus::Available) statusStr = Color::GREEN + "AVAILABLE" + Color::RESET;
-    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::RED + "RENTED" + Color::RESET;
-    else statusStr = Color::YELLOW + "SOLD" + Color::RESET;
+    if (getStatus() == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "AVAILABLE" + Color::RESET;
+    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "RENTED" + Color::RESET;
+    else statusStr = Color::STATUS_SOLD + "SOLD" + Color::RESET;
 
     cout << "\n";
+    cout << Color::SUBHEADER;
     cout << "+------------------------------------------------------+\n";
     cout << "| [ECONOMY CLASS]                                      |\n";
-    cout << "+------------------------------------------------------+\n";
+    cout << "+------------------------------------------------------+\n" << Color::RESET;
     cout << "| Vehicle ID    :  " << left << setw(36) << getID() << "|\n";
     cout << "| Model         :  " << left << setw(36) << getModel() << "|\n";
     cout << "| Year          :  " << left << setw(36) << getYear() << "|\n";
@@ -64,11 +65,11 @@ void Economy::displayInfo()
 void Economy::displayRow() const
 {
     string statusStr;
-    if (getStatus() == VehicleStatus::Available) statusStr = Color::GREEN + "Available " + Color::RESET;
-    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::RED + "Rented    " + Color::RESET;
-    else statusStr = Color::YELLOW + "Sold      " + Color::RESET;
+    if (getStatus() == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "Available " + Color::RESET;
+    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "Rented    " + Color::RESET;
+    else statusStr = Color::STATUS_SOLD + "Sold      " + Color::RESET;
 
-    string category = Color::GREEN + "Economy   " + Color::RESET;
+    string category = Color::CATEGORY_ECONOMY + "Economy   " + Color::RESET;
 
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()
@@ -82,7 +83,7 @@ void Economy::displayRow() const
 
 void Economy::displayRowSimple() const
 {
-    string category = Color::GREEN + "Economy   " + Color::RESET;
+    string category = Color::CATEGORY_ECONOMY + "Economy   " + Color::RESET;
 
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()

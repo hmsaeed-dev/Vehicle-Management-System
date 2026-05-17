@@ -38,12 +38,12 @@ float SUV::calculateCost(int days)
 void SUV::displayInfo()
 {
     string statusStr;
-    if (getStatus() == VehicleStatus::Available) statusStr = Color::GREEN + "AVAILABLE" + Color::RESET;
-    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::RED + "RENTED" + Color::RESET;
-    else statusStr = Color::YELLOW + "SOLD" + Color::RESET;
+    if (getStatus() == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "AVAILABLE" + Color::RESET;
+    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "RENTED" + Color::RESET;
+    else statusStr = Color::STATUS_SOLD + "SOLD" + Color::RESET;
 
     cout << "\n";
-    cout << Color::BOLD << Color::YELLOW;
+    cout << Color::SUBHEADER;
     cout << "+------------------------------------------------------+\n";
     cout << "| [SUV CATEGORY]                                       |\n";
     cout << "+------------------------------------------------------+\n" << Color::RESET;
@@ -62,11 +62,11 @@ void SUV::displayInfo()
 void SUV::displayRow() const
 {
     string statusStr;
-    if (getStatus() == VehicleStatus::Available) statusStr = Color::GREEN + "Available " + Color::RESET;
-    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::RED + "Rented    " + Color::RESET;
-    else statusStr = Color::YELLOW + "Sold      " + Color::RESET;
+    if (getStatus() == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "Available " + Color::RESET;
+    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "Rented    " + Color::RESET;
+    else statusStr = Color::STATUS_SOLD + "Sold      " + Color::RESET;
 
-    string category = Color::YELLOW + "SUV       " + Color::RESET;
+    string category = Color::CATEGORY_SUV + "SUV       " + Color::RESET;
 
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()
@@ -80,7 +80,7 @@ void SUV::displayRow() const
 
 void SUV::displayRowSimple() const
 {
-    string category = Color::YELLOW + "SUV       " + Color::RESET;
+    string category = Color::CATEGORY_SUV + "SUV       " + Color::RESET;
 
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()

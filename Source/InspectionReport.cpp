@@ -23,7 +23,7 @@ InspectionReport::InspectionReport(Vehicle* v, Customer* c)
  * @brief Interactively fills the inspection report via console.
  */
 void InspectionReport::fillReport() {
-    cout << "\n" << Color::BOLD << Color::CYAN << "--- FILLING INSPECTION REPORT ---" << Color::RESET << endl;
+    cout << "\n" << Color::SUBHEADER << "--- FILLING INSPECTION REPORT ---" << Color::RESET << endl;
     cout << "Vehicle ID: " << (inspectedVehicle ? inspectedVehicle->getID() : "Unknown") << endl;
 
     while (true) {
@@ -35,14 +35,14 @@ void InspectionReport::fillReport() {
     fuelLevel = InputHandler::getString("Enter Fuel Level (e.g., Full, Half, 10%)");
     mileage = InputHandler::getFloat("Enter Current Mileage", 0.0f, 1000000.0f);
     damageNotes = InputHandler::getString("Enter Damage Notes (type 'None' if clear)");
-    
+
     while (true) {
         condition = InputHandler::getString("Enter Vehicle Condition (Good / Fair / Poor)");
         // Normalize condition for easier checking
         if (condition == "Good" || condition == "Fair" || condition == "Poor") break;
         cout << Color::ERR << "[ERROR] Invalid condition. Use: Good, Fair, or Poor." << Color::RESET << endl;
     }
-    
+
     evaluationRemarks = InputHandler::getString("Enter Additional Evaluator Remarks");
 }
 
@@ -50,9 +50,9 @@ void InspectionReport::fillReport() {
 float InspectionReport::getDamageFee() const
 {
     if (!inspectedVehicle) return 0.0f;
-    
+
     float baseRate = inspectedVehicle->getRentalRate();
-    
+
     // Dynamic fee based on daily rate and constants
     if (condition == "Poor") return baseRate * Pricing::DAMAGE_FEE_POOR;
     if (condition == "Fair") return baseRate * Pricing::DAMAGE_FEE_FAIR;
@@ -68,7 +68,7 @@ float InspectionReport::getDamageFee() const
 void InspectionReport::displayReport() const
 {
     cout << "\n";
-    cout << Color::BOLD << Color::CYAN;
+    cout << Color::HEADER;
     cout << "+==========================================================+\n";
     cout << "|                 VEHICLE INSPECTION REPORT                |\n";
     cout << "+==========================================================+\n" << Color::RESET;
@@ -82,7 +82,7 @@ void InspectionReport::displayReport() const
     cout << "+----------------------------------------------------------+\n";
     cout << "| Damage Notes   :  " << left << setw(39) << damageNotes << "|\n";
     cout << "| Remarks        :  " << left << setw(39) << evaluationRemarks << "|\n";
-    cout << Color::CYAN << "+==========================================================+\n" << Color::RESET << "\n";
+    cout << Color::NOTICE << "+==========================================================+\n" << Color::RESET << "\n";
 }
 
 

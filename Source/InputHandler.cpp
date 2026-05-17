@@ -21,7 +21,7 @@ namespace InputHandler
 
     void waitForEnter()
     {
-        cout << "\n" << Color::INFO << "Press Enter to continue..." << Color::RESET;
+        cout << "\n" << Color::PROMPT << "Press Enter to continue..." << Color::RESET;
         string dummy;
         getline(cin, dummy);
     }
@@ -40,11 +40,11 @@ namespace InputHandler
         while (true)
         {
             cout << prompt;
-            if (allowCancel) cout << Color::CYAN << " [Z:Back]" << Color::RESET;
+            if (allowCancel) cout << Color::PROMPT << " [Z:Back]" << Color::RESET;
             cout << ": ";
-            
+
             if (!getline(cin, input)) { clearBuffer(); continue; }
-            if (input.empty()) continue; 
+            if (input.empty()) continue;
 
             if (allowCancel && isBackKey(input)) return CANCEL_INT;
 
@@ -69,7 +69,7 @@ namespace InputHandler
         while (true)
         {
             cout << prompt;
-            if (allowCancel) cout << Color::CYAN << " [Z:Back]" << Color::RESET;
+            if (allowCancel) cout << Color::PROMPT << " [Z:Back]" << Color::RESET;
             cout << ": ";
 
             if (!getline(cin, input)) { clearBuffer(); continue; }
@@ -98,7 +98,7 @@ namespace InputHandler
         while (true)
         {
             cout << prompt;
-            if (allowCancel) cout << Color::CYAN << " [Z:Back]" << Color::RESET;
+            if (allowCancel) cout << Color::PROMPT << " [Z:Back]" << Color::RESET;
             cout << ": ";
 
             if (!getline(cin, value)) { clearBuffer(); continue; }
@@ -108,7 +108,7 @@ namespace InputHandler
                 cout << Color::ERR << "[ERROR] Input cannot be empty." << Color::RESET << endl;
                 continue;
             }
-            
+
             if (Validator::isAlphaOnly(value, true)) return value;
 
             cout << Color::ERR << "[ERROR] Invalid input. Please use only letters and spaces." << Color::RESET << endl;
@@ -121,9 +121,9 @@ namespace InputHandler
         while (true)
         {
             cout << prompt;
-            if (allowCancel) cout << Color::CYAN << " [Z:Back]" << Color::RESET;
+            if (allowCancel) cout << Color::PROMPT << " [Z:Back]" << Color::RESET;
             cout << ": ";
-            
+
             if (!getline(cin, value)) { clearBuffer(); continue; }
 
             if (allowCancel && isBackKey(value)) return CANCEL_STR;
@@ -142,14 +142,14 @@ namespace InputHandler
         while (true)
         {
             cout << prompt;
-            if (allowCancel) cout << Color::CYAN << " [Z:Back]" << Color::RESET;
+            if (allowCancel) cout << Color::PROMPT << " [Z:Back]" << Color::RESET;
             cout << ": ";
-            
+
             if (!getline(cin, input)) { clearBuffer(); continue; }
             if (input.empty()) continue;
 
-            if (allowCancel && isBackKey(input)) return 'Z'; 
-            
+            if (allowCancel && isBackKey(input)) return 'Z';
+
             if (input.length() == 1) {
                 char value = toupper(input[0]);
                 if (options.find(value) != string::npos) return value;

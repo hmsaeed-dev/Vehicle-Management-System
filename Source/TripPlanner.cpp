@@ -14,7 +14,7 @@
 
 void TripPlanner::planTrip(string source, string destination, float distance, float budget, int passengers, const vector<Vehicle*>& fleet)
 {
-    cout << Color::BOLD << Color::YELLOW;
+    cout << Color::HEADER;
     cout << "\n";
     cout << "+----------------------------------------------------------+\n";
     cout << "|                TRIP PLANNER RECOMMENDATIONS              |\n";
@@ -24,7 +24,7 @@ void TripPlanner::planTrip(string source, string destination, float distance, fl
     cout << "  > Route        : " << source << " to " << destination << "\n";
     cout << "  > Distance     : " << distance << " km\n";
     cout << "  > Requirements : Budget " << Pricing::CURRENCY << budget << " | " << passengers << " Pax\n";
-    cout << Color::BOLD << Color::YELLOW;
+    cout << Color::HEADER;
     cout << "+----------------------------------------------------------+\n" << Color::RESET;
 
     // 1. Filter and Collect Matching Vehicles
@@ -55,8 +55,8 @@ void TripPlanner::planTrip(string source, string destination, float distance, fl
     }
     else
     {
-        cout << "  " << Color::CYAN << left << setw(20) << "VEHICLE MODEL" << setw(12) << "ID" << "DAILY RATE" << Color::RESET << "\n";
-        cout << Color::BOLD << Color::YELLOW;
+        cout << "  " << Color::TABLE_HEADER << left << setw(20) << "VEHICLE MODEL" << setw(12) << "ID" << "DAILY RATE" << Color::RESET << "\n";
+        cout << Color::HEADER;
         cout << "+----------------------------------------------------------+\n" << Color::RESET;
 
         for (Vehicle* v : matches)
@@ -68,6 +68,6 @@ void TripPlanner::planTrip(string source, string destination, float distance, fl
         }
         cout << "\n  " << Color::SUCCESS << "[SYSTEM] Found " << matches.size() << " suitable options [Sorted by Price]." << Color::RESET << "\n";
     }
-    cout << Color::BOLD << Color::YELLOW;
+    cout << Color::HEADER;
     cout << "+----------------------------------------------------------+\n" << Color::RESET;
 }

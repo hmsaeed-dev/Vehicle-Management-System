@@ -27,12 +27,12 @@ void Admin::showDashboard(const vector<Vehicle*>& fleet)
         else if (v->getStatus() == VehicleStatus::Sold) sold++;
     }
 
-    cout << "\n" << Color::BOLD << Color::RED << " [ DASHBOARD SUMMARY ] " << Color::RESET << "\n";
+    cout << "\n" << Color::HEADER << " [ DASHBOARD SUMMARY ] " << Color::RESET << "\n";
     cout << "+----------------------------------------------------------+\n";
-    cout << "| " << Color::GREEN << "Available: " << left << setw(5) << available << Color::RESET;
-    cout << "| " << Color::RED << "Rented: " << left << setw(5) << rented << Color::RESET;
-    cout << "| " << Color::YELLOW << "Sold: " << left << setw(5) << sold << Color::RESET;
-    cout << "| " << Color::CYAN << "Total: " << left << setw(5) << fleet.size() << Color::RESET << " |\n";
+    cout << "| " << Color::STATUS_AVAILABLE << "Available: " << left << setw(5) << available << Color::RESET;
+    cout << "| " << Color::STATUS_RENTED << "Rented: " << left << setw(5) << rented << Color::RESET;
+    cout << "| " << Color::STATUS_SOLD << "Sold: " << left << setw(5) << sold << Color::RESET;
+    cout << "| " << Color::TABLE_HEADER << "Total: " << left << setw(5) << fleet.size() << Color::RESET << " |\n";
     cout << "+----------------------------------------------------------+\n";
 }
 
@@ -41,12 +41,12 @@ void Admin::showDashboard(const vector<Vehicle*>& fleet)
 */
 void Admin::showMenu()
 {
-    cout << Color::BOLD << Color::RED;
+    cout << Color::HEADER;
     cout << "+==========================================================+\n";
     cout << "|                  ADMIN CONTROL PANEL                     |\n";
     cout << "+==========================================================+\n" << Color::RESET;
     cout << "|  Logged in as " << left << setw(43) << getName() << "|\n";
-    cout << Color::RED << "+----------------------------------------------------------+\n" << Color::RESET;
+    cout << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "|                                                          |\n";
     cout << "|   [1]  Add New Vehicle                                   |\n";
     cout << "|   [2]  Remove Vehicle                                    |\n";
@@ -61,7 +61,7 @@ void Admin::showMenu()
 void Admin::removeUser(vector<User*>& users, FileHandler& fh)
 {
     string id;
-    cout << "\n" << Color::BOLD << Color::RED << "========= DELETE CUSTOMER ACCOUNT =========" << Color::RESET << endl;
+    cout << "\n" << Color::SUBHEADER << "========= DELETE CUSTOMER ACCOUNT =========" << Color::RESET << endl;
     id = InputHandler::getString("Enter User ID to remove", false, true);
     if (id == InputHandler::CANCEL_STR) return;
 
@@ -106,7 +106,7 @@ void Admin::addVehicle(vector<Vehicle*>& fleet)
     float rate;
     int year, capacity;
 
-    cout << "\n" << Color::BOLD << Color::BLUE << "========= ADD NEW VEHICLE =========" << Color::RESET << endl;
+    cout << "\n" << Color::SUBHEADER << "========= ADD NEW VEHICLE =========" << Color::RESET << endl;
 
     type = InputHandler::getChar("Categories (E: Economy, L: Luxury, S: SUV, V: Van/Bus)", "ELSV", true);
     if (type == 'Z') return;
@@ -154,7 +154,7 @@ void Admin::addVehicle(vector<Vehicle*>& fleet)
 void Admin::removeVehicle(vector<Vehicle*>& fleet)
 {
     string id;
-    cout << "\n" << Color::BOLD << Color::RED << "========= REMOVE VEHICLE =========" << Color::RESET << endl;
+    cout << "\n" << Color::SUBHEADER << "========= REMOVE VEHICLE =========" << Color::RESET << endl;
     id = InputHandler::getString("Enter Vehicle ID to remove", false, true);
     if (id == InputHandler::CANCEL_STR) return;
 
@@ -181,7 +181,7 @@ void Admin::removeVehicle(vector<Vehicle*>& fleet)
  */
 void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, FileHandler& fh)
 {
-    cout << "\n" << Color::BOLD << Color::CYAN << "========= SALE / PURCHASE MODULE =========" << Color::RESET << endl;
+    cout << "\n" << Color::SUBHEADER << "========= SALE / PURCHASE MODULE =========" << Color::RESET << endl;
     cout << "1. Sell Vehicle (to Customer)\n";
     cout << "2. Purchase Vehicle (from Supplier)\n";
     cout << "Z. Back\n";
@@ -274,25 +274,27 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
  */
 void Admin::viewAllRecords(const vector<Vehicle*>& fleet, const vector<User*>& users)
 {
-    cout << "\n" << Color::BOLD << Color::BLUE << "========= FULL SYSTEM RECORDS =========" << Color::RESET << endl;
+    cout << "\n" << Color::SUBHEADER << "========= FULL SYSTEM RECORDS =========" << Color::RESET << endl;
 
-    cout << Color::CYAN << "\n[VEHICLE FLEET - " << fleet.size() << " Units]" << Color::RESET << "\n";
-    cout << "+----------+--------------------+------+------------+-------------+\n";
-    cout << "| ID       | Model              | Year | Category   | Status      |\n";
-    cout << "+----------+--------------------+------+------------+-------------+\n";
-    for (Vehicle* v : fleet) {
-        string status = (v->getStatus() == VehicleStatus::Available ? Color::GREEN + "Available" + Color::RESET :
-                         v->getStatus() == VehicleStatus::Rented    ? Color::RED + "Rented   " + Color::RESET : Color::YELLOW + "Sold     " + Color::RESET);
+    cout << Color::NOTICE << "\n[VEHICLE FLEET - " << fleet.size() << " Units]" << Color::RESET << "\n";
+    cout << Color::TABLE_HEADER << "+----------+--------------------+------+------------+-------------+\n" << Color::RESET;
+    cout << Color::TABLE_HEADER << "| ID       | Model              | Year | Category   | Status      |\n" << Color::RESET;
+    cout << Color::TABLE_HEADER << "+----------+--------------------+------+------------+-------------+\n" << Color::RESET;
+
+    for (Vehicle* v : fleet)
+    {
+        string status = (v->getStatus() == VehicleStatus::Available ? Color::STATUS_AVAILABLE + "Available" + Color::RESET :
+                v->getStatus() == VehicleStatus::Rented    ? Color::STATUS_RENTED + "Rented   " + Color::RESET : Color::STATUS_SOLD + "Sold     " + Color::RESET);
         cout << "| " << left << setw(9) << v->getID() << "| " << setw(19) << v->getModel() << "| " << setw(5) << v->getYear() << "| " << setw(11) << v->getCategory() << "| " << status << " |\n";
     }
     cout << "+----------+--------------------+------+------------+-------------+\n";
 
-    cout << Color::CYAN << "\n[REGISTERED USERS - " << users.size() << " Accounts]" << Color::RESET << "\n";
-    cout << "+----------+--------------------------+------------+\n";
-    cout << "| User ID  | Name                     | Type       |\n";
-    cout << "+----------+--------------------------+------------+\n";
+    cout << Color::NOTICE << "\n[REGISTERED USERS - " << users.size() << " Accounts]" << Color::RESET << "\n";
+    cout << Color::TABLE_HEADER << "+----------+--------------------------+------------+\n" << Color::RESET;
+    cout << Color::TABLE_HEADER << "| User ID  | Name                     | Type       |\n" << Color::RESET;
+    cout << Color::TABLE_HEADER << "+----------+--------------------------+------------+\n" << Color::RESET;
     for (User* u : users) {
-        string type = (u->getID()[0] == 'A' ? Color::RED + "Admin   " + Color::RESET : Color::GREEN + "Customer" + Color::RESET);
+        string type = (u->getID()[0] == 'A' ? Color::RED + "Admin   " + Color::RESET : Color::HIGHLIGHT + "Customer" + Color::RESET);
         cout << "| " << left << setw(9) << u->getID() << "| " << setw(25) << u->getName() << "| " << type << " |\n";
     }
     cout << "+----------+--------------------------+------------+\n";

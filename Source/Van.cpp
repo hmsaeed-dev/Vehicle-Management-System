@@ -31,12 +31,12 @@ float Van::calculateCost(int days) {
 void Van::displayInfo()
 {
     string statusStr;
-    if (getStatus() == VehicleStatus::Available) statusStr = Color::GREEN + "AVAILABLE" + Color::RESET;
-    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::RED + "RENTED" + Color::RESET;
-    else statusStr = Color::YELLOW + "SOLD" + Color::RESET;
+    if (getStatus() == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "AVAILABLE" + Color::RESET;
+    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "RENTED" + Color::RESET;
+    else statusStr = Color::STATUS_SOLD + "SOLD" + Color::RESET;
 
     cout << "\n";
-    cout << Color::BOLD << Color::BLUE;
+    cout << Color::SUBHEADER;
     cout << "+------------------------------------------------------+\n";
     cout << "| [VAN / BUS CATEGORY]                                 |\n";
     cout << "+------------------------------------------------------+\n" << Color::RESET;
@@ -55,11 +55,11 @@ void Van::displayInfo()
 void Van::displayRow() const
 {
     string statusStr;
-    if (getStatus() == VehicleStatus::Available) statusStr = Color::GREEN + "Available " + Color::RESET;
-    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::RED + "Rented    " + Color::RESET;
-    else statusStr = Color::YELLOW + "Sold      " + Color::RESET;
+    if (getStatus() == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "Available " + Color::RESET;
+    else if (getStatus() == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "Rented    " + Color::RESET;
+    else statusStr = Color::STATUS_SOLD + "Sold      " + Color::RESET;
 
-    string category = Color::BLUE + "Van/Bus   " + Color::RESET;
+    string category = Color::CATEGORY_VAN + "Van/Bus   " + Color::RESET;
 
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()
@@ -73,7 +73,7 @@ void Van::displayRow() const
 
 void Van::displayRowSimple() const
 {
-    string category = Color::BLUE + "Van/Bus   " + Color::RESET;
+    string category = Color::CATEGORY_VAN + "Van/Bus   " + Color::RESET;
 
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()

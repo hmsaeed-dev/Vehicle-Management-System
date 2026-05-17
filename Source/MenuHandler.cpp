@@ -24,7 +24,7 @@ void MenuHandler::runMainMenu()
     while (true)
     {
         cout << "\n";
-        cout << Color::BOLD << Color::YELLOW;
+        cout << Color::HEADER;
         cout << "+==========================================================+\n";
         cout << "|                                                          |\n";
         cout << "|               VEHICLE MANAGEMENT SYSTEM                  |\n";
@@ -35,7 +35,7 @@ void MenuHandler::runMainMenu()
         cout << "|   [2]   Login to System                                  |\n";
         cout << "|   [Z]   Exit System                                      |\n";
         cout << "|                                                          |\n";
-        cout << Color::YELLOW << "+----------------------------------------------------------+\n\n" << Color::RESET;
+        cout << Color::HEADER << "+----------------------------------------------------------+\n\n" << Color::RESET;
 
         int mainChoice = InputHandler::getInt("Selection", 1, 2, true);
 
@@ -50,7 +50,7 @@ void MenuHandler::handleRegistration()
 {
     string name, id, username, phone, password;
     cout << "\n";
-    cout << Color::BOLD << Color::YELLOW;
+    cout << Color::HEADER;
     cout << "+----------------------------------------------------------+\n";
     cout << "|                 ACCOUNT REGISTRATION                     |\n";
     cout << "+----------------------------------------------------------+\n" << Color::RESET;
@@ -88,7 +88,7 @@ void MenuHandler::handleRegistration()
 
     password = InputHandler::getString("  > Secure Password", false);
 
-    cout << "\n" << Color::YELLOW << "+----------------------------------------------------------+\n" << Color::RESET;
+    cout << "\n" << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
 
     users.push_back(new Customer(id, username, name, phone, password));
     cout << Color::SUCCESS << "[SUCCESS] Account created! Please login." << Color::RESET << endl;
@@ -98,7 +98,7 @@ void MenuHandler::handleRegistration()
 void MenuHandler::handleLogin()
 {
     cout << "\n";
-    cout << Color::BOLD << Color::YELLOW;
+    cout << Color::HEADER;
     cout << "+----------------------------------------------------------+\n";
     cout << "|                    SYSTEM LOGIN                          |\n";
     cout << "+----------------------------------------------------------+\n" << Color::RESET;
@@ -107,7 +107,7 @@ void MenuHandler::handleLogin()
     string username = InputHandler::getString("  > Username", false);
     string pass = InputHandler::getString("  > Password", false);
 
-    cout << Color::YELLOW << "+----------------------------------------------------------+\n" << Color::RESET;
+    cout << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
 
     User* currentUser = nullptr;
     for (User* u : users)
@@ -185,7 +185,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
     do
     {
         cout << "\n";
-        cout << Color::BOLD << Color::CYAN;
+        cout << Color::SUBHEADER;
         cout << "+----------------------------------------------------------+\n";
         cout << "|                   SEARCH VEHICLE FLEET                   |\n";
         cout << "+----------------------------------------------------------+\n" << Color::RESET;
@@ -196,7 +196,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
         cout << "|   [4]   Advanced Smart Search                            |\n";
         cout << "|   [Z]   Back to Dashboard                                |\n";
         cout << "|                                                          |\n";
-        cout << Color::CYAN << "+----------------------------------------------------------+\n\n" << Color::RESET;
+        cout << Color::TABLE_HEADER << "+----------------------------------------------------------+\n\n" << Color::RESET;
 
         choice = InputHandler::getInt("Selection", 1, 4, true);
 
@@ -207,7 +207,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
         if (choice == 1) results = fleet;
         else if (choice == 2)
         {
-            cout << "\n" << Color::BOLD << Color::CYAN << "Select a Category to Explore:" << Color::RESET << "\n";
+            cout << "\n" << Color::SUBHEADER << "Select a Category to Explore:" << Color::RESET << "\n";
             cout << "1. Economy  - Budget-friendly, daily commuters\n";
             cout << "2. Luxury   - Premium experience, high-end models\n";
             cout << "3. SUV      - Spacious, off-road capable\n";
@@ -221,7 +221,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
         }
         else if (choice == 3)
         {
-            cout << "\n" << Color::BOLD << Color::CYAN << "Select Price Range per Day (" << Pricing::CURRENCY << "):" << Color::RESET << "\n";
+            cout << "\n" << Color::SUBHEADER << "Select Price Range per Day (" << Pricing::CURRENCY << "):" << Color::RESET << "\n";
             cout << "1. Budget   - Under 50\n";
             cout << "2. Standard - 50 - 100\n";
             cout << "3. Premium  - 100 - 250\n";
@@ -242,7 +242,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
         }
         else if (choice == 4)
         {
-            cout << "\n" << Color::BOLD << Color::CYAN << "--- ADVANCED SMART SEARCH ---" << Color::RESET << "\n";
+            cout << "\n" << Color::SUBHEADER << "--- ADVANCED SMART SEARCH ---" << Color::RESET << "\n";
             cout << "Step 1: Select Category\n1. All\n2. Economy\n3. Luxury\n4. SUV\n5. Van/Bus\n";
             int catChoice = InputHandler::getInt("Choice", 1, 5);
             char type = (catChoice == 2) ? 'E' : (catChoice == 3) ? 'L' : (catChoice == 4) ? 'S' : (catChoice == 5) ? 'V' : 'A';
@@ -297,7 +297,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
 void MenuHandler::handleTripPlanning(TripPlanner& planner, vector<Vehicle*>& fleet, Customer* customer, FileHandler* fh)
 {
     cout << "\n";
-    cout << Color::BOLD << Color::YELLOW;
+    cout << Color::HEADER;
     cout << "+----------------------------------------------------------+\n";
     cout << "|                    TRIP PLANNER MODULE                   |\n";
     cout << "+----------------------------------------------------------+\n" << Color::RESET;
@@ -309,12 +309,19 @@ void MenuHandler::handleTripPlanning(TripPlanner& planner, vector<Vehicle*>& fle
     float budget = InputHandler::getFloat("  > Your Budget (" + Pricing::CURRENCY + ")", 100.0f, 1000000.0f);
     int pax = InputHandler::getInt("  > Passenger Count", 1, 20);
 
-    cout << "\n" << Color::YELLOW << "+----------------------------------------------------------+\n" << Color::RESET;
+    cout << "\n" << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
     planner.planTrip(src, dest, dist, budget, pax, fleet);
 
-    if (customer && fh) {
+    if (customer && fh)
+    {
         string rentID = InputHandler::getString("\nWould you like to RENT one of these? Enter ID (or press Enter to skip)", true, false, true);
-        if (!rentID.empty()) { customer->processRental(rentID, fleet, *fh); InputHandler::waitForEnter(); }
+        if (!rentID.empty())
+        {
+            customer->processRental(rentID, fleet, *fh);
+            InputHandler::waitForEnter();
+        }
+
         else InputHandler::waitForEnter();
-    } else InputHandler::waitForEnter();
+    }
+    else InputHandler::waitForEnter();
 }

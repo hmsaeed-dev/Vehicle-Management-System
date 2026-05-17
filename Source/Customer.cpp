@@ -21,14 +21,14 @@ Customer::Customer(string id, string username, string name, string phone, string
 void Customer::showMenu()
 {
     cout << "\n";
-    cout << Color::BOLD << Color::GREEN;
+    cout << Color::HEADER;
     cout << "+==========================================================+\n";
     cout << "|                                                          |\n";
     cout << "|                   CUSTOMER DASHBOARD                     |\n";
     cout << "|                                                          |\n";
     cout << "+==========================================================+\n" << Color::RESET;
-    cout << "| Welcome, " << Color::CYAN << left << setw(48) << getName() << Color::RESET << "|\n";
-    cout << Color::BOLD << Color::GREEN << "+----------------------------------------------------------+\n" << Color::RESET;
+    cout << "| Welcome, " << Color::HIGHLIGHT << left << setw(48) << getName() << Color::RESET << "|\n";
+    cout << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "|                                                          |\n";
     cout << "|   [1]   Search for a Vehicle                             |\n";
     cout << "|   [2]   Rent a Vehicle                                   |\n";
@@ -37,7 +37,7 @@ void Customer::showMenu()
     cout << "|   [5]   View My Rental History                           |\n";
     cout << "|   [Z]   Logout                                           |\n";
     cout << "|                                                          |\n";
-    cout << Color::BOLD << Color::GREEN << "+----------------------------------------------------------+\n" << Color::RESET;
+    cout << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
 }
 
 /**
@@ -45,7 +45,7 @@ void Customer::showMenu()
 */
 void Customer::viewRentalHistory()
 {
-    cout << "\n" << Color::BOLD << Color::GREEN << "========= YOUR TRANSACTION HISTORY =========" << Color::RESET << "\n";
+    cout << "\n" << Color::SUBHEADER << "========= YOUR TRANSACTION HISTORY =========" << Color::RESET << "\n";
 
     if (rentalHistory.empty())
     {
@@ -59,9 +59,9 @@ void Customer::viewRentalHistory()
         for (const string& record : rentalHistory)
         {
             string coloredRecord = record;
-            if (record.find("Purchased") != string::npos) coloredRecord = Color::CYAN + record + Color::RESET;
-            else if (record.find("Started") != string::npos) coloredRecord = Color::YELLOW + record + Color::RESET;
-            else if (record.find("Returned") != string::npos) coloredRecord = Color::GREEN + record + Color::RESET;
+            if (record.find("Purchased") != string::npos) coloredRecord = Color::TABLE_HEADER + record + Color::RESET;
+            else if (record.find("Started") != string::npos) coloredRecord = Color::WARNING + record + Color::RESET;
+            else if (record.find("Returned") != string::npos) coloredRecord = Color::SUCCESS + record + Color::RESET;
 
             cout << "| - " << left << setw(87) << coloredRecord << " |\n";
         }
@@ -79,7 +79,7 @@ void Customer::addToHistory(const string& record)
  */
 void Customer::rentVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
 {
-    cout << Color::BOLD << Color::GREEN;
+    cout << Color::HEADER;
     cout << "\n==========================================================\n                   RENT A VEHICLE \n==========================================================" << Color::RESET << endl ;
 
     // Show available vehicles first
@@ -156,7 +156,7 @@ void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
 {
     string id;
 
-    cout << Color::BOLD << Color::GREEN;
+    cout << Color::HEADER;
     cout << "\n==========================================================\n                   RETURN A VEHICLE \n==========================================================" << Color::RESET << endl ;
 
     id = InputHandler::getString("Enter Vehicle ID you are returning", false, true);
@@ -188,30 +188,30 @@ void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
             float damageFee = report.getDamageFee();
             float totalBill = discountedBill + damageFee;
 
-            cout << "\n" << Color::BOLD << Color::YELLOW << "[!] PENDING CHARGES: " << Pricing::CURRENCY << fixed << setprecision(2) << totalBill << Color::RESET << "\n";
+            cout << "\n" << Color::NOTICE << "[!] PENDING CHARGES: " << Pricing::CURRENCY << fixed << setprecision(2) << totalBill << Color::RESET << "\n";
             cout << Color::WARNING << "[CONFIRM] Finalize return and process payment? (Y/N): " << Color::RESET;
             if (InputHandler::getChar("", "YN") == 'N') {
                 cout << Color::INFO << "[SYSTEM] Return process suspended." << Color::RESET << endl;
                 return;
             }
 
-            v->setStatus(VehicleStatus::Available); 
-            fh.saveInspection(report); 
+            v->setStatus(VehicleStatus::Available);
+            fh.saveInspection(report);
 
             // Log Transaction
             fh.appendTransaction("RENT_RETURN", v->getID(), this->getID(), totalBill, report.getDate());
 
             cout << "\n";
-            cout << Color::BOLD << Color::GREEN << "+======================================================+\n";
+            cout << Color::SUBHEADER << "+======================================================+\n";
             cout << "|                  FINAL RENTAL RECEIPT                |\n";
             cout << "+======================================================+\n" << Color::RESET;
             cout << "| Vehicle          :  " << left << setw(33) << v->getModel() << "|\n";
             cout << "| Duration         :  " << left << setw(28) << days << " days |" << "\n";
             cout << "+------------------------------------------------------+\n";
             cout << "| Base Rental Cost :  " << Pricing::CURRENCY << left << setw(32-Pricing::CURRENCY.length()) << fixed << setprecision(2) << baseBill << "|\n";
-            
+
             if (discountAmt > 0) {
-                cout << Color::YELLOW << "| Promo Discount   : -" << Pricing::CURRENCY << left << setw(31-Pricing::CURRENCY.length()) << discountAmt << " (" << (int)(discountPerc * 100) << "%)" << Color::RESET << "|\n";
+                cout << Color::WARNING << "| Promo Discount   : -" << Pricing::CURRENCY << left << setw(31-Pricing::CURRENCY.length()) << discountAmt << " (" << (int)(discountPerc * 100) << "%)" << Color::RESET << "|\n";
             } else {
                 cout << "| Promo Discount   :  " << left << setw(36) << "None Applied" << "|\n";
             }
@@ -219,12 +219,12 @@ void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
             if (damageFee > 0) {
                 cout << Color::ERR << "| Damage Fees      :  " << Pricing::CURRENCY << left << setw(32-Pricing::CURRENCY.length()) << damageFee << Color::RESET << "|\n";
             } else {
-                cout << Color::GREEN << "| Damage Fees      :  " << left << setw(36) << "None (Clear)" << Color::RESET << "|\n";
+                cout << Color::SUCCESS << "| Damage Fees      :  " << left << setw(36) << "None (Clear)" << Color::RESET << "|\n";
             }
 
             cout << "+------------------------------------------------------+\n";
-            cout << Color::BOLD << Color::CYAN << "| TOTAL AMOUNT     :  " << Pricing::CURRENCY << left << setw(32-Pricing::CURRENCY.length()) << totalBill << Color::RESET << "|\n";
-            cout << Color::BOLD << Color::GREEN << "+======================================================+\n";
+            cout << Color::TABLE_HEADER << "| TOTAL AMOUNT     :  " << Pricing::CURRENCY << left << setw(32-Pricing::CURRENCY.length()) << totalBill << Color::RESET << "|\n";
+            cout << Color::SUBHEADER << "+======================================================+\n";
             cout << "|           [SUCCESS] Transaction Finalized            |\n";
             cout << "+======================================================+\n\n" << Color::RESET;
 

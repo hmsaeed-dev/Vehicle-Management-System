@@ -204,7 +204,11 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
         bool onlyAvailFilter = false;
         if (choice == InputHandler::CANCEL_INT) break;
 
-        if (choice == 1) results = fleet;
+        if (choice == 1) {
+            for (Vehicle* v : fleet) {
+                if (v->getStatus() != VehicleStatus::Sold) results.push_back(v);
+            }
+        }
         else if (choice == 2)
         {
             cout << "\n" << Color::SUBHEADER << "Select a Category to Explore:" << Color::RESET << "\n";

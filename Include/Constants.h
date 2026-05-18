@@ -9,10 +9,10 @@
 namespace Pricing
 {
     // Category Multipliers (Scaling base rates from file to realistic PKR)
-    const float LUXURY_MULTIPLIER = 500.0f; // Luxury cars (e.g., Civic/Accord)
-    const float SUV_MULTIPLIER    = 350.0f; // SUVs (e.g., Fortuner/Sportage)
-    const float VAN_MULTIPLIER    = 250.0f; // Vans/Buses (e.g., Hiace)
-    const float ECONOMY_MULTIPLIER = 200.0f; // Economy cars (e.g., Alto/Cultus)
+    const float LUXURY_MULTIPLIER = 500.0f;
+    const float SUV_MULTIPLIER    = 350.0f;
+    const float VAN_MULTIPLIER    = 250.0f;
+    const float ECONOMY_MULTIPLIER = 200.0f;
 
     // Currency Label
     const std::string CURRENCY = "Rs. ";
@@ -21,14 +21,13 @@ namespace Pricing
     // Discount Tiers
     const int TIER_1_DAYS = 4;
     const float TIER_1_DISCOUNT = 0.10f; // 10%
-
     const int TIER_2_DAYS = 8;
     const float TIER_2_DISCOUNT = 0.20f; // 20%
 
     // Damage Fee Percentages (based on daily rental rate)
     const float DAMAGE_FEE_POOR = 2.0f; // 200% of daily rate
     const float DAMAGE_FEE_FAIR = 0.5f; // 50% of daily rate
-    const float DAMAGE_FEE_GOOD = 0.0f; 
+    const float DAMAGE_FEE_GOOD = 0.0f;
 }
 
 namespace Config

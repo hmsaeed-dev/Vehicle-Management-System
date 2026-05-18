@@ -1,6 +1,7 @@
 #include "Vehicle.h"
 #include "Constants.h"
 #include "Colors.h"
+
 #include <iostream>
 #include <iomanip>
 
@@ -8,7 +9,7 @@
  * @brief Constructor for the Vehicle base class.
  * Initializes core attributes common to all vehicles.
  */
-Vehicle::Vehicle(string id, string model, int year, int capacity, float rate) 
+Vehicle::Vehicle(string id, string model, int year, int capacity, float rate)
     : vehicleID(id), model(model), year(year), capacity(capacity), rentalRate(rate), status(VehicleStatus::Available) {}
 
 /**
@@ -66,7 +67,7 @@ void Vehicle::setAvailable(bool available) {
  * @brief Determines the discount percentage based on days.
  */
 float Vehicle::getDiscountPercentage(int days) const {
-    if (days >= Pricing::TIER_2_DAYS) return Pricing::TIER_2_DISCOUNT; 
+    if (days >= Pricing::TIER_2_DAYS) return Pricing::TIER_2_DISCOUNT;
     if (days >= Pricing::TIER_1_DAYS) return Pricing::TIER_1_DISCOUNT;
     return 0.0f;
 }
@@ -103,15 +104,16 @@ void Vehicle::displayInfo() {
     cout << "| Capacity      :  " << left << setw(27) << getCapacity() << " " << setw(10) << getCapacityUnit() << "|\n";
     cout << "| Daily Rate    :  " << left << Pricing::CURRENCY << setw(35-Pricing::CURRENCY.length()) << getRentalRate() << "|\n";
     cout << "+------------------------------------------------------+\n";
-    
+
     // Call hook for category-specific info (Promos or Features)
     displayExtraInfo();
-    
+
     cout << "| Status        :  " << left << setw(45) << getStatusString() << "|\n";
     cout << "+------------------------------------------------------+\n";
 }
 
-void Vehicle::displayRow() const {
+void Vehicle::displayRow() const
+{
     string statusStr;
     if (status == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "Available " + Color::RESET;
     else if (status == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "Rented    " + Color::RESET;
@@ -127,7 +129,8 @@ void Vehicle::displayRow() const {
          << " |" << endl;
 }
 
-void Vehicle::displayRowSimple() const {
+void Vehicle::displayRowSimple() const
+{
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()
          << "| " << left << setw(6) << getYear()

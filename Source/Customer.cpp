@@ -45,7 +45,7 @@ void Customer::showMenu()
 */
 void Customer::viewRentalHistory()
 {
-    cout << "\n" << Color::SUBHEADER << "========= YOUR TRANSACTION HISTORY =========" << Color::RESET << "\n";
+    cout << "\n" << Color::SUBHEADER << "================== YOUR RENTAL HISTORY ==================" << Color::RESET << "\n";
 
     if (rentalHistory.empty())
     {
@@ -159,7 +159,7 @@ void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
     cout << Color::HEADER;
     cout << "\n==========================================================\n                   RETURN A VEHICLE \n==========================================================" << Color::RESET << endl ;
 
-    id = InputHandler::getString("Enter Vehicle ID you are returning", false, true);
+    id = InputHandler::getString("> Enter Vehicle ID : ", false, true);
     if (id == InputHandler::CANCEL_STR) return;
 
     for (Vehicle* v : fleet)
@@ -177,7 +177,7 @@ void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
             report.fillReport();
 
             // 2. Finalize Billing
-            int days = InputHandler::getInt("Enter total days used", 1, 365, true);
+            int days = InputHandler::getInt("> Enter total days used", 1, 365, true);
             if (days == InputHandler::CANCEL_INT) return;
 
             float baseBill = v->calculateCost(days);
@@ -203,7 +203,7 @@ void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
 
             cout << "\n";
             cout << Color::SUBHEADER << "+======================================================+\n";
-            cout << "|                  FINAL RENTAL RECEIPT                |\n";
+            cout << "|                     RENTAL RECEIPT                    |\n";
             cout << "+======================================================+\n" << Color::RESET;
             cout << "| Vehicle          :  " << left << setw(33) << v->getModel() << "|\n";
             cout << "| Duration         :  " << left << setw(28) << days << " days |" << "\n";
@@ -219,7 +219,7 @@ void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
             if (damageFee > 0) {
                 cout << Color::ERR << "| Damage Fees      :  " << Pricing::CURRENCY << left << setw(32-Pricing::CURRENCY.length()) << damageFee << Color::RESET << "|\n";
             } else {
-                cout << Color::SUCCESS << "| Damage Fees      :  " << left << setw(36) << "None (Clear)" << Color::RESET << "|\n";
+                cout << Color::SUCCESS << "| Damage Fees      :  " << left << setw(36) << "None" << Color::RESET << "|\n";
             }
 
             cout << "+------------------------------------------------------+\n";

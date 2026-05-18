@@ -21,7 +21,8 @@ Admin::Admin(string id, string username, string name, string phone, string passw
 void Admin::showDashboard(const vector<Vehicle*>& fleet)
 {
     int available = 0, rented = 0, sold = 0;
-    for (Vehicle* v : fleet) {
+    for (Vehicle* v : fleet)
+    {
         if (v->getStatus() == VehicleStatus::Available) available++;
         else if (v->getStatus() == VehicleStatus::Rented) rented++;
         else if (v->getStatus() == VehicleStatus::Sold) sold++;

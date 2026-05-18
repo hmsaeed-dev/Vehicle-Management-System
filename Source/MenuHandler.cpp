@@ -51,9 +51,9 @@ void MenuHandler::handleRegistration()
     string name, id, username, phone, password;
     cout << "\n";
     cout << Color::HEADER;
-    cout << "+----------------------------------------------------------+\n";
+    cout << "+==========================================================+\n";
     cout << "|                 ACCOUNT REGISTRATION                     |\n";
-    cout << "+----------------------------------------------------------+\n" << Color::RESET;
+    cout << "+==========================================================+\n" << Color::RESET;
     cout << "  Please enter your details to create an account:\n\n";
 
     name = InputHandler::getString("  > Full Name");
@@ -173,7 +173,7 @@ void MenuHandler::customerSession(User* currentUser)
             case 3: customer->returnVehicle(fleet, fh); break;
             case 4: handleTripPlanning(planner, fleet, customer, &fh); break;
             case 5: customer->viewRentalHistory(); break;
-            default: cout << Color::ERR << "Invalid selection." << Color::RESET << endl;
+            default: cout << Color::ERR << "Invalid selection !!!" << Color::RESET << endl;
         }
         if (!logout && choice != 1 && choice != 4) InputHandler::waitForEnter();
     } while (!logout);
@@ -208,10 +208,10 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
         else if (choice == 2)
         {
             cout << "\n" << Color::SUBHEADER << "Select a Category to Explore:" << Color::RESET << "\n";
-            cout << "1. Economy  - Budget-friendly, daily commuters\n";
-            cout << "2. Luxury   - Premium experience, high-end models\n";
+            cout << "1. Economy  - Budget-friendly\n";
+            cout << "2. Luxury   - Premium experience\n";
             cout << "3. SUV      - Spacious, off-road capable\n";
-            cout << "4. Van/Bus  - Large groups, maximum capacity\n";
+            cout << "4. Van / Bus  - Large groups, maximum capacity\n";
             int catChoice = InputHandler::getInt("Choice", 1, 4);
             char type = 'E';
             if (catChoice == 2) type = 'L';
@@ -242,7 +242,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
         }
         else if (choice == 4)
         {
-            cout << "\n" << Color::SUBHEADER << "--- ADVANCED SMART SEARCH ---" << Color::RESET << "\n";
+            cout << "\n" << Color::SUBHEADER << "==================ADVANCED SMART SEARCH ==================" << Color::RESET << "\n";
             cout << "Step 1: Select Category\n1. All\n2. Economy\n3. Luxury\n4. SUV\n5. Van/Bus\n";
             int catChoice = InputHandler::getInt("Choice", 1, 5);
             char type = (catChoice == 2) ? 'E' : (catChoice == 3) ? 'L' : (catChoice == 4) ? 'S' : (catChoice == 5) ? 'V' : 'A';
@@ -298,9 +298,9 @@ void MenuHandler::handleTripPlanning(TripPlanner& planner, vector<Vehicle*>& fle
 {
     cout << "\n";
     cout << Color::HEADER;
-    cout << "+----------------------------------------------------------+\n";
+    cout << "+==========================================================+\n";
     cout << "|                    TRIP PLANNER MODULE                   |\n";
-    cout << "+----------------------------------------------------------+\n" << Color::RESET;
+    cout << "+==========================================================+\n" << Color::RESET;
     cout << "  Please provide your travel details:\n\n";
 
     string src = InputHandler::getAlphaString("  > Starting Point");

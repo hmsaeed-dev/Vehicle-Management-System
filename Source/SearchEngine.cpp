@@ -3,8 +3,8 @@
 #include <iostream>
 
 /**
- * @brief Constructor taking a reference to the main fleet.
- */
+* @brief Constructor taking a reference to the main fleet.
+*/
 
 SearchEngine::SearchEngine(vector<Vehicle*>& f) : fleet(f) {}
 
@@ -36,8 +36,10 @@ vector<Vehicle*> SearchEngine::searchByCategory(char type) {
 
 vector<Vehicle*> SearchEngine::searchByAvailability() {
     vector<Vehicle*> results;
-    for (Vehicle* v : fleet) {
-        if (v->getStatus() == VehicleStatus::Available) {
+    for (Vehicle* v : fleet)
+    {
+        if (v->getStatus() == VehicleStatus::Available)
+        {
             results.push_back(v);
         }
     }

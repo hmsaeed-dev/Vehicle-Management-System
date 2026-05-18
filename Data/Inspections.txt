@@ -5,3 +5,5 @@ L006|C003|20-05-2026|10%|Slightly Damaged|34000|Poor|Kiya Baat Hy
 S008|C003|20-05-2026|Full|None|1200|Fair|Wowwwwww
 V004|C003|12-02-2026|Full|None|3400|Good|ffff
 S004|C267|20-05-2026|Half|Flat tire|1000|Fair|8/10
+E007|C003|20-05-2026|Full|xdcfgv|3400|Good|dfghjk
+L002|C2343|27-05-2026|Half|None|7|Fair|Nill

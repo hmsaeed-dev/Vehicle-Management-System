@@ -30,7 +30,7 @@ void RentalTransaction::setEndTime(string end, int days) {
     totalBill = calculateBill();
 
     if (vehicle) {
-        vehicle->setAvailable(true); // Vehicle is back in the garage
+        vehicle->setAvailable(true);
     }
 }
 

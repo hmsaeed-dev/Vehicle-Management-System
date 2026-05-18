@@ -3,7 +3,7 @@
 /**
  * @brief Constructor for the User base class.
  */
-User::User(string id, string username, string name, string phone, string password) 
+User::User(string id, string username, string name, string phone, string password)
     : userID(id), username(username), name(name), phone(phone), password(password) {}
 
 /**
@@ -39,3 +39,5 @@ string User::getPassword() const {
 bool User::authenticate(string inputPassword) const {
     return password == inputPassword;
 }
+
+// We should also check the username along with the password

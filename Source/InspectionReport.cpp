@@ -3,6 +3,8 @@
 #include "Customer.h"
 #include "InputHandler.h"
 #include "Colors.h"
+#include "Validator.h"
+#include "Constants.h"
 
 #include <iostream>
 #include <iomanip>
@@ -16,34 +18,32 @@ using namespace std;
 InspectionReport::InspectionReport(Vehicle* v, Customer* c)
     : inspectedVehicle(v), inspector(c), mileage(0.0f) {}
 
-#include "Validator.h"
-#include "Constants.h"
-
 /**
  * @brief Interactively fills the inspection report via console.
  */
-void InspectionReport::fillReport() {
-    cout << "\n" << Color::SUBHEADER << "--- FILLING INSPECTION REPORT ---" << Color::RESET << endl;
-    cout << "Vehicle ID: " << (inspectedVehicle ? inspectedVehicle->getID() : "Unknown") << endl;
+void InspectionReport::fillReport()
+{
+    cout << "\n" << Color::SUBHEADER << "================== INSPECTION REPORT FORM ===================" << Color::RESET << endl;
+    cout << "  > Vehicle ID: " << (inspectedVehicle ? inspectedVehicle->getID() : "Unknown") << endl;
 
     while (true) {
-        date = InputHandler::getString("Enter Return Date (DD-MM-YYYY)");
+        date = InputHandler::getString("  > Enter Return Date (DD-MM-YYYY)");
         if (Validator::isValidDate(date)) break;
         cout << Color::ERR << "[ERROR] Please enter date in DD-MM-YYYY format." << Color::RESET << endl;
     }
 
-    fuelLevel = InputHandler::getString("Enter Fuel Level (e.g., Full, Half, 10%)");
-    mileage = InputHandler::getFloat("Enter Current Mileage", 0.0f, 1000000.0f);
-    damageNotes = InputHandler::getString("Enter Damage Notes (type 'None' if clear)");
+    fuelLevel = InputHandler::getString("  > Enter Fuel Level (e.g., Full, Half, 10%)");
+    mileage = InputHandler::getFloat("  > Enter Current Mileage", 0.0f, 1000000.0f);
+    damageNotes = InputHandler::getString("  > Enter Damage Notes (type 'None' if clear)");
 
     while (true) {
-        condition = InputHandler::getString("Enter Vehicle Condition (Good / Fair / Poor)");
+        condition = InputHandler::getString("  > Enter Vehicle Condition (Good / Fair / Poor)");
         // Normalize condition for easier checking
         if (condition == "Good" || condition == "Fair" || condition == "Poor") break;
         cout << Color::ERR << "[ERROR] Invalid condition. Use: Good, Fair, or Poor." << Color::RESET << endl;
     }
 
-    evaluationRemarks = InputHandler::getString("Enter Additional Evaluator Remarks");
+    evaluationRemarks = InputHandler::getString("  > Enter Additional Evaluator Remarks");
 }
 
 
@@ -70,7 +70,7 @@ void InspectionReport::displayReport() const
     cout << "\n";
     cout << Color::HEADER;
     cout << "+==========================================================+\n";
-    cout << "|                 VEHICLE INSPECTION REPORT                |\n";
+    cout << "|                     INSPECTION REPORT                    |\n";
     cout << "+==========================================================+\n" << Color::RESET;
     cout << "| Date           :  " << left << setw(39) << date << "|\n";
     cout << "| Vehicle        :  " << left << setw(39) << (inspectedVehicle ? inspectedVehicle->getModel() : "N/A") << "|\n";
@@ -91,7 +91,8 @@ void InspectionReport::displayReport() const
  */
 void InspectionReport::saveToFile(ofstream& out) const
 {
-    if (out.is_open()) {
+    if (out.is_open())
+    {
         out << (inspectedVehicle ? inspectedVehicle->getID() : "N/A") << "|"
             << (inspector ? inspector->getID() : "N/A") << "|"
             << date << "|"

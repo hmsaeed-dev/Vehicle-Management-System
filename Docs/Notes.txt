@@ -1,40 +1,36 @@
-### Observations ###
+================================================================================
 
-1. Must restrict user to not have the same ID as used before in the system.
+## Observations
 
-2. Full Name should be 3 or moe characters logging
-
-3. Validation Checks for ID making, is it three character, or alphanumeric, alpha only....
-
-4. In trip Planner Module, when distance asked, 5677 it says out of range , WHY?
-
-5. Trip Planner Recommendation Logic, How is it calculating what to suggest, what parameters is it considering?
-
-6. Transaction History Activity Record can be polished and with more info showcase
-
-8. Sale / Purchase Module Form Filling Ui Easiness removing redundant z backs printing
-
-2. The Year feature of Car Model is of No use , its just there with no Utility
-
-3. There should be one more property for each vehicle, i.e Number of Units remaining, like cant rent out more than available, and sell and buy also effects this. (Not fruitful yet _ More struggle less fruitful)
-
-4. Can one person rent out more than 1 vehicle or its units?
-
-5. Currently there is unrealistic Rates, of daily rents and sale purchase
-
-6. When return a vehicle, for Inspection report Menu display and user entry form format and UX
-
-8. Rental History Display could be much Better
+- Must restrict user to not have the same ID or username as used before.
+- Full Name should be 3 or more characters logging
+- Validation Checks for ID making, is it three character, or alphanumeric, alpha only....
+- Sale / Purchase Module Form Filling Ui Easiness removing redundant z backs printing
+- The Year feature of Car Model is of No use , its just there with no Utility
+- There should be one more property for each vehicle, i.e Number of Units remaining, like cant rent out more than available, and sell and buy also effects this. (Not fruitful yet _ more struggle less fruitful)
+- Can one person rent out more than 1 vehicle or its units?
+- Currently there is unrealistic Rates, of daily rents and sale purchase
 
 
+================================================================================
 
+## Queries
+- In trip Planner Module, when distance asked, 5677 it says out of range , WHY?
+- Trip Planner Recommendation Logic, How is it calculating, what parameters is it considering?
 
+=================================================================================
 
-=============================================================================
+## Bug Fixes
 
-# Fix discount inconsistency
+- Fix discount inconsistency
   Choose one pattern (either make calculateCost return pre-discount and apply discount in one caller, or have calculateCost always return final bill and remove extra discount application). Files: Economy.cpp, Luxury.cpp, Customer.cpp, RentalTransaction.cpp.
+- Discount logic not applied during rental
+- Sold Vehicles still Searchable, No validity for SOLD Status in Rental
+- File Format Compatibility Fragile
+- Damage fee hardcoded to 50-100 dollars, No consideration of Cheap or Expensive cars, No currency PKR
+- Luxury Cars are not applied Discounts Properly
 
+===============================================================================
 
 Extra Features TO BE Added in the Demo-Proposal
 
@@ -45,136 +41,47 @@ Extra Features TO BE Added in the Demo-Proposal
 5. Trip Planner
 6. Vehicle Search Feature
 
-
-### Fixes / Bugs:
-
-1. Plan A Trip Feature
-    After trip car recommendations, should appear the rent a car option to direct users to rent a car
-2. Rent a Vehicle
-    Before asking for vehicle id, show the list of vehicles available based on categories, so they remember the id number to rent that car.
-3. Hardcoded Date everywhere
-4. Return Vehicle Feature does not exists
-5. Discount logic not applied during rental
-6. Sold Vehicles still Searchable, No validity for SOLD Status in Rental
-7. File Format Compatibility Fragile
-8. Zero or Negative values allowed in prices
-9. Damage fee hardcoded to 50-100 dollars, No consideration of Cheap or Expensive cars, No currency PKR
-10. Luxury Cars are not applied Discounts Properly
-
-
-
-## Exception Handling
-
-1. No try-catch in File Handler for I/O
-2. No try-catch for stoi-stof conversions
-
+===============================================================================
 
 ## UI / UX Problems
 
-1. ANSI colors do not render on Windows CMD
-2. Inconsistent Cancel Keys
-3. No Loading Indicators
-4. No "Are you sure?" before delete
-5. Inconsistent Status display and formatting
-6. No Dashboard Summary, Admin Can't see fleet at a glance
+- ANSI colors do not render on Windows CMD
+- Inconsistent Cancel Keys
+- No Loading Indicators
+- No "Are you sure?" before every delete command
+- Inconsistent Status display and formatting
+- No Dashboard Summary, Admin Can't see fleet at a glance
+- Transaction History Activity Record can be polished and with more info showcase
+- When return a vehicle, for Inspection report Menu display and user entry form format and UX
+- Rental History Display could be much Better
+- Add New Vehicle form _ back button showcasing inconsistency
+- Inspection Report Form Filling _ Days Input at last, and Back Z inconsistency
+- Rental Receipt _ should also be shown before confirmation of payments _ Explain Billing Logic to User
+- Costumer Dashboard Heading naming inconsistency
 
+================================================================================
 
 ## Architechtural Weaknessess
+- Main Dashboard _ Should have separate for USERS and ADMINS rather than login checking for Admin
+- Validation rules scattered where needed _ should be Validator class with all rules
 
-1. God Object _ main.cpp is 400++ lines
-2. Hardcodded Consants everywhere _ should be in config.json
-3. Validation rules scattered where needed _ should be Validator class with all rules
+=================================================================================
 
+## Improvements
 
-===================================================================
+- Verification & Testing
+  Unit Tests: Create a small test suite to verify Validator logic.   - Manual Regression:
+  Attempt to break the system with invalid inputs (letters in price, negative days).
+  Verify that a SOLD car can no longer be rented.
+  Verify that discounts are calculated correctly on the final bill.
 
-System Stabilization & Logic Overhaul Plan
+- Account Deletion by Admin must also requires ID and Username
+- Phone Number Entry Should be removed completely, Validators for it also
+- Don't ask for ID when registering a new account by NEW USER _ Make ID automatically
+- During Renting a vehicle _ should ask for more info to calculate price estimation immediately
 
-  1. Objective
-  Transform the current prototype into a stable, production-ready CLI  application by fixing critical crashes, correcting business logic,
-  and improving the developer experience through refactoring.
+===============================================================================
 
-  ---
-
-  2. Phase 1: Foundation & Stability (The "Bulletproof" Phase)
-  Goal: Prevent crashes and ensure data integrity.
-
-  Changes:
-   - Centralized Validator: Create Include/Validator.h and
-     Source/Validator.cpp to house all rules (e.g., isNonNegative,
-     isValidID, isValidDate).
-   - Robust Input Handling:
-       - Update InputHandler::getInt and getFloat to use try-catch
-         blocks for std::stoi and std::stof.
-       - Implement a loop that re-prompts the user on invalid input
-         instead of crashing.
-   - File I/O Safety:
-       - Wrap ifstream and ofstream operations in FileHandler with
-         basic error checking.
-       - Improve the split function in FileHandler.cpp to be more
-         resilient to trailing spaces or empty lines.
-
-  ---
-
-  3. Phase 2: Core Business Logic (The "Functional" Phase)
-  Goal: Fix the broken rental/sales rules.
-
-  Changes:
-   - Sold Status Enforcement:
-       - Update SearchEngine to exclude vehicles with status SOLD.
-       - Add a check in the Rental process: "If vehicle is SOLD, do
-         not allow rental."
-   - Return Vehicle Feature:
-       - Expose the existing RentalTransaction::setEndTime logic to
-         the UI.
-       - Add a "Return a Vehicle" option to the Customer/Admin menus.   - Discount & Pricing Logic:
-       - Fix the Luxury::calculateCost and Economy::calculateCost
-         methods to correctly apply discounts.
-       - Ensure zero or negative prices are blocked at the input
-         level using the new Validator.
-   - Consistent Dates:
-       - Replace hardcoded dates with a helper that fetches system
-         time or requires a valid DD-MM-YYYY input.
-
-  ---
-
-  4. Phase 3: Architecture & Scalability (The "Clean" Phase)
-  Goal: Reduce technical debt and improve maintainability.
-
-  Changes:
-   - Decouple main.cpp:
-       - Move sub-menu logic (e.g., handleSearch, handleRental) into
-         dedicated classes (e.g., MenuHandler or methods within
-         Admin/Customer).
-       - Aim to reduce main.cpp to under 150 lines.
-   - Constants & Configuration:
-       - Move all "Magic Numbers" (like the $50-$100 damage fee) into         Include/Constants.h.
-       - Update the damage fee to be a percentage of the car's value
-         rather than a flat rate.
-   - Currency & Localization:
-       - Change all currency displays from $ to PKR.
-
-  ---
-
-  5. Phase 4: UI/UX & Polish (The "Professional" Phase)
-  Goal: Improve the look and feel for the end-user.
-
-  Changes:
-   - Windows CMD Color Fix:
-       - Implement a check to enable
-         ENABLE_VIRTUAL_TERMINAL_PROCESSING on Windows so ANSI colors         render correctly.
-   - Improved Rental Flow:
-       - In the "Rent a Vehicle" menu, automatically display the
-         available vehicles in the selected category before asking
-         for the Vehicle ID.
-
-  ---
-
-  6. Verification & Testing
-   - Unit Tests: Create a small test suite to verify Validator logic.   - Manual Regression:
-       - Attempt to break the system with invalid inputs (letters in
-         price, negative days).
-       - Verify that a SOLD car can no longer be rented.
-       - Verify that discounts are calculated correctly on the final
-         bill.
-
+## What If's
+- User forgets the ID when returning the vehicle
+-

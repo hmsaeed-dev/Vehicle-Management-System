@@ -48,7 +48,7 @@ void TripPlanner::planTrip(string source, string destination, float distance, fl
         {
             return a->calculateCost(1) < b->calculateCost(1);
         }
-    )
+    );
 
     // 3. Display Sorted Results
     if (matches.empty())

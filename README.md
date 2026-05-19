@@ -28,7 +28,7 @@ You don't need to download this repository or configure a local C++ compiler to 
 
 👉 **[Run the Vehicle Management System Live on Replit](https://replit.com/@hmsaeed/Vehicle-Management-System)**
 
-*(Once the Replit window loads, simply hit the big green **Run** button at the very top of the interface to initialize the console database menu!)*\
+*(Once the Replit window loads, simply hit the big green **Run** button at the very top of the interface to initialize the console database menu!)*
 
 ---
 

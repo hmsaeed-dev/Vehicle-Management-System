@@ -7,8 +7,8 @@
 
 using namespace std;
 
-Van::Van(string id, string model, int year, int capacity, float rate)
-    : Vehicle(id, model, year, capacity, rate) {}
+Van::Van(string id, string model, int capacity, float rate)
+    : Vehicle(id, model, capacity, rate) {}
 
 string Van::getCategory() const {
     return "Van/Bus";

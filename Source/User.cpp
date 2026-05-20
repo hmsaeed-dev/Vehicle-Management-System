@@ -1,14 +1,9 @@
 #include "User.h"
 
-/**
- * @brief Constructor for the User base class.
- */
-User::User(string id, string username, string name, string phone, string password)
-    : userID(id), username(username), name(name), phone(phone), password(password) {}
+User::User(string id, string username, string name, string cnic, string password)
+    : userID(id), username(username), name(name), cnic(cnic), password(password) {}
 
-/**
- * @brief Virtual destructor for polymorphic cleanup.
- */
+
 User::~User() {}
 
 // --- Getters ---
@@ -25,8 +20,8 @@ string User::getName() const {
     return name;
 }
 
-string User::getPhone() const {
-    return phone;
+string User::getCNIC() const {
+    return cnic;
 }
 
 string User::getPassword() const {

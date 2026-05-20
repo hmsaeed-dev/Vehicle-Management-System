@@ -1,6 +1,9 @@
 #include "Validator.h"
 #include <regex>
 #include <algorithm>
+#include <ctime>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -46,6 +49,55 @@ bool Validator::isValidPhone(const string& phone)
     // Format: 03XX-XXXXXXX or +92-XXX-XXXXXXX
     const regex pattern(R"(^(\+92|0)\d{2,3}-?\d{7}$)");
     return regex_match(phone, pattern);
+}
+
+bool Validator::isValidCNIC(const string& cnic)
+{
+    // Format: XXXXX-XXXXXXX-X
+    const regex pattern(R"(^\d{5}-\d{7}-\d{1}$)");
+    return regex_match(cnic, pattern);
+}
+
+bool Validator::isValidName(const string& name)
+{
+    if (name.length() < 3) return false;
+    return isAlphaOnly(name, true);
+}
+
+string Validator::getCurrentDate()
+{
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    stringstream ss;
+    ss << setfill('0') << setw(2) << ltm->tm_mday << "-"
+       << setw(2) << 1 + ltm->tm_mon << "-"
+       << 1900 + ltm->tm_year;
+    return ss.str();
+}
+
+int Validator::calculateDays(const string& start, const string& end)
+{
+    auto parseDate = [](const string& date) {
+        tm t = {};
+        stringstream ss(date);
+        char dash;
+        ss >> t.tm_mday >> dash >> t.tm_mon >> dash >> t.tm_year;
+        t.tm_mon -= 1;
+        t.tm_year -= 1900;
+        return t;
+    };
+
+    tm tm1 = parseDate(start);
+    tm tm2 = parseDate(end);
+
+    time_t time1 = mktime(&tm1);
+    time_t time2 = mktime(&tm2);
+
+    const int seconds_per_day = 60 * 60 * 24;
+    double difference = difftime(time2, time1) / seconds_per_day;
+
+    int days = static_cast<int>(difference);
+    return (days < 1) ? 1 : days; // Minimum 1 day billing
 }
 
 bool Validator::isAlphaOnly(const string& str, bool allowSpaces)

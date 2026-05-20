@@ -9,14 +9,18 @@
 #include "InputHandler.h"
 #include "Validator.h"
 #include "Constants.h"
+#include "InspectionReport.h"
 
 #include <iostream>
 #include <iomanip>
+#include <fstream>
+#include <sstream>
+
 using namespace std;
 
 // Admin Class Constructor
-Admin::Admin(string id, string username, string name, string phone, string password)
-    : User(id, username, name, phone, password) {}
+Admin::Admin(string id, string username, string name, string cnic, string password)
+    : User(id, username, name, cnic, password) {}
 
 void Admin::showDashboard(const vector<Vehicle*>& fleet)
 {
@@ -37,6 +41,7 @@ void Admin::showDashboard(const vector<Vehicle*>& fleet)
     cout << "+----------------------------------------------------------+\n";
 }
 
+
 /**
 * @brief Displays the Admin-specific console menu.
 */
@@ -46,24 +51,24 @@ void Admin::showMenu()
     cout << "+==========================================================+\n";
     cout << "|                  ADMIN CONTROL PANEL                     |\n";
     cout << "+==========================================================+\n" << Color::RESET;
-    cout << "|  Logged in as " << left << setw(43) << getName() << "|\n";
-    cout << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
     cout << "|                                                          |\n";
     cout << "|   [1]  Add New Vehicle                                   |\n";
-    cout << "|   [2]  Remove Vehicle                                    |\n";
+    cout << "|   [2]  Remove a Vehicle                                  |\n";
     cout << "|   [3]  Delete Customer Account                           |\n";
     cout << "|   [4]  Sale / Purchase Module                            |\n";
     cout << "|   [5]  View All Records                                  |\n";
+    cout << "|   [6]  Process Vehicle Return                            |\n";
     cout << "|   [Z]  Logout                                            |\n";
     cout << "|                                                          |\n";
     cout << Color::RED << "+----------------------------------------------------------+\n\n" << Color::RESET;
 }
 
+
 void Admin::removeUser(vector<User*>& users, FileHandler& fh)
 {
     string id;
     cout << "\n" << Color::SUBHEADER << "========= DELETE CUSTOMER ACCOUNT =========" << Color::RESET << endl;
-    id = InputHandler::getString("Enter User ID to remove", false, true);
+    id = InputHandler::getString("Enter User ID to remove (or 'Z' to go back)", false, true);
     if (id == InputHandler::CANCEL_STR) return;
 
     if (id == this->getID()) {
@@ -71,15 +76,22 @@ void Admin::removeUser(vector<User*>& users, FileHandler& fh)
         return;
     }
 
-    for (auto it = users.begin(); it != users.end(); ++it) {
-        if ((*it)->getID() == id) {
-            if ((*it)->getRole() == "ADMIN") {
-                cout << Color::ERR << "[ERROR] Security Breach: Admins cannot delete other Admins." << Color::RESET << endl;
-                return;
-            }
+    if (hasActiveRentals(id, fh)) {
+        cout << Color::ERR << "[ERROR] Cannot delete user. This customer has ACTIVE RENTALS." << Color::RESET << endl;
+        cout << "        Please ensure all vehicles are returned before removing account." << Color::RESET << endl;
+        return;
+    }
+for (auto it = users.begin(); it != users.end(); ++it) {
+    if ((*it)->getID() == id) {
+        if ((*it)->getRole() == "ADMIN") {
+            cout << Color::ERR << "[ERROR] Security Breach: Admins cannot delete other Admins." << Color::RESET << endl;
+            return;
+        }
 
-            cout << Color::WARNING << "[CONFIRM] Are you sure you want to PERMANENTLY delete account: " << (*it)->getName() << " (ID: " << id << ")? (Y/N): " << Color::RESET;
-            if (InputHandler::getChar("", "YN") == 'N') {
+
+            cout << Color::WARNING << "[CONFIRM] Are you sure you want to PERMANENTLY delete account: " << (*it)->getName() << " (ID: " << id << ")? (Y/N/Z:Back): " << Color::RESET;
+            char confirm = InputHandler::getChar("", "YN", true);
+            if (confirm == 'N' || confirm == 'Z') {
                 cout << Color::INFO << "[SYSTEM] Deletion cancelled." << Color::RESET << endl;
                 return;
             }
@@ -87,14 +99,13 @@ void Admin::removeUser(vector<User*>& users, FileHandler& fh)
             cout << "[SYSTEM] Purging user data...\n";
             delete *it;
             users.erase(it);
-            fh.saveUsers(users); // Persist immediately
+            fh.saveUsers(users);
             cout << Color::SUCCESS << "[SUCCESS] User account has been removed from the system." << Color::RESET << endl;
             return;
         }
     }
     cout << Color::ERR << "[ERROR] User ID not found." << Color::RESET << endl;
 }
-
 
 
 /**
@@ -105,7 +116,7 @@ void Admin::addVehicle(vector<Vehicle*>& fleet)
     string id, model;
     char type;
     float rate;
-    int year, capacity;
+    int capacity;
 
     cout << "\n" << Color::SUBHEADER << "========= ADD NEW VEHICLE =========" << Color::RESET << endl;
 
@@ -130,9 +141,6 @@ void Admin::addVehicle(vector<Vehicle*>& fleet)
     model = InputHandler::getString("Enter Model Name", true, true);
     if (model == InputHandler::CANCEL_STR) return;
 
-    year = InputHandler::getInt("Enter Year", 1900, 2100, true);
-    if (year == InputHandler::CANCEL_INT) return;
-
     capacity = InputHandler::getInt("Enter Capacity", 1, 100, true);
     if (capacity == InputHandler::CANCEL_INT) return;
 
@@ -140,13 +148,14 @@ void Admin::addVehicle(vector<Vehicle*>& fleet)
     if (rate == InputHandler::CANCEL_FLOAT) return;
 
     Vehicle* v = nullptr;
-    if      (type == 'E') v = new Economy(id, model, year, capacity, rate);
+    if      (type == 'E') v = new Economy(id, model, capacity, rate);
     else if (type == 'L') {
         string features = InputHandler::getString("Enter Luxury Features", true, true);
-        if (features != InputHandler::CANCEL_STR) v = new Luxury(id, model, year, capacity, rate, features);
+        if (features == InputHandler::CANCEL_STR) return;
+        v = new Luxury(id, model, capacity, rate, features);
     }
-    else if (type == 'S') v = new SUV(id, model, year, capacity, rate);
-    else if (type == 'V') v = new Van(id, model, year, capacity, rate);
+    else if (type == 'S') v = new SUV(id, model, capacity, rate);
+    else if (type == 'V') v = new Van(id, model, capacity, rate);
 
     if (v) {
         fleet.push_back(v);
@@ -166,6 +175,12 @@ void Admin::removeVehicle(vector<Vehicle*>& fleet)
 
     for (auto it = fleet.begin(); it != fleet.end(); ++it) {
         if ((*it)->getID() == id) {
+            if ((*it)->getStatus() == VehicleStatus::Rented) {
+                cout << Color::ERR << "[ERROR] Cannot remove vehicle. It is currently RENTED." << Color::RESET << endl;
+                cout << "        Please process the return before removing from fleet." << Color::RESET << endl;
+                return;
+            }
+
             cout << Color::WARNING << "[CONFIRM] Are you sure you want to PERMANENTLY delete " << (*it)->getModel() << "? (Y/N): " << Color::RESET;
             if (InputHandler::getChar("", "YN") == 'N') {
                 cout << Color::INFO << "[SYSTEM] Deletion cancelled." << Color::RESET << endl;
@@ -242,10 +257,7 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
         string model = InputHandler::getString("Model Name", true, true);
         if (model == InputHandler::CANCEL_STR) return;
 
-        int year = InputHandler::getInt("Year", 1900, 2100, true);
-        if (year == InputHandler::CANCEL_INT) return;
-
-        int capacity = InputHandler::getInt("Capacity", 1, 100, true);
+        int capacity = InputHandler::getInt("Enter Capacity", 1, 100, true);
         if (capacity == InputHandler::CANCEL_INT) return;
 
         float price = InputHandler::getFloat("Purchase Price (" + Pricing::CURRENCY + ")", 0, 100000000, true);
@@ -262,10 +274,10 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
         }
 
         Vehicle* v = nullptr;
-        if      (type == 'E') v = new Economy(id, model, year, capacity, rentRate);
-        else if (type == 'L') v = new Luxury(id, model, year, capacity, rentRate, "Purchased Luxury");
-        else if (type == 'S') v = new SUV(id, model, year, capacity, rentRate);
-        else if (type == 'V') v = new Van(id, model, year, capacity, rentRate);
+        if      (type == 'E') v = new Economy(id, model, capacity, rentRate);
+        else if (type == 'L') v = new Luxury(id, model, capacity, rentRate, "Purchased Luxury");
+        else if (type == 'S') v = new SUV(id, model, capacity, rentRate);
+        else if (type == 'V') v = new Van(id, model, capacity, rentRate);
 
         if (v) {
             fleet.push_back(v);
@@ -283,25 +295,125 @@ void Admin::viewAllRecords(const vector<Vehicle*>& fleet, const vector<User*>& u
     cout << "\n" << Color::SUBHEADER << "========= FULL SYSTEM RECORDS =========" << Color::RESET << endl;
 
     cout << Color::NOTICE << "\n[VEHICLE FLEET - " << fleet.size() << " Units]" << Color::RESET << "\n";
-    cout << Color::TABLE_HEADER << "+----------+--------------------+------+------------+-------------+\n" << Color::RESET;
-    cout << Color::TABLE_HEADER << "| ID       | Model              | Year | Category   | Status      |\n" << Color::RESET;
-    cout << Color::TABLE_HEADER << "+----------+--------------------+------+------------+-------------+\n" << Color::RESET;
+    cout << Color::TABLE_HEADER << "+----------+--------------------+------------+-------------+\n" << Color::RESET;
+    cout << Color::TABLE_HEADER << "| ID       | Model              | Category   | Status      |\n" << Color::RESET;
+    cout << Color::TABLE_HEADER << "+----------+--------------------+------------+-------------+\n" << Color::RESET;
 
     for (Vehicle* v : fleet)
     {
         string status = (v->getStatus() == VehicleStatus::Available ? Color::STATUS_AVAILABLE + "Available" + Color::RESET :
                 v->getStatus() == VehicleStatus::Rented    ? Color::STATUS_RENTED + "Rented   " + Color::RESET : Color::STATUS_SOLD + "Sold     " + Color::RESET);
-        cout << "| " << left << setw(9) << v->getID() << "| " << setw(19) << v->getModel() << "| " << setw(5) << v->getYear() << "| " << setw(11) << v->getCategory() << "| " << status << " |\n";
+        cout << "| " << left << setw(9) << v->getID() << "| " << setw(19) << v->getModel() << "| " << setw(11) << v->getCategory() << "| " << status << " |\n";
     }
-    cout << "+----------+--------------------+------+------------+-------------+\n";
+    cout << "+----------+--------------------+------------+-------------+\n";
 
     cout << Color::NOTICE << "\n[REGISTERED USERS - " << users.size() << " Accounts]" << Color::RESET << "\n";
-    cout << Color::TABLE_HEADER << "+----------+--------------------------+------------+\n" << Color::RESET;
-    cout << Color::TABLE_HEADER << "| User ID  | Name                     | Role       |\n" << Color::RESET;
-    cout << Color::TABLE_HEADER << "+----------+--------------------------+------------+\n" << Color::RESET;
+    cout << Color::TABLE_HEADER << "+----------+--------------------------+-------------------+------------+\n" << Color::RESET;
+    cout << Color::TABLE_HEADER << "| User ID  | Name                     | CNIC              | Role       |\n" << Color::RESET;
+    cout << Color::TABLE_HEADER << "+----------+--------------------------+-------------------+------------+\n" << Color::RESET;
     for (User* u : users) {
         string type = (u->getRole() == "ADMIN" ? Color::RED + "Admin   " + Color::RESET : Color::HIGHLIGHT + "Customer" + Color::RESET);
-        cout << "| " << left << setw(9) << u->getID() << "| " << setw(25) << u->getName() << "| " << type << " |\n";
+        cout << "| " << left << setw(9) << u->getID() << "| " << setw(25) << u->getName() << "| " << setw(18) << u->getCNIC() << "| " << type << " |\n";
     }
-    cout << "+----------+--------------------------+------------+\n";
+    cout << "+----------+--------------------------+-------------------+------------+\n";
+}
+
+void Admin::processReturn(vector<Vehicle*>& fleet, vector<User*>& users, FileHandler& fh)
+{
+    cout << "\n" << Color::SUBHEADER << "========= ADMIN: PROCESS VEHICLE RETURN =========" << Color::RESET << endl;
+    
+    string vID = InputHandler::getString("Enter Vehicle ID to return", false, true);
+    if (vID == InputHandler::CANCEL_STR) return;
+
+    Vehicle* v = nullptr;
+    for (Vehicle* x : fleet) if (x->getID() == vID) { v = x; break; }
+
+    if (!v || v->getStatus() != VehicleStatus::Rented) {
+        cout << Color::ERR << "[ERROR] Vehicle not found or not currently rented." << Color::RESET << endl;
+        return;
+    }
+
+    string cID = InputHandler::getString("Enter Customer ID who is returning (if known)", false, true);
+    if (cID == InputHandler::CANCEL_STR) return;
+
+    User* customer = nullptr;
+    for (User* u : users) if (u->getID() == cID) { customer = u; break; }
+
+    // 1. Generate Inspection Report (Admin is the inspector)
+    InspectionReport report(v, this); 
+    report.fillReport();
+
+    // 2. Automated Billing Duration
+    string startDate = fh.getRentalStartDate(v->getID(), cID);
+    string endDate = Validator::getCurrentDate();
+    int days = 1;
+
+    if (!startDate.empty()) {
+        days = Validator::calculateDays(startDate, endDate);
+        cout << Color::INFO << "[SYSTEM] Rental started on: " << startDate << Color::RESET << endl;
+        cout << Color::INFO << "[SYSTEM] Today's Date      : " << endDate << Color::RESET << endl;
+        cout << Color::INFO << "[SYSTEM] Total Days Calculated: " << days << Color::RESET << endl;
+    } else {
+        cout << Color::WARNING << "[WARNING] Rental start date not found in history." << Color::RESET << endl;
+        days = InputHandler::getInt("> Please enter total days used manually", 1, 365, true);
+        if (days == InputHandler::CANCEL_INT) return;
+    }
+
+    float baseBill = v->calculateCost(days);
+    float discountedBill = v->calculateDiscountedCost(days);
+    float damageFee = report.getDamageFee();
+    float totalBill = discountedBill + damageFee;
+
+    cout << "\n" << Color::NOTICE << "[!] TOTAL CHARGES: " << Pricing::CURRENCY << (int)totalBill << Color::RESET << "\n";
+    if (InputHandler::getChar("[CONFIRM] Finalize return? (Y/N)", "YN", true) == 'N') return;
+
+    v->setStatus(VehicleStatus::Available);
+    fh.saveInspection(report);
+    fh.appendTransaction("RENT_RETURN", vID, (customer ? customer->getID() : "ADMIN_FORCE"), totalBill, report.getDate());
+
+    cout << Color::SUCCESS << "[SUCCESS] Vehicle " << vID << " returned and available." << Color::RESET << endl;
+}
+
+bool Admin::hasActiveRentals(const string& userID, FileHandler& fh)
+{
+    ifstream file(Config::TRANSACTIONS_FILE);
+    if (!file.is_open()) return false;
+
+    // Track unbalanced rentals per vehicle for this user
+    struct RentalState { int starts = 0; int returns = 0; };
+    vector<pair<string, RentalState>> state;
+
+    string line;
+    while (getline(file, line)) {
+        if (line.empty()) continue;
+        stringstream ss(line);
+        string type, vID, cID, amt, date;
+        getline(ss, type, '|');
+        getline(ss, vID, '|');
+        getline(ss, cID, '|');
+        
+        if (cID == userID) {
+            bool found = false;
+            for (auto& p : state) {
+                if (p.first == vID) {
+                    if (type == "RENT_START") p.second.starts++;
+                    else if (type == "RENT_RETURN") p.second.returns++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                RentalState rs;
+                if (type == "RENT_START") rs.starts = 1;
+                else if (type == "RENT_RETURN") rs.returns = 1;
+                state.push_back({vID, rs});
+            }
+        }
+    }
+    file.close();
+
+    for (const auto& p : state) {
+        if (p.second.starts > p.second.returns) return true;
+    }
+    return false;
 }

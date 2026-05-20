@@ -9,7 +9,7 @@
  */
 class Van : public Vehicle {
 public:
-    Van(string id, string model, int year, int capacity, float rate);
+    Van(string id, string model, int capacity, float rate);
     // Polymorphic overrides
     string getCategory() const override;
     float calculateCost(int days) override;

@@ -15,8 +15,8 @@ using namespace std;
  * @brief Constructor linking a vehicle and customer to a report.
  */
 
-InspectionReport::InspectionReport(Vehicle* v, Customer* c)
-    : inspectedVehicle(v), inspector(c), mileage(0.0f) {}
+InspectionReport::InspectionReport(Vehicle* v, User* u)
+    : inspectedVehicle(v), inspector(u), mileage(0.0f) {}
 
 /**
  * @brief Interactively fills the inspection report via console.

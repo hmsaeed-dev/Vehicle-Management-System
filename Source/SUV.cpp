@@ -7,8 +7,8 @@
 
 using namespace std;
 
-SUV::SUV(string id, string model, int year, int capacity, float rate)
-    : Vehicle(id, model, year, capacity, rate) {}
+SUV::SUV(string id, string model, int capacity, float rate)
+    : Vehicle(id, model, capacity, rate) {}
 
 string SUV::getCategory() const {
     return "SUV";

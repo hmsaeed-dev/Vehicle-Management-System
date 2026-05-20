@@ -32,9 +32,14 @@ public:
     void saveTransactions(const vector<Transaction*>& txns);
     void appendTransaction(const string& type, const string& vID, const string& cID, float amount, const string& date);
     void loadTransactionsIntoHistory(vector<User*>& users);
+    string getRentalStartDate(const string& vID, const string& cID);
 
     // Inspection operations
     void saveInspection(const InspectionReport& report);
+
+    // ID Generation
+    static string generateNextUserID(const vector<User*>& users);
+    static string generateNextVehicleID(const vector<Vehicle*>& fleet);
 };
 
 #endif // FILE_HANDLER_H

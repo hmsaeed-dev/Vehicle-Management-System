@@ -21,7 +21,7 @@ class FileHandler;
 class Admin : public User {
 public:
     // Constructor
-    Admin(std::string id, std::string username, std::string name, std::string phone, std::string password);
+    Admin(std::string id, std::string username, std::string name, std::string cnic, std::string password);
 
     // Polymorphic override for Admin menu
     void showMenu() override;
@@ -36,6 +36,13 @@ public:
     void salePurchaseModule(std::vector<Vehicle*>& fleet, std::vector<User*>& users, FileHandler& fh);
 
     void viewAllRecords(const std::vector<Vehicle*>& fleet, const std::vector<User*>& users);
+    
+    // New: Admin can process returns for stranded vehicles
+    void processReturn(std::vector<Vehicle*>& fleet, std::vector<User*>& users, FileHandler& fh);
+
+private:
+    // Safety check helper
+    bool hasActiveRentals(const std::string& userID, FileHandler& fh);
 };
 
 #endif // ADMIN_H

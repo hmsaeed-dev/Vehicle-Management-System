@@ -11,7 +11,7 @@ class Economy : public Vehicle
 {
 public:
     // Constructor
-    Economy(string id, string model, int year, int capacity, float rate);
+    Economy(string id, string model, int capacity, float rate);
 
     // Polymorphic overrides
     string getCategory() const override;

@@ -50,7 +50,6 @@ vector<string> split(const string& s, char delimiter)
 
 /**
  * @brief Loads vehicles from Config::VEHICLE_FILE.
- * Uses factory-style logic to instantiate derived classes.
  */
 vector<Vehicle*> FileHandler::loadVehicles()
 {
@@ -58,7 +57,8 @@ vector<Vehicle*> FileHandler::loadVehicles()
     ifstream file(Config::VEHICLE_FILE);
     string line;
 
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         cerr << "[ERROR] Could not open " << Config::VEHICLE_FILE << " for reading." << endl;
         return fleet;
     }
@@ -68,28 +68,28 @@ vector<Vehicle*> FileHandler::loadVehicles()
         if (line.empty()) continue;
         vector<string> data = split(line, '|');
 
-        if (data.size() < 7) {
+        if (data.size() < 6)
+        {
             cerr << "[WARNING] Skipping malformed vehicle data: " << line << endl;
             continue;
         }
 
         try {
-            // Format: Type|ID|Model|Year|Capacity|Rate|Status
+            // Format: Type|ID|Model|Capacity|Rate|Status
             char type = data[0][0];
             string id = data[1];
             string model = data[2];
-            int year = stoi(data[3]);
-            int capacity = stoi(data[4]);
-            float rate = stof(data[5]);
-            int statusInt = stoi(data[6]);
+            int capacity = stoi(data[3]);
+            float rate = stof(data[4]);
+            int statusInt = stoi(data[5]);
 
             VehicleStatus status = static_cast<VehicleStatus>(statusInt);
 
             Vehicle* v = nullptr;
-            if      (type == 'E') v = new Economy(id, model, year, capacity, rate);
-            else if (type == 'L') v = new Luxury(id, model, year, capacity, rate, "Standard Luxury Pack");
-            else if (type == 'S') v = new SUV(id, model, year, capacity, rate);
-            else if (type == 'V') v = new Van(id, model, year, capacity, rate);
+            if      (type == '3') v = new Economy(id, model, capacity, rate);
+            else if (type == '4') v = new Luxury(id, model, capacity, rate, "Standard Luxury Pack");
+            else if (type == '5') v = new SUV(id, model, capacity, rate);
+            else if (type == '6') v = new Van(id, model, capacity, rate);
 
             if (v)
             {
@@ -119,9 +119,15 @@ void FileHandler::saveVehicles(const vector<Vehicle*>& fleet)
 
     for (Vehicle* v : fleet)
     {
-        char type = v->getID()[0];
+        string cat = v->getCategory();
+        char typeCode = '0';
+        if      (cat == "Economy") typeCode = '3';
+        else if (cat == "Luxury")  typeCode = '4';
+        else if (cat == "SUV")     typeCode = '5';
+        else if (cat == "Van/Bus")     typeCode = '6';
 
-        file << type << "|" << v->getID() << "|" << v->getModel() << "|" << v->getYear() << "|" << v->getCapacity() << "|" << v->getRentalRate() << "|" << static_cast<int>(v->getStatus()) << endl;
+        // Format: Type|ID|Model|Capacity|Rate|Status
+        file << typeCode << "|" << v->getID() << "|" << v->getModel() << "|" << v->getCapacity() << "|" << v->getRentalRate() << "|" << static_cast<int>(v->getStatus()) << endl;
     }
     file.close();
 }
@@ -149,18 +155,18 @@ vector<User*> FileHandler::loadUsers()
         if (line.empty()) continue;
         vector<string> data = split(line, '|');
 
-        // Format: ROLE|ID|USERNAME|NAME|PHONE|PASSWORD (6 fields)
+        // Format: ROLE|ID|USERNAME|NAME|CNIC|PASSWORD (6 fields)
         if (data.size() < 6) continue;
 
         string roleRaw = data[0];
         string id = data[1];
         string username = data[2];
         string name = data[3];
-        string phone = data[4];
+        string cnic = data[4];
         string password = data[5];
 
-        if (roleRaw == "A" || roleRaw == "ADMIN") users.push_back(new Admin(id, username, name, phone, password));
-        else if (roleRaw == "C" || roleRaw == "CUSTOMER") users.push_back(new Customer(id, username, name, phone, password));
+        if (roleRaw == "ADMIN") users.push_back(new Admin(id, username, name, cnic, password));
+        else if (roleRaw == "CUSTOMER") users.push_back(new Customer(id, username, name, cnic, password));
     }
 
     file.close();
@@ -174,10 +180,34 @@ void FileHandler::saveUsers(const vector<User*>& users)
     ofstream file(Config::USERS_FILE);
     for (User* u : users)
     {
-        // New Format: ROLE|ID|USERNAME|NAME|PHONE|PASSWORD
-        file << u->getRole() << "|" << u->getID() << "|" << u->getUsername() << "|" << u->getName() << "|" << u->getPhone() << "|" << u->getPassword() << endl;
+        // Format: ROLE|ID|USERNAME|NAME|CNIC|PASSWORD
+        file << u->getRole() << "|" << u->getID() << "|" << u->getUsername() << "|" << u->getName() << "|" << u->getCNIC() << "|" << u->getPassword() << endl;
     }
     file.close();
+}
+
+string FileHandler::generateNextUserID(const vector<User*>& users)
+{
+    int maxID = 1000;
+    for (User* u : users) {
+        try {
+            int id = stoi(u->getID());
+            if (id > maxID) maxID = id;
+        } catch (...) {}
+    }
+    return to_string(maxID + 1);
+}
+
+string FileHandler::generateNextVehicleID(const vector<Vehicle*>& fleet)
+{
+    int maxID = 0;
+    for (Vehicle* v : fleet) {
+        try {
+            int id = stoi(v->getID());
+            if (id > maxID) maxID = id;
+        } catch (...) {}
+    }
+    return to_string(maxID + 1);
 }
 
 vector<Transaction*> FileHandler::loadTransactions()
@@ -237,6 +267,30 @@ void FileHandler::loadTransactionsIntoHistory(vector<User*>& users)
         }
     }
     file.close();
+}
+
+string FileHandler::getRentalStartDate(const string& vID, const string& cID)
+{
+    ifstream file(Config::TRANSACTIONS_FILE);
+    string line;
+    string startDate = "";
+
+    if (!file.is_open()) return "";
+
+    while (getline(file, line))
+    {
+        if (line.empty()) continue;
+        vector<string> data = split(line, '|');
+        if (data.size() < 5) continue;
+
+        // Type|vID|cID|Amount|Date
+        if (data[0] == "RENT_START" && data[1] == vID && data[2] == cID)
+        {
+            startDate = data[4]; // Keep track of the latest start date
+        }
+    }
+    file.close();
+    return startDate;
 }
 
 

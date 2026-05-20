@@ -49,16 +49,23 @@ void MenuHandler::runMainMenu()
 
 void MenuHandler::handleRegistration()
 {
-    string name, id, username, phone, password;
+    string name, id, username, cnic, password;
     cout << "\n";
     cout << Color::HEADER;
     cout << "+==========================================================+\n";
     cout << "|                 ACCOUNT REGISTRATION                     |\n";
     cout << "+==========================================================+\n" << Color::RESET;
-    cout << "  Please enter your details to create an account:\n\n";
+    cout << "  Please enter your details to create an account (or 'Z' to go back):\n\n";
 
-    name = InputHandler::getString("  > Full Name");
-    username = InputHandler::getString("  > Username", false);
+    while (true) {
+        name = InputHandler::getString("  > Full Name (Min 3 chars)", true, true);
+        if (name == InputHandler::CANCEL_STR) return;
+        if (Validator::isValidName(name)) break;
+        cout << Color::ERR << "[ERROR] Name must be at least 3 characters and contain only letters." << Color::RESET << endl;
+    }
+
+    username = InputHandler::getString("  > Username", false, true);
+    if (username == InputHandler::CANCEL_STR) return;
 
     // Check if username is taken
     bool taken = false;
@@ -75,27 +82,22 @@ void MenuHandler::handleRegistration()
         return;
     }
 
-    // --- AUTO ID GENERATION ---
-    int maxID = 1000; // Base ID
-    for (User* u : users) {
-        try {
-            int currentID = stoi(u->getID());
-            if (currentID > maxID) maxID = currentID;
-        } catch (...) { /* Skip non-numeric legacy IDs */ }
-    }
-    id = to_string(maxID + 1);
+    // --- UNIFIED ID GENERATION ---
+    id = FileHandler::generateNextUserID(users);
 
     while (true) {
-        phone = InputHandler::getString("  > Phone Number (e.g., 03XX-XXXXXXX)", false);
-        if (Validator::isValidPhone(phone)) break;
-        cout << Color::ERR << "[ERROR] Invalid phone format." << Color::RESET << endl;
+        cnic = InputHandler::getString("  > CNIC (XXXXX-XXXXXXX-X)", false, true);
+        if (cnic == InputHandler::CANCEL_STR) return;
+        if (Validator::isValidCNIC(cnic)) break;
+        cout << Color::ERR << "[ERROR] Invalid CNIC format. Expected: XXXXX-XXXXXXX-X" << Color::RESET << endl;
     }
 
-    password = InputHandler::getString("  > Secure Password", false);
+    password = InputHandler::getString("  > Secure Password", false, true);
+    if (password == InputHandler::CANCEL_STR) return;
 
     cout << "\n" << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
 
-    users.push_back(new Customer(id, username, name, phone, password));
+    users.push_back(new Customer(id, username, name, cnic, password));
     cout << Color::SUCCESS << "[SUCCESS] Account created! Your Unique ID is: " << Color::HIGHLIGHT << id << Color::RESET << endl;
     cout << "  Please use your Username to login." << endl;
     InputHandler::waitForEnter();
@@ -108,10 +110,13 @@ void MenuHandler::handleLogin()
     cout << "+----------------------------------------------------------+\n";
     cout << "|                    SYSTEM LOGIN                          |\n";
     cout << "+----------------------------------------------------------+\n" << Color::RESET;
-    cout << "  Please verify your identity to continue:\n";
+    cout << "  Please verify your identity to continue (or 'Z' to go back):\n";
 
-    string username = InputHandler::getString("  > Username", false);
-    string pass = InputHandler::getString("  > Password", false);
+    string username = InputHandler::getString("  > Username", false, true);
+    if (username == InputHandler::CANCEL_STR) return;
+
+    string pass = InputHandler::getString("  > Password", false, true);
+    if (pass == InputHandler::CANCEL_STR) return;
 
     cout << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
 
@@ -143,7 +148,7 @@ void MenuHandler::adminSession(User* currentUser)
     do {
         admin->showDashboard(fleet);
         admin->showMenu();
-        int choice = InputHandler::getInt("Selection", 1, 5, true);
+        int choice = InputHandler::getInt("Selection", 1, 6, true);
 
         if (choice == InputHandler::CANCEL_INT) { logout = true; break; }
 
@@ -153,6 +158,7 @@ void MenuHandler::adminSession(User* currentUser)
             case 3: admin->removeUser(users, fh); break;
             case 4: admin->salePurchaseModule(fleet, users, fh); break;
             case 5: admin->viewAllRecords(fleet, users); break;
+            case 6: admin->processReturn(fleet, users, fh); break;
             default: cout << Color::ERR << "Invalid selection." << Color::RESET << endl;
         }
         if (!logout) InputHandler::waitForEnter();
@@ -197,9 +203,7 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
         cout << "+----------------------------------------------------------+\n" << Color::RESET;
         cout << "|                                                          |\n";
         cout << "|   [1]   Browse All Vehicles                              |\n";
-        cout << "|   [2]   Filter by Category (Guided)                      |\n";
-        cout << "|   [3]   Filter by Price Range (Guided)                   |\n";
-        cout << "|   [4]   Advanced Smart Search                            |\n";
+        cout << "|   [2]   Filter by Category                               |\n";
         cout << "|   [Z]   Back to Dashboard                                |\n";
         cout << "|                                                          |\n";
         cout << Color::TABLE_HEADER << "+----------------------------------------------------------+\n\n" << Color::RESET;
@@ -229,43 +233,6 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
             else if (catChoice == 4) type = 'V';
             results = engine.searchByCategory(type);
         }
-        else if (choice == 3)
-        {
-            cout << "\n" << Color::SUBHEADER << "Select Price Range per Day (" << Pricing::CURRENCY << "):" << Color::RESET << "\n";
-            cout << "1. Budget   - Under 50\n";
-            cout << "2. Standard - 50 - 100\n";
-            cout << "3. Premium  - 100 - 250\n";
-            cout << "4. Luxury   - Above 250\n";
-            cout << "5. Custom Range\n";
-            int priceChoice = InputHandler::getInt("Choice", 1, 5);
-
-            float minP = 0, maxP = 1000000;
-            if (priceChoice == 1) maxP = 50;
-            else if (priceChoice == 2) { minP = 50; maxP = 100; }
-            else if (priceChoice == 3) { minP = 100; maxP = 250; }
-            else if (priceChoice == 4) { minP = 250; }
-            else if (priceChoice == 5) {
-                minP = InputHandler::getFloat("Enter Min Price");
-                maxP = InputHandler::getFloat("Enter Max Price");
-            }
-            results = engine.searchByPriceRange(minP, maxP);
-        }
-        else if (choice == 4)
-        {
-            cout << "\n" << Color::SUBHEADER << "==================ADVANCED SMART SEARCH ==================" << Color::RESET << "\n";
-            cout << "Step 1: Select Category\n1. All\n2. Economy\n3. Luxury\n4. SUV\n5. Van/Bus\n";
-            int catChoice = InputHandler::getInt("Choice", 1, 5);
-            char type = (catChoice == 2) ? 'E' : (catChoice == 3) ? 'L' : (catChoice == 4) ? 'S' : (catChoice == 5) ? 'V' : 'A';
-
-            cout << "\nStep 2: Set Maximum Budget (" << Pricing::CURRENCY << ")\n";
-            float maxPrice = InputHandler::getFloat("Max Price per day", 0, 1000000);
-
-            cout << "\nStep 3: Availability Check\n";
-            bool onlyAvail = (InputHandler::getChar("Only show available vehicles? (Y/N)", "YN") == 'Y');
-            onlyAvailFilter = onlyAvail;
-            results = engine.smartSearch(type, maxPrice, onlyAvail);
-        }
-
         if (choice >= 1 && choice <= 4)
         {
             if (results.empty()) {
@@ -275,17 +242,17 @@ void MenuHandler::handleSearch(SearchEngine& engine, vector<Vehicle*>& fleet, Cu
                 cout << "\n" << Color::INFO << "[SYSTEM] Found " << results.size() << " vehicles matching your criteria:" << Color::RESET << "\n";
 
                 if (onlyAvailFilter) {
-                    cout << "+-------+-------------------+-------+-------+------------+------------+\n";
-                    cout << "| ID    | Model             | Year  | Cap.  | Rate       | Category   |\n";
-                    cout << "+-------+-------------------+-------+-------+------------+------------+\n";
+                    cout << "+-------+-------------------+-------+------------+------------+\n";
+                    cout << "| ID    | Model             | Cap.  | Rate       | Category   |\n";
+                    cout << "+-------+-------------------+-------+------------+------------+\n";
                     for (Vehicle* v : results) v->displayRowSimple();
-                    cout << "+-------+-------------------+-------+-------+------------+------------+\n";
+                    cout << "+-------+-------------------+-------+------------+------------+\n";
                 } else {
-                    cout << "+-------+-------------------+-------+-------+------------+------------+------------+\n";
-                    cout << "| ID    | Model             | Year  | Cap.  | Rate       | Status     | Category   |\n";
-                    cout << "+-------+-------------------+-------+-------+------------+------------+------------+\n";
+                    cout << "+-------+-------------------+-------+------------+------------+------------+\n";
+                    cout << "| ID    | Model             | Cap.  | Rate       | Status     | Category   |\n";
+                    cout << "+-------+-------------------+-------+------------+------------+------------+\n";
                     for (Vehicle* v : results) v->displayRow();
-                    cout << "+-------+-------------------+-------+-------+------------+------------+------------+\n";
+                    cout << "+-------+-------------------+-------+------------+------------+------------+\n";
                 }
 
                 if (customer && fh) {

@@ -7,7 +7,8 @@
 
 using namespace std;
 
-Luxury::Luxury(string id, string model, int year, int capacity, float rate, string features) : Vehicle(id, model, year, capacity, rate), luxuryFeatures(features) {}
+Luxury::Luxury(string id, string model, int capacity, float rate, string features) 
+    : Vehicle(id, model, capacity, rate), luxuryFeatures(features) {}
 
 string Luxury::getCategory() const {
     return "Luxury";
@@ -32,11 +33,6 @@ float Luxury::calculateCost(int days)
 string Luxury::getCategoryDisplay() const
 {
     return Color::CATEGORY_LUXURY + "Luxury    " + Color::RESET;
-}
-
-void Luxury::displayExtraInfo() const {
-    cout << "| Features      :  " << left << setw(36) << luxuryFeatures << "|\n";
-    cout << "+------------------------------------------------------+\n";
 }
 
 

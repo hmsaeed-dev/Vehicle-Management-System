@@ -8,17 +8,17 @@ using namespace std;
 
 // Forward Declarations
 class Vehicle;
-class Customer;
+class User;
 
 /**
  * @class InspectionReport
  * @brief Records the condition of a vehicle upon return.
- * Uses Composition: References Vehicle and Customer.
+ * Uses Composition: References Vehicle and User.
  */
 class InspectionReport {
 private:
     Vehicle* inspectedVehicle;  // HAS A Vehicle
-    Customer* inspector;        // HAS A Customer (the one returning)
+    User* inspector;            // HAS A User (the one returning/inspecting)
     string fuelLevel;
     string damageNotes;
     float mileage;
@@ -28,7 +28,7 @@ private:
 
 public:
     // Constructor
-    InspectionReport(Vehicle* v, Customer* c);
+    InspectionReport(Vehicle* v, User* u);
 
     // Methods
     void fillReport();              // Interactive console input

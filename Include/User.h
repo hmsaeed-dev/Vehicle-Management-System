@@ -16,12 +16,12 @@ private:
     string userID;   // Unique User ID
     string username; // Login Username
     string name;     // Full name
-    string phone;    // Contact number
+    string cnic;     // CNIC (XXXXX-XXXXXXX-X)
     string password; // Login password
 
 public:
     // Constructor
-    User(string id, string username, string name, string phone, string password);
+    User(string id, string username, string name, string cnic, string password);
 
     // Virtual destructor for safe cleanup
     virtual ~User();
@@ -30,7 +30,7 @@ public:
     string getID() const;
     string getUsername() const;
     string getName() const;
-    string getPhone() const;
+    string getCNIC() const;
     string getPassword() const;
 
     // Authentication

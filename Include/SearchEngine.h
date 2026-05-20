@@ -9,8 +9,7 @@ using namespace std;
 
 /**
  * @class SearchEngine
- * @brief Provides advanced filtering capabilities for the vehicle fleet.
- * Demonstrates Function Overloading.
+ * @brief Provides filtering capabilities for the vehicle fleet.
  */
 class SearchEngine {
 private:
@@ -20,14 +19,8 @@ public:
     // Constructor
     SearchEngine(vector<Vehicle*>& f);
 
-    // Overloaded search methods
-    vector<Vehicle*> searchByPriceRange(float min, float max);
+    // Search methods
     vector<Vehicle*> searchByCategory(char type);
-    vector<Vehicle*> searchByAvailability();
-    vector<Vehicle*> searchByYearRange(int minYear, int maxYear);
-    
-    // Multi-criteria search
-    vector<Vehicle*> smartSearch(char type, float maxPrice, bool onlyAvailable);
 };
 
 #endif // SEARCH_ENGINE_H

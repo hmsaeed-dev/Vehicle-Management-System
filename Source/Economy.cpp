@@ -7,8 +7,8 @@
 
 using namespace std;
 
-Economy::Economy(string id, string model, int year, int capacity, float rate)
-    : Vehicle(id, model, year, capacity, rate) {}
+Economy::Economy(string id, string model, int capacity, float rate)
+    : Vehicle(id, model, capacity, rate) {}
 
 string Economy::getCategory() const {
     return "Economy";

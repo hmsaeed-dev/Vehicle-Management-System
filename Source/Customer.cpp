@@ -12,12 +12,10 @@
 
 using namespace std;
 
-Customer::Customer(string id, string username, string name, string phone, string password)
-    : User(id, username, name, phone, password) {}
+Customer::Customer(string id, string username, string name, string cnic, string password)
+    : User(id, username, name, cnic, password) {}
 
-/**
-* @brief Displays the Customer-specific console menu.
-*/
+
 void Customer::showMenu()
 {
     cout << "\n";
@@ -40,9 +38,7 @@ void Customer::showMenu()
     cout << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
 }
 
-/**
-* @brief Displays the customer's past rental transactions in a tabular view.
-*/
+
 void Customer::viewRentalHistory()
 {
     cout << "\n" << Color::SUBHEADER << "================== YOUR RENTAL HISTORY ==================" << Color::RESET << "\n";
@@ -74,9 +70,7 @@ void Customer::addToHistory(const string& record)
     rentalHistory.push_back(record);
 }
 
-/**
- * @brief Logic for renting a vehicle.
- */
+
 void Customer::rentVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
 {
     cout << Color::HEADER;
@@ -84,9 +78,9 @@ void Customer::rentVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
 
     // Show available vehicles first
     cout << "\n" << Color::INFO << "Currently Available Vehicles:" << Color::RESET << "\n";
-    cout << "+-------+-------------------+-------+-------+------------+------------+\n";
-    cout << "| ID    | Model             | Year  | Cap.  | Rate       | Category   |\n";
-    cout << "+-------+-------------------+-------+-------+------------+------------+\n";
+    cout << "+-------+-------------------+-------+------------+------------+\n";
+    cout << "| ID    | Model             | Cap.  | Rate       | Category   |\n";
+    cout << "+-------+-------------------+-------+------------+------------+\n";
     bool anyAvailable = false;
     for (Vehicle* v : fleet) {
         if (v->getStatus() == VehicleStatus::Available) {
@@ -94,7 +88,7 @@ void Customer::rentVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
             anyAvailable = true;
         }
     }
-    cout << "+-------+-------------------+-------+-------+------------+------------+\n";
+    cout << "+-------+-------------------+-------+------------+------------+\n";
 
     if (!anyAvailable) {
         cout << Color::WARNING << "[SYSTEM] No vehicles are currently available for rent." << Color::RESET << endl;
@@ -106,6 +100,7 @@ void Customer::rentVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
 
     processRental(id, fleet, fh);
 }
+
 
 bool Customer::processRental(string id, vector<Vehicle*>& fleet, FileHandler& fh)
 {
@@ -149,9 +144,7 @@ bool Customer::processRental(string id, vector<Vehicle*>& fleet, FileHandler& fh
     return false;
 }
 
-/**
- * @brief Logic for returning a vehicle.
- */
+
 void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
 {
     string id;
@@ -176,9 +169,21 @@ void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
             InspectionReport report(v, this);
             report.fillReport();
 
-            // 2. Finalize Billing
-            int days = InputHandler::getInt("> Enter total days used", 1, 365, true);
-            if (days == InputHandler::CANCEL_INT) return;
+            // 2. Automated Billing Duration
+            string startDate = fh.getRentalStartDate(v->getID(), this->getID());
+            string endDate = Validator::getCurrentDate();
+            int days = 1; // Default to 1
+
+            if (!startDate.empty()) {
+                days = Validator::calculateDays(startDate, endDate);
+                cout << Color::INFO << "[SYSTEM] Rental started on: " << startDate << Color::RESET << endl;
+                cout << Color::INFO << "[SYSTEM] Today's Date      : " << endDate << Color::RESET << endl;
+                cout << Color::INFO << "[SYSTEM] Total Days Calculated: " << days << Color::RESET << endl;
+            } else {
+                cout << Color::WARNING << "[WARNING] Rental start date not found in history." << Color::RESET << endl;
+                days = InputHandler::getInt("> Please enter total days used manually", 1, 365, true);
+                if (days == InputHandler::CANCEL_INT) return;
+            }
 
             float baseBill = v->calculateCost(days);
             float discountedBill = v->calculateDiscountedCost(days);
@@ -188,9 +193,10 @@ void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
             float damageFee = report.getDamageFee();
             float totalBill = discountedBill + damageFee;
 
-            cout << "\n" << Color::NOTICE << "[!] PENDING CHARGES: " << Pricing::CURRENCY << fixed << setprecision(2) << totalBill << Color::RESET << "\n";
-            cout << Color::WARNING << "[CONFIRM] Finalize return and process payment? (Y/N): " << Color::RESET;
-            if (InputHandler::getChar("", "YN") == 'N') {
+            cout << "\n" << Color::NOTICE << "[!] PENDING CHARGES: " << Pricing::CURRENCY << (int)totalBill << Color::RESET << "\n";
+            cout << Color::WARNING << "[CONFIRM] Finalize return and process payment? (Y/N/Z:Back): " << Color::RESET;
+            char confirm = InputHandler::getChar("", "YN", true);
+            if (confirm == 'N' || confirm == 'Z') {
                 cout << Color::INFO << "[SYSTEM] Return process suspended." << Color::RESET << endl;
                 return;
             }

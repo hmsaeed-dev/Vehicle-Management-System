@@ -22,6 +22,12 @@ public:
     static bool isValidID(const std::string& id, char expectedPrefix = '\0');
     static bool isValidDate(const std::string& date);
     static bool isValidPhone(const std::string& phone);
+    static bool isValidCNIC(const std::string& cnic);
+    static bool isValidName(const std::string& name);
+
+    // --- Date Utilities ---
+    static std::string getCurrentDate();
+    static int calculateDays(const std::string& start, const std::string& end);
 
     // --- String Validations ---
     static bool isAlphaOnly(const std::string& str, bool allowSpaces = true);

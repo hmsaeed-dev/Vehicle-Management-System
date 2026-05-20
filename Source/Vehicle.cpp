@@ -9,13 +9,9 @@
  * @brief Constructor for the Vehicle base class.
  * Initializes core attributes common to all vehicles.
  */
-Vehicle::Vehicle(string id, string model, int year, int capacity, float rate)
-    : vehicleID(id), model(model), year(year), capacity(capacity), rentalRate(rate), status(VehicleStatus::Available) {}
-
-/**
- * @brief Virtual destructor.
- * Defined as empty; primary purpose is to allow proper cleanup of derived classes.
- */
+Vehicle::Vehicle(string id, string model, int capacity, float rate)
+    : vehicleID(id), model(model), capacity(capacity), rentalRate(rate), status(VehicleStatus::Available) {}
+    
 Vehicle::~Vehicle() {}
 
 // --- Getters ---
@@ -26,10 +22,6 @@ string Vehicle::getID() const {
 
 string Vehicle::getModel() const {
     return model;
-}
-
-int Vehicle::getYear() const {
-    return year;
 }
 
 int Vehicle::getCapacity() const {
@@ -72,9 +64,7 @@ float Vehicle::getDiscountPercentage(int days) const {
     return 0.0f;
 }
 
-/**
- * @brief Calculates the total cost after applying tiered discounts.
- */
+
 float Vehicle::calculateDiscountedCost(int days) {
     float baseTotal = calculateCost(days); // This already applies multipliers in derived classes
     float discount = baseTotal * getDiscountPercentage(days);
@@ -100,7 +90,6 @@ void Vehicle::displayInfo() {
     cout << "+------------------------------------------------------+\n" << Color::RESET;
     cout << "| Vehicle ID    :  " << left << setw(36) << getID() << "|\n";
     cout << "| Model         :  " << left << setw(36) << getModel() << "|\n";
-    cout << "| Year          :  " << left << setw(36) << getYear() << "|\n";
     cout << "| Capacity      :  " << left << setw(27) << getCapacity() << " " << setw(10) << getCapacityUnit() << "|\n";
     cout << "| Daily Rate    :  " << left << Pricing::CURRENCY << setw(35-Pricing::CURRENCY.length()) << (int)getRentalRate() << "|\n";
     cout << "+------------------------------------------------------+\n";
@@ -121,7 +110,6 @@ void Vehicle::displayRow() const
 
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()
-         << "| " << left << setw(6) << getYear()
          << "| " << left << setw(6) << getCapacity()
          << "| " << Pricing::CURRENCY << left << setw(10-Pricing::CURRENCY.length()) << (int)getRentalRate()
          << "| " << left << statusStr
@@ -133,7 +121,6 @@ void Vehicle::displayRowSimple() const
 {
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()
-         << "| " << left << setw(6) << getYear()
          << "| " << left << setw(6) << getCapacity()
          << "| " << Pricing::CURRENCY << left << setw(10-Pricing::CURRENCY.length()) << (int)getRentalRate()
          << "| " << left << getCategoryDisplay()

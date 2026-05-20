@@ -8,11 +8,11 @@
 
 namespace Pricing
 {
-    // Category Multipliers (Scaling base rates from file to realistic PKR)
-    const float LUXURY_MULTIPLIER = 500.0f;
-    const float SUV_MULTIPLIER    = 350.0f;
-    const float VAN_MULTIPLIER    = 250.0f;
-    const float ECONOMY_MULTIPLIER = 200.0f;
+    // Category Multipliers (Set to 1.0 as rates in file are already realistic PKR)
+    const float LUXURY_MULTIPLIER = 1.0f;
+    const float SUV_MULTIPLIER    = 1.0f;
+    const float VAN_MULTIPLIER    = 1.0f;
+    const float ECONOMY_MULTIPLIER = 1.0f;
 
     // Currency Label
     const std::string CURRENCY = "Rs. ";

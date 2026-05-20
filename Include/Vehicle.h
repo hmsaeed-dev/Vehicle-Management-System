@@ -18,14 +18,13 @@ class Vehicle
 private:
     string vehicleID;    // Unique ID (e.g., E001, L005)
     string model;        // Car model name
-    int year;            // Manufacturing year
     int capacity;        // Seating capacity
     float rentalRate;    // Base price per hour/day
     VehicleStatus status; // Current status
 
 public:
     // Constructor
-    Vehicle(string id, string model, int year, int capacity, float rate);
+    Vehicle(string id, string model, int capacity, float rate);
 
     // Virtual destructor is mandatory for polymorphic cleanup
     virtual ~Vehicle();
@@ -33,7 +32,6 @@ public:
     // Getters
     string getID() const;
     string getModel() const;
-    int getYear() const;
     int getCapacity() const;
     float getRentalRate() const;
     VehicleStatus getStatus() const;

@@ -123,20 +123,9 @@ void Admin::addVehicle(vector<Vehicle*>& fleet)
     type = InputHandler::getChar("Categories (E: Economy, L: Luxury, S: SUV, V: Van/Bus)", "ELSV", true);
     if (type == 'Z') return;
 
-    while (true) {
-        id = InputHandler::getString("Enter Vehicle ID (Numeric)", false, true);
-        if (id == InputHandler::CANCEL_STR) return;
-
-        if (!Validator::isValidID(id)) {
-            cout << Color::ERR << "[ERROR] Invalid format. Vehicle ID must be strictly numeric." << Color::RESET << endl;
-            continue;
-        }
-
-        bool exists = false;
-        for (Vehicle* v : fleet) if (v->getID() == id) { exists = true; break; }
-        if (!exists) break;
-        cout << Color::ERR << "[ERROR] Vehicle ID already exists!" << Color::RESET << endl;
-    }
+    // --- AUTOMATED NUMERIC ID GENERATION ---
+    id = FileHandler::generateNextVehicleID(fleet);
+    cout << Color::INFO << "[SYSTEM] Assigned Vehicle ID: " << Color::HIGHLIGHT << id << Color::RESET << endl;
 
     model = InputHandler::getString("Enter Model Name", true, true);
     if (model == InputHandler::CANCEL_STR) return;

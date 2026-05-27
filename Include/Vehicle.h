@@ -16,7 +16,7 @@ enum class VehicleStatus { Available, Rented, Sold };
 class Vehicle
 {
 private:
-    string vehicleID;    // Unique ID (e.g., E001, L005)
+    string vehicleID;    // Unique Numeric ID (e.g., 1001, 2005)
     string model;        // Car model name
     int capacity;        // Seating capacity
     float rentalRate;    // Base price per hour/day

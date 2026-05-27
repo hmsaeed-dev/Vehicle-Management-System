@@ -19,7 +19,7 @@ public:
     static bool inRange(float value, float min, float max);
 
     // --- Format Validations ---
-    static bool isValidID(const std::string& id, char expectedPrefix = '\0');
+    static bool isValidID(const std::string& id);
     static bool isValidDate(const std::string& date);
     static bool isValidPhone(const std::string& phone);
     static bool isValidCNIC(const std::string& cnic);

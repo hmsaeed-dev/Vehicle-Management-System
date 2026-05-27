@@ -191,8 +191,10 @@ string FileHandler::generateNextUserID(const vector<User*>& users)
     int maxID = 1000;
     for (User* u : users) {
         try {
-            int id = stoi(u->getID());
-            if (id > maxID) maxID = id;
+            if (Validator::isValidID(u->getID())) {
+                int id = stoi(u->getID());
+                if (id > maxID) maxID = id;
+            }
         } catch (...) {}
     }
     return to_string(maxID + 1);
@@ -200,11 +202,13 @@ string FileHandler::generateNextUserID(const vector<User*>& users)
 
 string FileHandler::generateNextVehicleID(const vector<Vehicle*>& fleet)
 {
-    int maxID = 0;
+    int maxID = 1000;
     for (Vehicle* v : fleet) {
         try {
-            int id = stoi(v->getID());
-            if (id > maxID) maxID = id;
+            if (Validator::isValidID(v->getID())) {
+                int id = stoi(v->getID());
+                if (id > maxID) maxID = id;
+            }
         } catch (...) {}
     }
     return to_string(maxID + 1);

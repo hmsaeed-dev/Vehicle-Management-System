@@ -15,7 +15,7 @@ bool Validator::isPositive(float value) { return value > 0.0f; }
 bool Validator::inRange(int value, int min, int max) { return value >= min && value <= max; }
 bool Validator::inRange(float value, float min, float max) { return value >= min && value <= max; }
 
-bool Validator::isValidID(const string& id, char expectedPrefix)
+bool Validator::isValidID(const string& id)
 {
     if (id.empty()) return false;
 

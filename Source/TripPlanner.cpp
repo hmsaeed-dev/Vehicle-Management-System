@@ -67,7 +67,7 @@ void TripPlanner::planTrip(string source, string destination, float distance, fl
             cout << "  "
                 << left << setw(20) << v->getModel()
                 << " [" << setw(6) << v->getID() << "]"
-                << "  " << Pricing::CURRENCY << setw(8) << fixed << setprecision(2) << v->calculateCost(1) << "\n";
+                << "  " << Pricing::CURRENCY << setw(8) << (int)v->calculateCost(1) << "\n";
         }
         cout << "\n  " << Color::SUCCESS << "[SYSTEM] Found " << matches.size() << " suitable options [Sorted by Price]." << Color::RESET << "\n";
     }

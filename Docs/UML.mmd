@@ -5,15 +5,13 @@ classDiagram
     class Vehicle {
         - string vehicleID
         - string model
-        - int year
         - int capacity
         - float rentalRate
         - VehicleStatus status
-        + Vehicle(string id, string model, int year, int capacity, float rate)
+        + Vehicle(string id, string model, int capacity, float rate)
         + Destructor_Vehicle()
         + string getID()
         + string getModel()
-        + int getYear()
         + int getCapacity()
         + float getRentalRate()
         + VehicleStatus getStatus()
@@ -30,9 +28,9 @@ classDiagram
     }
 
     class Economy {
-        + Economy(string id, string model, int year, int capacity, float rate)
+        + Economy(string id, string model, int capacity, float rate)
         + string getCategory() const
-        + float calculateCost(int hours)
+        + float calculateCost(int days)
         + void displayInfo()
         + void displayRow() const
         + void displayRowSimple() const
@@ -40,26 +38,26 @@ classDiagram
 
     class Luxury {
         - string luxuryFeatures
-        + Luxury(string id, string model, int year, int capacity, float rate, string features)
+        + Luxury(string id, string model, int capacity, float rate, string features)
         + string getLuxuryFeatures() const
         + string getCategory() const
-        + float calculateCost(int hours)
+        + float calculateCost(int days)
         + void displayInfo()
         + void displayRow() const
         + void displayRowSimple() const
     }
 
     class SUV {
-        + SUV(string id, string model, int year, int capacity, float rate)
+        + SUV(string id, string model, int capacity, float rate)
         + string getCategory() const
-        + float calculateCost(int hours)
+        + float calculateCost(int days)
         + void displayInfo()
         + void displayRow() const
         + void displayRowSimple() const
     }
 
     class Van {
-        + Van(string id, string model, int year, int capacity, float rate)
+        + Van(string id, string model, int capacity, float rate)
         + string getCategory() const
         + float calculateCost(int days)
         + void displayInfo()
@@ -77,21 +75,19 @@ classDiagram
         - string userID
         - string username
         - string name
-        - string phone
         - string password
-        + User(string id, string username, string name, string phone, string password)
+        + User(string id, string username, string name, string password)
         + Destructor_User()
         + string getID()
         + string getUsername()
         + string getName()
-        + string getPhone()
         + string getPassword()
         + bool authenticate(string inputPassword)
         # void showMenu()
     }
 
     class Admin {
-        + Admin(string id, string username, string name, string phone, string password)
+        + Admin(string id, string username, string name, string password)
         + void showMenu()
         + void showDashboard(vector~Vehicle*~ fleet)
         + void addVehicle(vector~Vehicle*~ fleet)
@@ -103,7 +99,7 @@ classDiagram
 
     class Customer {
         - vector~string~ rentalHistory
-        + Customer(string id, string username, string name, string phone, string password)
+        + Customer(string id, string username, string name, string password)
         + void showMenu()
         + void viewRentalHistory()
         + void addToHistory(string record)
@@ -167,11 +163,7 @@ classDiagram
     class SearchEngine {
         - vector~Vehicle*~ fleet
         + SearchEngine(vector~Vehicle*~ f)
-        + vector~Vehicle*~ searchByPriceRange(float min, float max)
         + vector~Vehicle*~ searchByCategory(char type)
-        + vector~Vehicle*~ searchByAvailability()
-        + vector~Vehicle*~ searchByYearRange(int minYear, int maxYear)
-        + vector~Vehicle*~ smartSearch(char type, float maxPrice, bool onlyAvailable)
     }
 
     class TripPlanner {
@@ -213,7 +205,7 @@ classDiagram
         - string condition
         - string evaluationRemarks
         - string date
-        + InspectionReport(Vehicle* v, Customer* c)
+        + InspectionReport(Vehicle* v, User* inspector)
         + void fillReport()
         + void displayReport() const
         + void saveToFile(ofstream out) const
@@ -222,7 +214,7 @@ classDiagram
     }
 
     InspectionReport o-- Vehicle : "inspectedVehicle"
-    InspectionReport o-- Customer : "inspector"
+    InspectionReport o-- User : "inspector"
 
     class Validator {
         <<utility>>
@@ -232,9 +224,9 @@ classDiagram
         + static bool isPositive(float value)
         + static bool inRange(int value, int min, int max)
         + static bool inRange(float value, float min, float max)
-        + static bool isValidID(string id, char expectedPrefix)
+        + static bool isValidID(string id)
         + static bool isValidDate(string date)
-        + static bool isValidPhone(string phone)
+        + static bool isValidCNIC(string cnic)
         + static bool isAlphaOnly(string str, bool allowSpaces)
         + static bool isAlphanumeric(string str)
     }

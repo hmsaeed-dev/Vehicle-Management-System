@@ -117,7 +117,7 @@ VehicleManagementSystem.exe
 
 ### **Customer Workflow**
 1. **Register/Login** – Create new account or log in with existing credentials
-2. **Search Vehicles** – Filter by category, price range, year, availability, or passenger capacity
+2. **Search Vehicles** – Filter by category, price range, availability, or passenger capacity
 3. **Plan Trip** – Use Trip Planner for vehicle recommendations based on distance and budget
 4. **Rent Vehicle** – Select vehicle and complete rental transaction
 5. **Return & Inspect** – Return vehicle and complete post-rental inspection report

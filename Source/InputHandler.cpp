@@ -39,9 +39,7 @@ namespace InputHandler
         string input;
         while (true)
         {
-            cout << prompt;
-            if (allowCancel) cout << Color::PROMPT << " [Z:Back]" << Color::RESET;
-            cout << ": ";
+            cout << prompt << ": ";
 
             if (!getline(cin, input)) { clearBuffer(); continue; }
             if (input.empty()) continue;
@@ -68,9 +66,7 @@ namespace InputHandler
         string input;
         while (true)
         {
-            cout << prompt;
-            if (allowCancel) cout << Color::PROMPT << " [Z:Back]" << Color::RESET;
-            cout << ": ";
+            cout << prompt << ": ";
 
             if (!getline(cin, input)) { clearBuffer(); continue; }
             if (input.empty()) continue;
@@ -97,9 +93,7 @@ namespace InputHandler
         string value;
         while (true)
         {
-            cout << prompt;
-            if (allowCancel) cout << Color::PROMPT << " [Z:Back]" << Color::RESET;
-            cout << ": ";
+            cout << prompt << ": ";
 
             if (!getline(cin, value)) { clearBuffer(); continue; }
 
@@ -120,9 +114,7 @@ namespace InputHandler
         string value;
         while (true)
         {
-            cout << prompt;
-            if (allowCancel) cout << Color::PROMPT << " [Z:Back]" << Color::RESET;
-            cout << ": ";
+            cout << prompt << ": ";
 
             if (!getline(cin, value)) { clearBuffer(); continue; }
 
@@ -141,9 +133,7 @@ namespace InputHandler
 
         while (true)
         {
-            cout << prompt;
-            if (allowCancel) cout << Color::PROMPT << " [Z:Back]" << Color::RESET;
-            cout << ": ";
+            cout << prompt << ": ";
 
             if (!getline(cin, input)) { clearBuffer(); continue; }
             if (input.empty()) continue;

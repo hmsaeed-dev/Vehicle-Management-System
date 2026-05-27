@@ -79,6 +79,10 @@ int Validator::calculateDays(const string& start, const string& end)
 {
     auto parseDate = [](const string& date) {
         tm t = {};
+        // Explicitly initialize to zero to prevent garbage values
+        t.tm_sec = 0; t.tm_min = 0; t.tm_hour = 0;
+        t.tm_isdst = -1; // -1 means mktime determines DST automatically
+
         stringstream ss(date);
         char dash;
         ss >> t.tm_mday >> dash >> t.tm_mon >> dash >> t.tm_year;
@@ -93,10 +97,12 @@ int Validator::calculateDays(const string& start, const string& end)
     time_t time1 = mktime(&tm1);
     time_t time2 = mktime(&tm2);
 
+    if (time1 == -1 || time2 == -1) return 1; // Fallback for parse errors
+
     const int seconds_per_day = 60 * 60 * 24;
     double difference = difftime(time2, time1) / seconds_per_day;
 
-    int days = static_cast<int>(difference);
+    int days = static_cast<int>(difference + 0.1); // Add small epsilon for floating point precision
     return (days < 1) ? 1 : days; // Minimum 1 day billing
 }
 

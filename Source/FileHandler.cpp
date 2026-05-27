@@ -12,6 +12,7 @@
 #include "SaleTransaction.h"
 #include "InspectionReport.h"
 #include "Constants.h"
+#include "Validator.h"
 
 #include <iomanip>
 #include <fstream>
@@ -24,7 +25,7 @@
 /**
  * @brief Helper to split a string by a delimiter and trim whitespace.
  */
-vector<string> split(const string& s, char delimiter)
+static vector<string> split(const string& s, char delimiter)
 {
     vector<string> tokens;
     string token;
@@ -277,24 +278,30 @@ string FileHandler::getRentalStartDate(const string& vID, const string& cID)
 {
     ifstream file(Config::TRANSACTIONS_FILE);
     string line;
-    string startDate = "";
+    vector<string> lines;
 
     if (!file.is_open()) return "";
 
-    while (getline(file, line))
+    // Read all lines to allow reverse searching
+    while (getline(file, line)) {
+        if (!line.empty()) lines.push_back(line);
+    }
+    file.close();
+
+    // Search backwards to find the MOST RECENT start date for this rental session
+    for (int i = lines.size() - 1; i >= 0; --i)
     {
-        if (line.empty()) continue;
-        vector<string> data = split(line, '|');
+        vector<string> data = split(lines[i], '|');
         if (data.size() < 5) continue;
 
         // Type|vID|cID|Amount|Date
         if (data[0] == "RENT_START" && data[1] == vID && data[2] == cID)
         {
-            startDate = data[4]; // Keep track of the latest start date
+            return data[4]; // Found the latest one, return immediately
         }
     }
-    file.close();
-    return startDate;
+
+    return "";
 }
 
 

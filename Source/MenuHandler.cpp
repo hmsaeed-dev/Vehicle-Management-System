@@ -58,13 +58,16 @@ void MenuHandler::handleRegistration()
     cout << "  Please enter your details to create an account (or 'Z' to go back):\n\n";
 
     while (true) {
-        name = InputHandler::getString("  > Full Name (Min 3 chars)", true, true);
+        name = InputHandler::getString("  > Full Name (Min 3 characters)", true, true);
         if (name == InputHandler::CANCEL_STR) return;
-        if (Validator::isValidName(name)) break;
+        
+        // Strictly enforcing 3+ characters for Pakistan-style full names
+        if (name.length() >= 3 && Validator::isAlphaOnly(name)) break;
+        
         cout << Color::ERR << "[ERROR] Name must be at least 3 characters and contain only letters." << Color::RESET << endl;
     }
 
-    username = InputHandler::getString("  > Username", false, true);
+    username = InputHandler::getString("  > Login Username", false, true);
     if (username == InputHandler::CANCEL_STR) return;
 
     // Check if username is taken
@@ -82,14 +85,14 @@ void MenuHandler::handleRegistration()
         return;
     }
 
-    // --- UNIFIED ID GENERATION ---
+    // --- AUTOMATED ID GENERATION ---
     id = FileHandler::generateNextUserID(users);
 
     while (true) {
         cnic = InputHandler::getString("  > CNIC (XXXXX-XXXXXXX-X)", false, true);
         if (cnic == InputHandler::CANCEL_STR) return;
         if (Validator::isValidCNIC(cnic)) break;
-        cout << Color::ERR << "[ERROR] Invalid CNIC format. Expected: XXXXX-XXXXXXX-X" << Color::RESET << endl;
+        cout << Color::ERR << "[ERROR] Invalid CNIC format. Expected: 12345-1234567-1" << Color::RESET << endl;
     }
 
     password = InputHandler::getString("  > Secure Password", false, true);
@@ -98,8 +101,9 @@ void MenuHandler::handleRegistration()
     cout << "\n" << Color::HEADER << "+----------------------------------------------------------+\n" << Color::RESET;
 
     users.push_back(new Customer(id, username, name, cnic, password));
-    cout << Color::SUCCESS << "[SUCCESS] Account created! Your Unique ID is: " << Color::HIGHLIGHT << id << Color::RESET << endl;
-    cout << "  Please use your Username to login." << endl;
+    cout << Color::SUCCESS << "[SUCCESS] Registration complete!" << Color::RESET << endl;
+    cout << "  Your assigned Account ID is: " << Color::HIGHLIGHT << id << Color::RESET << endl;
+    cout << "  Please use your Username (" << Color::HIGHLIGHT << username << Color::RESET << ") for future logins." << endl;
     InputHandler::waitForEnter();
 }
 
@@ -148,7 +152,7 @@ void MenuHandler::adminSession(User* currentUser)
     do {
         admin->showDashboard(fleet);
         admin->showMenu();
-        int choice = InputHandler::getInt("Selection", 1, 6, true);
+        int choice = InputHandler::getInt("Selection", 1, 8, true);
 
         if (choice == InputHandler::CANCEL_INT) { logout = true; break; }
 
@@ -158,7 +162,9 @@ void MenuHandler::adminSession(User* currentUser)
             case 3: admin->removeUser(users, fh); break;
             case 4: admin->salePurchaseModule(fleet, users, fh); break;
             case 5: admin->viewAllRecords(fleet, users); break;
-            case 6: admin->processReturn(fleet, users, fh); break;
+            case 6: admin->viewTransactionHistory(); break;
+            case 7: admin->viewCustomerReport(users); break;
+            case 8: admin->processReturn(fleet, users, fh); break;
             default: cout << Color::ERR << "Invalid selection." << Color::RESET << endl;
         }
         if (!logout) InputHandler::waitForEnter();

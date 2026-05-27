@@ -68,21 +68,20 @@ float InspectionReport::getDamageFee() const
 void InspectionReport::displayReport() const
 {
     cout << "\n";
-    cout << Color::HEADER;
-    cout << "+==========================================================+\n";
-    cout << "|                     INSPECTION REPORT                    |\n";
-    cout << "+==========================================================+\n" << Color::RESET;
-    cout << "| Date           :  " << left << setw(39) << date << "|\n";
-    cout << "| Vehicle        :  " << left << setw(39) << (inspectedVehicle ? inspectedVehicle->getModel() : "N/A") << "|\n";
-    cout << "| Customer       :  " << left << setw(39) << (inspector ? inspector->getName() : "N/A") << "|\n";
+    cout << Color::SUBHEADER << "+----------------------------------------------------------+\n";
+    cout << "|                 VEHICLE INSPECTION REPORT                |\n";
+    cout << "+----------------------------------------------------------+\n" << Color::RESET;
+    cout << "| " << left << setw(20) << "Return Date" << ": " << setw(35) << date << "|\n";
+    cout << "| " << left << setw(20) << "Vehicle Model" << ": " << setw(35) << (inspectedVehicle ? inspectedVehicle->getModel() : "N/A") << "|\n";
+    cout << "| " << left << setw(20) << "Customer/Inspector" << ": " << setw(35) << (inspector ? inspector->getName() : "N/A") << "|\n";
     cout << "+----------------------------------------------------------+\n";
-    cout << "| Fuel Level     :  " << left << setw(39) << fuelLevel << "|\n";
-    cout << "| Condition      :  " << left << setw(39) << condition << "|\n";
-    cout << "| Mileage        :  " << left << setw(36) << mileage << " km |" << "\n";
+    cout << "| " << left << setw(20) << "Fuel Level" << ": " << setw(35) << fuelLevel << "|\n";
+    cout << "| " << left << setw(20) << "Mileage" << ": " << setw(32) << (int)mileage << " km" << " |\n";
+    cout << "| " << left << setw(20) << "Vehicle Condition" << ": " << setw(35) << condition << "|\n";
     cout << "+----------------------------------------------------------+\n";
-    cout << "| Damage Notes   :  " << left << setw(39) << damageNotes << "|\n";
-    cout << "| Remarks        :  " << left << setw(39) << evaluationRemarks << "|\n";
-    cout << Color::NOTICE << "+==========================================================+\n" << Color::RESET << "\n";
+    cout << "| " << left << setw(20) << "Damage Notes" << ": " << setw(35) << damageNotes << "|\n";
+    cout << "| " << left << setw(20) << "Eval. Remarks" << ": " << setw(35) << evaluationRemarks << "|\n";
+    cout << Color::SUBHEADER << "+----------------------------------------------------------+\n" << Color::RESET << "\n";
 }
 
 

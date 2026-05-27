@@ -2,3 +2,4 @@ ADMIN|1001|admin|HMS|42101-1234567-1|admin123
 CUSTOMER|2001|saeed|Hafiz Muhammad Saeed|35201-4935994-1|saeed123
 CUSTOMER|2002|saadi|Muhammad Saad|35201-4935994-1|123
 CUSTOMER|2003|talhamza|Talha|35201-4786997-1|chess
+

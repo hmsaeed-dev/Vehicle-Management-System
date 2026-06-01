@@ -37,10 +37,6 @@ public:
 
     void viewAllRecords(const std::vector<Vehicle*>& fleet, const std::vector<User*>& users);
     void viewTransactionHistory();
-    void viewCustomerReport(const std::vector<User*>& users);
-    
-    // New: Admin can process returns for stranded vehicles
-    void processReturn(std::vector<Vehicle*>& fleet, std::vector<User*>& users, FileHandler& fh);
 
 private:
     // Safety check helper

@@ -1,0 +1,87 @@
+classDiagram
+    direction TB
+
+    %% --- CORE HIERARCHIES ---
+
+    class User {
+        <<Abstract>>
+        -string userID
+        -string name
+            +showMenu()*
+        }
+        class Admin {
+            +addVehicle()
+            +removeVehicle()
+        }
+        class Customer {
+            +rentVehicle()
+            +returnVehicle()
+        }
+        User <|-- Admin
+        User <|-- Customer
+
+        class Vehicle {
+            <<Abstract>>
+            -string vehicleID
+            -string model
+            -VehicleStatus status
+            +calculateCost(int)*
+        }
+        class Economy
+        class Luxury
+        class SUV
+        class Van
+        Vehicle <|-- Economy
+        Vehicle <|-- Luxury
+        Vehicle <|-- SUV
+        Vehicle <|-- Van
+
+        class Transaction {
+            <<Abstract>>
+            #Vehicle* vehicle
+            #Customer* customer
+            +finalise()*
+        }
+        class RentalTransaction {
+            +calculateBill()
+        }
+        class SaleTransaction
+        Transaction <|-- RentalTransaction
+        Transaction <|-- SaleTransaction
+
+        %% --- SYSTEM MANAGERS ---
+
+        class MenuHandler {
+            +runMainMenu()
+        }
+        class FileHandler {
+            +loadVehicles()
+            +saveVehicles()
+            +loadUsers()
+            +saveUsers()
+        }
+
+        class InspectionReport {
+            -Vehicle* vehicle
+            -User* inspector
+            +fillReport()
+        }
+
+        %% --- RELATIONSHIPS (Simplified) ---
+
+        Transaction o-- Vehicle : "refers to"
+        Transaction o-- Customer : "belongs to"
+        InspectionReport o-- Vehicle : "inspects"
+
+        MenuHandler --> FileHandler : "persistence"
+        FileHandler ..> Vehicle : "IO"
+        FileHandler ..> User : "IO"
+
+        %% ENUMS
+        class VehicleStatus {
+            <<enumeration>>
+            Available
+            Rented
+            Sold
+        }
+        Vehicle -- VehicleStatus

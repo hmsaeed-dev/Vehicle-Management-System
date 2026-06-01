@@ -152,7 +152,7 @@ void MenuHandler::adminSession(User* currentUser)
     do {
         admin->showDashboard(fleet);
         admin->showMenu();
-        int choice = InputHandler::getInt("Selection", 1, 8, true);
+        int choice = InputHandler::getInt("Selection", 1, 6, true);
 
         if (choice == InputHandler::CANCEL_INT) { logout = true; break; }
 
@@ -163,8 +163,6 @@ void MenuHandler::adminSession(User* currentUser)
             case 4: admin->salePurchaseModule(fleet, users, fh); break;
             case 5: admin->viewAllRecords(fleet, users); break;
             case 6: admin->viewTransactionHistory(); break;
-            case 7: admin->viewCustomerReport(users); break;
-            case 8: admin->processReturn(fleet, users, fh); break;
             default: cout << Color::ERR << "Invalid selection." << Color::RESET << endl;
         }
         if (!logout) InputHandler::waitForEnter();

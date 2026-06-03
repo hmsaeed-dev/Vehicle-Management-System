@@ -1,0 +1,199 @@
+classDiagram
+    direction TB
+
+    %% --- Core Domain: Vehicle Hierarchy ---
+    class Vehicle {
+        <<abstract>>
+        - string vehicleID
+        - string model
+        - int capacity
+        - float rentalRate
+        - VehicleStatus status
+        + Vehicle(string id, string model, int capacity, float rate)
+        + ~Vehicle()*
+        + string getID() const
+        + string getModel() const
+        + int getCapacity() const
+        + float getRentalRate() const
+        + VehicleStatus getStatus() const
+        + bool getAvailable() const
+        + void setStatus(VehicleStatus newStatus)
+        + void setAvailable(bool available)
+        + virtual string getCategory() const = 0
+        + virtual float calculateCost(int days) = 0
+        + virtual void displayInfo()
+        + virtual void displayRow() const
+        + virtual void displayRowSimple() const
+        + float calculateDiscountedCost(int days)
+        + float getDiscountPercentage(int days) const
+        # virtual string getHeaderTitle() const = 0
+        # virtual string getCategoryDisplay() const = 0
+        # virtual string getCapacityUnit() const
+        # virtual void displayExtraInfo() const
+    }
+
+    class Economy {
+        + Economy(string id, string model, int capacity, float rate)
+    }
+
+    class Luxury {
+        - string luxuryFeatures
+        + Luxury(string id, string model, int capacity, float rate, string features)
+    }
+
+    class SUV {
+        + SUV(string id, string model, int capacity, float rate)
+    }
+
+    class Van {
+        + Van(string id, string model, int capacity, float rate)
+    }
+
+    Vehicle <|-- Economy
+    Vehicle <|-- Luxury
+    Vehicle <|-- SUV
+    Vehicle <|-- Van
+
+    %% --- User Hierarchy ---
+    class User {
+        <<abstract>>
+        - string userID
+        - string username
+        - string name
+        - string cnic
+        - string password
+        + User(string id, string username, string name, string cnic, string password)
+        + ~User()*
+        + string getID() const
+        + string getUsername() const
+        + string getName() const
+        + string getCNIC() const
+        + string getPassword() const
+        + bool authenticate(string inputPassword) const
+        + virtual void showMenu() = 0
+        + virtual string getRole() const = 0
+    }
+
+    class Admin {
+        + Admin(...)
+        + void showMenu()
+        + void showDashboard(const vector~Vehicle*~& fleet)
+        + void addVehicle(vector~Vehicle*~& fleet)
+        + void removeVehicle(vector~Vehicle*~& fleet)
+        + void removeUser(vector~User*~& users, FileHandler& fh)
+        + void salePurchaseModule(vector~Vehicle*~& fleet, vector~User*~& users, FileHandler& fh)
+        + void viewAllRecords(const vector~Vehicle*~& fleet, const vector~User*~& users)
+        + void viewTransactionHistory()
+    }
+
+    class Customer {
+        - vector~string~ rentalHistory
+        + Customer(...)
+        + void showMenu()
+        + void viewRentalHistory()
+        + void addToHistory(const string& record)
+        + void rentVehicle(vector~Vehicle*~& fleet, FileHandler& fh)
+        + bool processRental(string vehicleID, vector~Vehicle*~& fleet, FileHandler& fh)
+        + void returnVehicle(vector~Vehicle*~& fleet, FileHandler& fh)
+    }
+
+    User <|-- Admin
+    User <|-- Customer
+
+    %% --- Transaction Hierarchy ---
+    class Transaction {
+        <<abstract>>
+        - string transactionID
+        - Vehicle* vehicle
+        - Customer* customer
+        - string date
+        + Transaction(string id, Vehicle* v, Customer* c, string date)
+        + ~Transaction()*
+        + virtual void finalise() = 0
+        + string getTransactionID() const
+        + string getDate() const
+    }
+
+    class RentalTransaction {
+        - string startTime
+        - string endTime
+        - int daysRented
+        - float totalBill
+        + RentalTransaction(...)
+        + void finalise()
+        + void setEndTime(string end, int days)
+        + float calculateBill()
+    }
+
+    class SaleTransaction {
+        - float salePrice
+        + SaleTransaction(...)
+        + void finalise()
+    }
+
+    Transaction <|-- RentalTransaction
+    Transaction <|-- SaleTransaction
+
+    %% --- Associations & Composition ---
+    Transaction o-- Vehicle : "references"
+    Transaction o-- Customer : "references"
+
+    class InspectionReport {
+        - Vehicle* inspectedVehicle
+        - User* inspector
+        - string fuelLevel
+        - string condition
+        + InspectionReport(Vehicle* v, User* u)
+        + void fillReport()
+        + void saveToFile(ofstream& out) const
+        + float getDamageFee() const
+    }
+
+    InspectionReport o-- Vehicle : "references"
+    InspectionReport o-- User : "references"
+
+    %% --- System Orchestration ---
+    class FileHandler {
+        + vector~Vehicle*~ loadVehicles()
+        + void saveVehicles(const vector~Vehicle*~& fleet)
+        + vector~User*~ loadUsers()
+        + void saveUsers(const vector~User*~& users)
+        + void appendTransaction(...)
+        + void loadTransactionsIntoHistory(vector~User*~& users)
+        + void saveInspection(const InspectionReport& report)
+    }
+
+    class SearchEngine {
+        - vector~Vehicle*~& fleet
+        + SearchEngine(vector~Vehicle*~& f)
+        + vector~Vehicle*~ searchByCategory(char type)
+    }
+
+    class MenuHandler {
+        - vector~Vehicle*~& fleet
+        - vector~User*~& users
+        - FileHandler& fh
+        + MenuHandler(...)
+        + void runMainMenu()
+        + void handleRegistration()
+        + void handleLogin()
+    }
+
+    MenuHandler o-- Vehicle : "manages fleet"
+    MenuHandler o-- User : "manages users"
+    MenuHandler --> FileHandler : "uses"
+    MenuHandler --> SearchEngine : "invokes"
+
+    class Validator {
+        <<utility>>
+        + static bool isValidID(const string& id)
+        + static bool isValidCNIC(const string& cnic)
+        + static int calculateDays(string start, string end)
+    }
+
+    class VehicleStatus {
+        <<enumeration>>
+        Available
+        Rented
+        Sold
+    }

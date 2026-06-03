@@ -1,0 +1,126 @@
+classDiagram
+    direction TB
+
+    %% --- CORE HIERARCHIES ---
+
+    class User {
+        <<Abstract>>
+        -string userID
+        -string name
+        -string cnic
+        +showMenu()*
+        +getRole()*
+    }
+
+    class Admin {
+        +addVehicle()
+        +removeVehicle()
+        +viewAllRecords()
+    }
+
+    class Customer {
+        +rentVehicle()
+        +returnVehicle()
+        +viewRentalHistory()
+    }
+
+    User <|-- Admin
+    User <|-- Customer
+
+    class Vehicle {
+        <<Abstract>>
+        -string vehicleID
+        -string model
+        -float rentalRate
+        -VehicleStatus status
+        +calculateCost(days)*
+        +displayInfo()
+    }
+
+    class Economy
+    class Luxury
+    class SUV
+    class Van
+
+    Vehicle <|-- Economy
+    Vehicle <|-- Luxury
+    Vehicle <|-- SUV
+    Vehicle <|-- Van
+
+    class Transaction {
+        <<Abstract>>
+        #Vehicle* vehicle
+        #Customer* customer
+        +finalise()*
+    }
+
+    class RentalTransaction {
+        -int daysRented
+        +calculateBill()
+    }
+
+    class SaleTransaction
+
+    Transaction <|-- RentalTransaction
+    Transaction <|-- SaleTransaction
+
+    %% --- SYSTEM MANAGERS ---
+
+    class MenuHandler {
+        +runMainMenu()
+        +handleLogin()
+        +handleRegistration()
+    }
+
+    class FileHandler {
+        +loadVehicles()
+        +saveVehicles()
+        +loadUsers()
+        +saveUsers()
+        +saveInspection()
+    }
+
+    class InspectionReport {
+        -Vehicle* vehicle
+        -User* inspector
+        +fillReport()
+        +getDamageFee()
+    }
+
+    class SearchEngine {
+        +searchByCategory()
+    }
+
+    class TripPlanner {
+        +planTrip()
+    }
+
+    %% --- RELATIONSHIPS (Simplified) ---
+
+    Transaction o-- Vehicle : "refers to"
+    Transaction o-- Customer : "belongs to"
+    InspectionReport o-- Vehicle : "inspects"
+    InspectionReport o-- User : "inspector"
+
+    MenuHandler --> FileHandler : "persistence"
+    MenuHandler --> SearchEngine : "filters"
+    MenuHandler --> TripPlanner : "evaluates"
+    FileHandler ..> Vehicle : "IO"
+    FileHandler ..> User : "IO"
+
+    %% --- ENUMS & UTILITIES ---
+
+    class VehicleStatus {
+        <<enumeration>>
+        Available
+        Rented
+        Sold
+    }
+    Vehicle -- VehicleStatus
+
+    class Validator {
+        <<Utility>>
+        +isValidID()
+        +isValidCNIC()
+        +calculateDays()
+    }

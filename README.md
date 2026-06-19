@@ -4,7 +4,8 @@
 
 A comprehensive console-based vehicle rental and sales management platform built in C++17. Manage fleet inventory, handle customer rentals, conduct vehicle inspections, and process sales transactions with role-based access control.
 
-**Table of Contents**
+## **Table of Contents**
+
 - [Overview](#overview)
 - [Key Features](#key-features)
 - [System Architecture](#system-architecture)

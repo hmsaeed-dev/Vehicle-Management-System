@@ -1,6 +1,6 @@
 3|3001|Suzuki Alto|4|3000|0
 3|3002|Suzuki Cultus|5|4000|0
-3|3003|Toyota Corolla GLI|5|6000|0
+3|3003|Toyota Corolla GLI|5|6000|2
 3|3004|Honda City Aspire|5|6500|0
 4|4001|Toyota Land Cruiser|7|60000|0
 4|4002|Audi A6 Prestige|5|45000|0
@@ -8,8 +8,9 @@
 4|4004|BMW 7 Series|5|80000|0
 5|5001|Toyota Hilux Revo|5|15000|0
 5|5002|Toyota Fortuner|7|25000|0
-5|5003|Kia Sportage|5|12000|0
+5|5003|Kia Sportage|5|12000|1
 5|5004|Hyundai Tucson|5|12000|0
 6|6001|Toyota Hiace|15|18000|0
 6|6002|Suzuki Bolan|7|3500|0
 6|6003|Toyota Coaster|29|35000|0
+3|3020|Toyota CLI|4|3400|0

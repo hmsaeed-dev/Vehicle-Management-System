@@ -60,7 +60,7 @@ void Customer::viewRentalHistory()
             else if (record.find("Returned") != string::npos) coloredRecord = Color::SUCCESS + record + Color::RESET;
 
             // Manual padding for colored strings is tricky, so we keep it simple
-            cout << "| - " << left << record << string(max(0, (int)(66 - record.length())), ' ') << " |\n";
+            cout << "| - " << left << coloredRecord << string(max(0, (int)(66 - record.length())), ' ') << " |\n";
         }
         cout << "+----------------------------------------------------------------------+\n";
     }
@@ -141,14 +141,18 @@ bool Customer::processRental(string id, vector<Vehicle*>& fleet, FileHandler& fh
             cout << Color::SUBHEADER << "+====================================================================+\n";
             cout << "|                       ESTIMATED RENTAL QUOTE                       |\n";
             cout << "+====================================================================+\n" << Color::RESET;
+            string rateVal = Pricing::CURRENCY + to_string((int)v->getRentalRate());
+            string totalVal = Pricing::CURRENCY + to_string((int)estTotal);
+            string discountVal = "-" + Pricing::CURRENCY + to_string((int)estDiscount) + " (" + to_string((int)(discPerc * 100)) + "%)";
+
             cout << "| Vehicle          :  " << left << setw(47) << v->getModel() << "|\n";
-            cout << "| Daily Rate       :  " << Pricing::CURRENCY << left << setw(46-Pricing::CURRENCY.length()) << (int)v->getRentalRate() << "|\n";
+            cout << "| Daily Rate       :  " << left << setw(47) << rateVal << "|\n";
             cout << "| Planned Duration :  " << left << setw(47) << plannedDays << "|\n";
             cout << "+--------------------------------------------------------------------+\n";
-            cout << "| ESTIMATED TOTAL  :  " << Pricing::CURRENCY << left << setw(46-Pricing::CURRENCY.length()) << (int)estTotal << "|\n";
+            cout << "| ESTIMATED TOTAL  :  " << left << setw(47) << totalVal << "|\n";
             
             if (estDiscount > 0) {
-                cout << Color::SUCCESS << "| Incl. Discount   : -" << Pricing::CURRENCY << left << setw(45-Pricing::CURRENCY.length()) << (int)estDiscount << " (" << (int)(discPerc * 100) << "%)" << Color::RESET << "|\n";
+                cout << Color::SUCCESS << "| Incl. Discount   :  " << left << setw(47) << discountVal << Color::RESET << "|\n";
             }
             
             cout << Color::SUBHEADER << "+====================================================================+\n" << Color::RESET;
@@ -243,27 +247,34 @@ void Customer::returnVehicle(vector<Vehicle*>& fleet, FileHandler& fh)
             cout << Color::SUBHEADER << "+====================================================================+\n";
             cout << "|                          RENTAL RECEIPT                            |\n";
             cout << "+====================================================================+\n" << Color::RESET;
+            string rateVal = Pricing::CURRENCY + to_string((int)v->getRentalRate());
+            string baseVal = Pricing::CURRENCY + to_string((int)baseBill);
+            string calcVal = "(" + to_string((int)v->getRentalRate()) + " x " + to_string(days) + " days)";
+            string discountVal = (discountAmt > 0) ? ("-" + Pricing::CURRENCY + to_string((int)discountAmt) + " (" + to_string((int)(discountPerc * 100)) + "%)") : "None Applied";
+            string feeVal = (damageFee > 0) ? (Pricing::CURRENCY + to_string((int)damageFee)) : "None";
+            string totalVal = Pricing::CURRENCY + to_string((int)totalBill);
+
             cout << "| Vehicle          :  " << left << setw(47) << v->getModel() << "|\n";
-            cout << "| Daily Rental Rate:  " << Pricing::CURRENCY << left << setw(46-Pricing::CURRENCY.length()) << (int)v->getRentalRate() << "|\n";
+            cout << "| Daily Rental Rate:  " << left << setw(47) << rateVal << "|\n";
             cout << "| Total Days Rented:  " << left << setw(47) << days << "|\n";
             cout << "+--------------------------------------------------------------------+\n";
-            cout << "| BASE RENTAL COST :  " << Pricing::CURRENCY << left << setw(46-Pricing::CURRENCY.length()) << (int)baseBill << "|\n";
-            cout << "| Calculation      :  (" << (int)v->getRentalRate() << " x " << days << " days)" << string(34 - to_string(days).length() - to_string((int)v->getRentalRate()).length(), ' ') << "|\n";
+            cout << "| BASE RENTAL COST :  " << left << setw(47) << baseVal << "|\n";
+            cout << "| Calculation      :  " << left << setw(47) << calcVal << "|\n";
 
             if (discountAmt > 0) {
-                cout << Color::WARNING << "| Promo Discount   : -" << Pricing::CURRENCY << left << setw(45-Pricing::CURRENCY.length()) << (int)discountAmt << " (" << (int)(discountPerc * 100) << "%)" << Color::RESET << "|\n";
+                cout << Color::WARNING << "| Promo Discount   :  " << left << setw(47) << discountVal << Color::RESET << "|\n";
             } else {
-                cout << "| Promo Discount   :  " << left << setw(50) << "None Applied" << "|\n";
+                cout << "| Promo Discount   :  " << left << setw(47) << discountVal << "|\n";
             }
 
             if (damageFee > 0) {
-                cout << Color::ERR << "| Damage Fees      :  " << Pricing::CURRENCY << left << setw(46-Pricing::CURRENCY.length()) << (int)damageFee << Color::RESET << "|\n";
+                cout << Color::ERR << "| Damage Fees      :  " << left << setw(47) << feeVal << Color::RESET << "|\n";
             } else {
-                cout << Color::SUCCESS << "| Damage Fees      :  " << left << setw(50) << "None" << Color::RESET << "|\n";
+                cout << Color::SUCCESS << "| Damage Fees      :  " << left << setw(47) << feeVal << Color::RESET << "|\n";
             }
 
             cout << "+--------------------------------------------------------------------+\n";
-            cout << Color::TABLE_HEADER << "| TOTAL AMOUNT     :  " << Pricing::CURRENCY << left << setw(46-Pricing::CURRENCY.length()) << (int)totalBill << Color::RESET << "|\n";
+            cout << Color::TABLE_HEADER << "| TOTAL AMOUNT     :  " << left << setw(47) << totalVal << Color::RESET << "|\n";
             cout << Color::SUBHEADER << "+====================================================================+\n";
             cout << "|                [SUCCESS] Transaction Finalized                     |\n";
             cout << "+====================================================================+\n\n" << Color::RESET;

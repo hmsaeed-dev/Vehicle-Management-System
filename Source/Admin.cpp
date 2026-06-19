@@ -58,16 +58,17 @@ void Admin::viewTransactionHistory()
             string date = data[4];
 
             // Colorize based on type
-            string typeDisplay = type;
-            if (type == "RENT_START") typeDisplay = Color::WARNING + "RENT-START" + Color::RESET;
-            else if (type == "RENT_RETURN") typeDisplay = Color::SUCCESS + "RENT-RETURN" + Color::RESET;
-            else if (type == "SALE") typeDisplay = Color::HIGHLIGHT + "SALE      " + Color::RESET;
-            else if (type == "PURCHASE") typeDisplay = Color::BLUE + "PURCHASE  " + Color::RESET;
+            string typeColor = "";
+            string typeText = "";
+            if (type == "RENT_START") { typeColor = Color::WARNING; typeText = "RENT-START"; }
+            else if (type == "RENT_RETURN") { typeColor = Color::SUCCESS; typeText = "RENT-RETURN"; }
+            else if (type == "SALE") { typeColor = Color::HIGHLIGHT; typeText = "SALE"; }
+            else { typeColor = Color::BLUE; typeText = "PURCHASE"; }
 
-            cout << "| " << left << setw(20) << typeDisplay
+            cout << "| " << typeColor << left << setw(12) << typeText << Color::RESET
                  << "| " << setw(9) << vID
                  << "| " << setw(9) << cID
-                 << "| " << Pricing::CURRENCY << setw(11) << (int)stof(amt)
+                 << "| " << Pricing::CURRENCY << setw(12) << (int)stof(amt)
                  << "| " << setw(11) << date << "|\n";
         }
         file.close();
@@ -338,9 +339,12 @@ void Admin::salePurchaseModule(vector<Vehicle*>& fleet, vector<User*>& users, Fi
         cout << "| Vehicle          :  " << left << setw(47) << model << "|\n";
         cout << "| Supplier         :  " << left << setw(47) << supplier << "|\n";
         cout << "| Category         :  " << left << setw(47) << (type == 'E' ? "Economy" : type == 'L' ? "Luxury" : type == 'S' ? "SUV" : "Van") << "|\n";
+        string priceVal = Pricing::CURRENCY + to_string((int)price);
+        string rentVal = Pricing::CURRENCY + to_string((int)rentRate);
+
         cout << "+--------------------------------------------------------------------+\n";
-        cout << "| PURCHASE PRICE   :  " << Pricing::CURRENCY << left << setw(46-Pricing::CURRENCY.length()) << (int)price << "|\n";
-        cout << "| Initial Rent/Day :  " << Pricing::CURRENCY << left << setw(46-Pricing::CURRENCY.length()) << (int)rentRate << "|\n";
+        cout << "| PURCHASE PRICE   :  " << left << setw(47) << priceVal << "|\n";
+        cout << "| Initial Rent/Day :  " << left << setw(47) << rentVal << "|\n";
         cout << "| Purchase Date    :  " << left << setw(47) << date << "|\n";
         cout << Color::SUBHEADER << "+====================================================================+\n" << Color::RESET;
 
@@ -375,9 +379,16 @@ void Admin::viewAllRecords(const vector<Vehicle*>& fleet, const vector<User*>& u
 
     for (Vehicle* v : fleet)
     {
-        string status = (v->getStatus() == VehicleStatus::Available ? Color::STATUS_AVAILABLE + "Available" + Color::RESET :
-                v->getStatus() == VehicleStatus::Rented    ? Color::STATUS_RENTED + "Rented   " + Color::RESET : Color::STATUS_SOLD + "Sold     " + Color::RESET);
-        cout << "| " << left << setw(9) << v->getID() << "| " << setw(26) << v->getModel() << "| " << setw(17) << v->getCategory() << "| " << status << "  |\n";
+        string statusColor = "";
+        string statusText = "";
+        if (v->getStatus() == VehicleStatus::Available) { statusColor = Color::STATUS_AVAILABLE; statusText = "Available"; }
+        else if (v->getStatus() == VehicleStatus::Rented) { statusColor = Color::STATUS_RENTED; statusText = "Rented"; }
+        else { statusColor = Color::STATUS_SOLD; statusText = "Sold"; }
+
+        cout << "| " << left << setw(9) << v->getID()
+             << "| " << setw(26) << v->getModel()
+             << "| " << setw(17) << v->getCategory()
+             << "| " << statusColor << left << setw(11) << statusText << Color::RESET << "  |\n";
     }
     cout << "+----------+---------------------------+------------------+--------------+\n";
 
@@ -386,8 +397,13 @@ void Admin::viewAllRecords(const vector<Vehicle*>& fleet, const vector<User*>& u
     cout << Color::TABLE_HEADER << "| User ID  | Name                       | CNIC              | Role        |\n" << Color::RESET;
     cout << Color::TABLE_HEADER << "+----------+----------------------------+-------------------+-------------+\n" << Color::RESET;
     for (User* u : users) {
-        string type = (u->getRole() == "ADMIN" ? Color::RED + "Admin   " + Color::RESET : Color::HIGHLIGHT + "Customer" + Color::RESET);
-        cout << "| " << left << setw(9) << u->getID() << "| " << setw(27) << u->getName() << "| " << setw(18) << u->getCNIC() << "| " << type << "    |\n";
+        string roleColor = (u->getRole() == "ADMIN" ? Color::RED : Color::HIGHLIGHT);
+        string roleText = (u->getRole() == "ADMIN" ? "Admin" : "Customer");
+
+        cout << "| " << left << setw(9) << u->getID()
+             << "| " << setw(27) << u->getName()
+             << "| " << setw(18) << u->getCNIC()
+             << "| " << roleColor << left << setw(9) << roleText << Color::RESET << "   |\n";
     }
     cout << "+----------+----------------------------+-------------------+-------------+\n";
 }

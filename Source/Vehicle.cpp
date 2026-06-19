@@ -103,27 +103,40 @@ void Vehicle::displayInfo() {
 
 void Vehicle::displayRow() const
 {
-    string statusStr;
-    if (status == VehicleStatus::Available) statusStr = Color::STATUS_AVAILABLE + "Available " + Color::RESET;
-    else if (status == VehicleStatus::Rented) statusStr = Color::STATUS_RENTED + "Rented    " + Color::RESET;
-    else statusStr = Color::STATUS_SOLD + "Sold      " + Color::RESET;
+    string statusColor = "";
+    string statusText = "";
+    if (status == VehicleStatus::Available) { statusColor = Color::STATUS_AVAILABLE; statusText = "Available"; }
+    else if (status == VehicleStatus::Rented) { statusColor = Color::STATUS_RENTED; statusText = "Rented"; }
+    else { statusColor = Color::STATUS_SOLD; statusText = "Sold"; }
+
+    string catColor = "";
+    string cat = getCategory();
+    if (cat == "Economy") catColor = Color::CATEGORY_ECONOMY;
+    else if (cat == "Luxury") catColor = Color::CATEGORY_LUXURY;
+    else if (cat == "SUV") catColor = Color::CATEGORY_SUV;
+    else catColor = Color::CATEGORY_VAN;
 
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()
          << "| " << left << setw(6) << getCapacity()
-         << "| " << Pricing::CURRENCY << left << setw(10-Pricing::CURRENCY.length()) << (int)getRentalRate()
-         << "| " << left << statusStr
-         << "| " << left << getCategoryDisplay()
-         << " |" << endl;
+         << "| " << Pricing::CURRENCY << left << setw(11 - Pricing::CURRENCY.length()) << (int)getRentalRate()
+         << "| " << statusColor << left << setw(11) << statusText << Color::RESET
+         << "| " << catColor << left << setw(10) << cat << Color::RESET << " |" << endl;
 }
 
 void Vehicle::displayRowSimple() const
 {
+    string catColor = "";
+    string cat = getCategory();
+    if (cat == "Economy") catColor = Color::CATEGORY_ECONOMY;
+    else if (cat == "Luxury") catColor = Color::CATEGORY_LUXURY;
+    else if (cat == "SUV") catColor = Color::CATEGORY_SUV;
+    else catColor = Color::CATEGORY_VAN;
+
     cout << "| " << left << setw(6) << getID()
          << "| " << left << setw(18) << getModel()
          << "| " << left << setw(6) << getCapacity()
-         << "| " << Pricing::CURRENCY << left << setw(10-Pricing::CURRENCY.length()) << (int)getRentalRate()
-         << "| " << left << getCategoryDisplay()
-         << " |" << endl;
+         << "| " << Pricing::CURRENCY << left << setw(11 - Pricing::CURRENCY.length()) << (int)getRentalRate()
+         << "| " << catColor << left << setw(10) << cat << Color::RESET << " |" << endl;
 }
 

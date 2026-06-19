@@ -76,7 +76,7 @@ void InspectionReport::displayReport() const
     cout << "| " << left << setw(20) << "Customer/Inspector" << ": " << setw(35) << (inspector ? inspector->getName() : "N/A") << "|\n";
     cout << "+----------------------------------------------------------+\n";
     cout << "| " << left << setw(20) << "Fuel Level" << ": " << setw(35) << fuelLevel << "|\n";
-    cout << "| " << left << setw(20) << "Mileage" << ": " << setw(32) << (int)mileage << " km" << " |\n";
+    cout << "| " << left << setw(20) << "Mileage" << ": " << setw(31) << (int)mileage << " km" << " |\n";
     cout << "| " << left << setw(20) << "Vehicle Condition" << ": " << setw(35) << condition << "|\n";
     cout << "+----------------------------------------------------------+\n";
     cout << "| " << left << setw(20) << "Damage Notes" << ": " << setw(35) << damageNotes << "|\n";

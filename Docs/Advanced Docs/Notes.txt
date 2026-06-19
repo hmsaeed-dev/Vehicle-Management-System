@@ -1,0 +1,92 @@
+================================================================================
+
+## Importants
+- Users.txt _ password storage saving Issue
+- *** ID's Consistency and Filehandlers ***
+- Rental History Showcasing and matching to user
+- Completely Remove Year Property from the Vehicles
+- Vehicle Daily rates _ No decimal printing .0000
+- Remove Search by Year, Seach by Price Range, Smart Search
+- Better Vehicles entry, More realistic to Pakistan
+- Account Creating, CNIC instead of Phone Number
+- Automated Billing Duration – Replace the manual "days used" input with an automatic calculation based on the rental start date.
+
+================================================================================
+
+## Observations
+
+- Must restrict user to not have the same ID or username as used before.
+- Validation Checks for ID making, is it three character, or alphanumeric, alpha only....
+- Sale / Purchase Module Form Filling Ui Easiness removing redundant z backs printing
+- There should be one more property for each vehicle, i.e Number of Units remaining, like cant rent out more than available, and sell and buy also effects this. (Not fruitful yet _ more struggle less fruitful)
+- Can one person rent out more than 1 vehicle or its units?
+
+================================================================================
+
+## Queries
+- Trip Planner Recommendation Logic, How is it calculating, what parameters is it considering?
+
+=================================================================================
+
+## Bug Fixes
+
+- Fix discount inconsistency
+  Choose one pattern (either make calculateCost return pre-discount and apply discount in one caller, or have calculateCost always return final bill and remove extra discount application). Files: Economy.cpp, Luxury.cpp, Customer.cpp, RentalTransaction.cpp.
+- Discount logic not applied during rental
+- File Format Compatibility Fragile
+- Damage fee hardcoded to 50-100 dollars, No consideration of Cheap or Expensive cars, No currency PKR
+- Luxury Cars are not applied Discounts Properly
+
+===============================================================================
+
+Extra Features TO BE Added in the Demo-Proposal
+
+1. Sale / Purchase System
+2. 10+ Vehicles
+3. Inspection Sheet
+4. Evaluation Remarks
+5. Trip Planner
+6. Vehicle Search Feature
+
+===============================================================================
+
+## UI / UX Problems
+
+- ANSI colors do not render on Windows CMD
+- Inconsistent Cancel Keys
+- No Loading Indicators
+- No "Are you sure?" before every delete command
+- Inconsistent Status display and formatting
+- No Dashboard Summary, Admin Can't see fleet at a glance
+- Transaction History Activity Record can be polished and with more info showcase
+- When return a vehicle, for Inspection report Menu display and user entry form format and UX
+- Rental History Display could be much Better
+- Add New Vehicle form _ back button showcasing inconsistency
+- Inspection Report Form Filling _ Days Input at last, and Back Z inconsistency
+- Rental Receipt _ should also be shown before confirmation of payments _ Explain Billing Logic to User
+- Costumer Dashboard Heading naming inconsistency
+
+================================================================================
+
+## Architechtural Weaknessess
+- Main Dashboard _ Should have separate for USERS and ADMINS rather than login checking for Admin
+
+=================================================================================
+
+## Improvements
+
+- Verification & Testing
+  Unit Tests: Create a small test suite to verify Validator logic.   - Manual Regression:
+  Attempt to break the system with invalid inputs (letters in price, negative days).
+  Verify that a SOLD car can no longer be rented.
+  Verify that discounts are calculated correctly on the final bill.
+
+- Account Deletion by Admin must also requires ID and Username
+- Don't ask for ID when registering a new account by NEW USER _ Make ID automatically
+- During Renting a vehicle _ system should ask for more relevant info to calculate price estimation before user confirms the rental
+
+===============================================================================
+
+## What If's
+- User forgets the ID when returning the vehicle
+-

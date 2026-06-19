@@ -1,0 +1,78 @@
+flowchart TD
+    Start([Start])
+    Start --> LoadData("Load data: vehicles, users, transactions (FileHandler)")
+    LoadData --> MainMenu{{"Main Menu<br>1 Register<br>2 Login<br>Z Exit"}}
+
+    MainMenu --> Register("Register New Account<br>(MenuHandler::handleRegistration)")
+    Register --> CreateAccount["Create Customer object and add to users"]
+    CreateAccount --> MainMenu
+
+    MainMenu --> Login("Login (MenuHandler::handleLogin)")
+    Login --> AuthCheck{Valid credentials?}
+    AuthCheck -- No --> LoginError["Show error & retry"] --> MainMenu
+    AuthCheck -- Yes --> RoleCheck{User Role?}
+    RoleCheck -- Admin --> AdminSession["Admin Session<br>(MenuHandler::adminSession)"]
+    RoleCheck -- Customer --> CustomerSession["Customer Session<br>(MenuHandler::customerSession)"]
+
+    subgraph ADMIN ["Admin Workflow"]
+        AdminSession --> AdminMenu{{"Admin Menu<br>1 Add Vehicle<br>2 Remove Vehicle<br>3 Remove User<br>4 Sale Purchase Module<br>5 View All Records<br>6 View Transaction History"}}
+        AdminMenu --> AddVehicle["Admin::addVehicle(fleet)"] --> AdminMenu
+        AdminMenu --> RemoveVehicle["Admin::removeVehicle(fleet)"] --> AdminMenu
+        AdminMenu --> RemoveUser["Admin::removeUser(users, fh)"] --> AdminMenu
+        AdminMenu --> SalePurchase["Admin::salePurchaseModule(fleet, users, fh)"] --> AdminMenu
+        AdminMenu --> ViewRecords["Admin::viewAllRecords(fleet, users)"] --> AdminMenu
+        AdminMenu --> ViewHistory["Admin::viewTransactionHistory()"] --> AdminMenu
+        AdminMenu --> AdminLogout["Logout"] --> MainMenu
+    end
+
+    subgraph CUSTOMER ["Customer Workflow"]
+        CustomerSession --> CustomerMenu{{"Customer Menu<br>1 Search<br>2 Rent<br>3 Return<br>4 Trip Planner<br>5 View Rental History<br>6 Logout"}}
+
+        CustomerMenu --> SearchFlow["Search Vehicles<br>(MenuHandler::handleSearch)"]
+        CustomerMenu --> RentFlow["Rent Vehicle (Customer::rentVehicle)"] --> CustomerMenu
+        CustomerMenu --> ReturnFlow["Return Vehicle<br>(Customer::returnVehicle)"]
+        CustomerMenu --> TripPlannerFlow["Trip Planner<br>(MenuHandler::handleTripPlanning)"]
+        CustomerMenu --> ViewRentHistory["viewRentalHistory()"] --> CustomerMenu
+        CustomerMenu --> CustomerLogout["Logout"] --> MainMenu
+
+        %% Core Shared Actions for Customer Workflow %%
+        ProcessRental["customer processRental(id, fleet, fh)<br>(create RentalTransaction, update vehicle status, save)"]
+        ReturnToCustomer["Back to Customer Menu"]
+        ProcessRental --> ReturnToCustomer
+        ReturnToCustomer --> CustomerMenu
+
+        subgraph SEARCH ["Search Flow"]
+            SearchFlow --> SearchOptions{{"Search Options<br>1 Browse All<br>2 Filter by Category"}}
+            SearchOptions --> BrowseAll["Browse all results fleet"]
+            SearchOptions --> ByCategory["SearchEngine::searchByCategory(type)"]
+            BrowseAll --> ShowResults["Display results (table)"]
+            ByCategory --> ShowResults
+            ShowResults --> RentFromSearch{Customer chooses an ID to RENT?}
+            RentFromSearch -- Yes --> ProcessRental
+            RentFromSearch -- No --> ReturnToCustomer
+        end
+
+        subgraph TRIP ["Trip Planner Flow"]
+            TripPlannerFlow --> TripInputs["Input: src, dest, distance, budget, pax"]
+            TripInputs --> PlanTrip["planner.planTrip show suggested vehicles"]
+            PlanTrip --> RentFromTrip{Rent one of suggested vehicles?}
+            RentFromTrip -- Yes --> ProcessRental
+            RentFromTrip -- No --> ReturnToCustomer
+        end
+
+        subgraph RETURN ["Return Flow"]
+            ReturnFlow --> SelectVehicle["Select rented vehicle ID"]
+            SelectVehicle --> CreateReport["InspectionReport::fillReport method"]
+            CreateReport --> FinalizeRental["RentalTransaction::finalise method"]
+            FinalizeRental --> UpdateStatus["Set status to Available"]
+            UpdateStatus --> SaveAll["fh.saveInspection and fh.appendTransaction"]
+            SaveAll --> CustomerMenu
+        end
+    end
+
+    MainMenu --> Exit["Exit System (Z)"]
+    Exit --> SaveData("Save Vehicles & Users (FileHandler saveVehicles/saveUsers)")
+    SaveData --> End([End])
+
+    classDef system fill:#f2f8ff,stroke:#333,stroke-width:1px;
+    class LoadData,SaveData system

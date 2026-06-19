@@ -9,6 +9,7 @@ A comprehensive console-based vehicle rental and sales management platform built
 - [Overview](#overview)
 - [Key Features](#key-features)
 - [System Architecture](#system-architecture)
+- [System Diagrams (Mermaid)](#system-diagrams-mermaid)
 - [Getting Started](#getting-started)
 - [Usage Guide](#usage-guide)
 - [Vehicle Categories](#vehicle-categories)
@@ -38,7 +39,7 @@ You don't need to download this repository or configure a local C++ compiler to 
 - **🚗 Vehicle Inventory Management** – Add, remove, and track vehicles
 - **💳 Rental System** – With dynamic pricing, duration tracking, and automatic cost calculation
 - **🛒 Sales Module** – Process vehicle purchases with transaction recording and fleet status updates
-- **🔍 Advanced Search** – Multi-criteria filtering by category, price range, availability, and passenger capacity
+- **🔍 Vehicle Search** – Browse the active fleet or search by category (Economy, Luxury, SUV, Van) to quickly check live availability
 - **📋 Vehicle Inspections** – Post-rental assessments _ fuel level, mileage, damage evaluation, and condition grading
 - **📍 Trip Planner** – Recommendations based on trip distance, budget constraints, and passenger requirements
 - **💰 Dynamic Pricing & Discounts** – Category-based rate multipliers with tiered discounts
@@ -75,6 +76,7 @@ You don't need to download this repository or configure a local C++ compiler to 
 ```
 
 **Core Components:**
+
 - **FileHandler** – Persistent data layer; reads/writes all system data to text files
 - **Vehicle Hierarchy** – Abstract Vehicle class with specialized types
 - **User Hierarchy** – Abstract User class with Admin and Customer implementations
@@ -84,31 +86,10 @@ You don't need to download this repository or configure a local C++ compiler to 
 
 ---
 
-## Getting Started
-
-### Prerequisites
-- **Compiler:** GCC with C++17 support
-- **OS:** Windows (uses ANSI terminal processing via Windows API)
-- **Build Tools:** Either g++ command-line or batch script
-
-### Installation & Build
-
-**Using build.bat (Recommended for Windows)**
-```batch
-cd Vehicle Manag Sys
-build.bat
-```
-
-### Running the System
-```bash
-VehicleManagementSystem.exe
-```
-
----
-
 ## Usage Guide
 
 ### **Admin Workflow**
+
 1. **Login** – Enter admin credentials at startup
 2. **Access Dashboard** – View fleet statistics and system status
 3. **Manage Fleet** – Add new vehicles, remove vehicles from inventory
@@ -117,6 +98,7 @@ VehicleManagementSystem.exe
 6. **View Records** – Review all transactions, inspections, and system reports
 
 ### **Customer Workflow**
+
 1. **Register/Login** – Create new account or log in with existing credentials
 2. **Search Vehicles** – Filter by category, price range, availability, or passenger capacity
 3. **Plan Trip** – Use Trip Planner for vehicle recommendations based on distance and budget
@@ -129,12 +111,12 @@ VehicleManagementSystem.exe
 
 ## Vehicle Categories
 
-| Category | Model Type | Base Rate (PKR) | Best For |
-|----------|-----------|-----------------|----------|
-| **Economy** | Budget sedans, basic comfort | 200/day | Budget-conscious renters |
-| **Luxury** | Premium vehicles, special features | 500/day | High-end clients, special occasions |
-| **SUV** | Sports utility, off-road capable | 350/day | Outdoor trips, family groups |
-| **Van** | Passenger vans, minibuses | 250/day | Group travel, large parties |
+| Category | Model Type | Typical Daily Rate (PKR) | Representative Models |
+|----------|------------|--------------------------|-----------------------|
+| **Economy** | Budget sedans, fuel-efficient hatchbacks | Rs. 3,000 - 6,500 | Suzuki Alto, Suzuki Cultus, Toyota Corolla GLI, Honda City Aspire |
+| **Luxury** | Premium luxury vehicles, high-end sedans | Rs. 45,000 - 80,000 | Audi A6 Prestige, BMW 7 Series, Mercedes-Benz, Toyota Land Cruiser |
+| **SUV** | Sports utility, off-road capable vehicles | Rs. 12,000 - 25,000 | Kia Sportage, Hyundai Tucson, Toyota Hilux Revo, Toyota Fortuner |
+| **Van** | Large capacity transport, group minibuses | Rs. 3,500 - 35,000 | Suzuki Bolan, Toyota Hiace, Toyota Coaster |
 
 ---
 
@@ -175,6 +157,14 @@ Vehicle Manag Sys/
 │   ├── Admin.cpp                   # Admin implementation
 │   ├── Customer.cpp                # Customer implementation
 │   └── [Other .cpp files]
+│
+├── Docs/                           # Design documentation & Mermaid diagrams
+│   ├── Flowchart.mmd               # Full system flowchart
+│   ├── SimpleFlowchart.mmd         # Optimized user flowchart (subgraphs)
+│   ├── UML-1.mmd                   # Simplified class diagram
+│   ├── UML-2.mmd                   # Complete codebase class diagram
+│   ├── SequenceDiagram.mmd         # Detailed C++ execution trace
+│   └── SimpleSequenceDiagram.mmd   # High-level sequence diagram
 │
 ├── Data/                           # Persistent storage (text files)
 │   ├── Vehicle.txt                 # Fleet inventory database

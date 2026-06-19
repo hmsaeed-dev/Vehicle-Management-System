@@ -1,0 +1,67 @@
+sequenceDiagram
+    autonumber
+    actor User as User (Console Console)
+    participant Main as main()
+    participant FH as fh: FileHandler
+    participant Menu as menu: MenuHandler
+    participant Actor as currentUser: Customer / Admin
+    participant Fleet as fleet: vector<Vehicle*>
+
+    %% --- STARTUP ---
+    Note over Main, FH: 1. Startup & Data Initialization
+    Main->>FH: loadVehicles() & loadUsers()
+    FH-->>Main: fleet & users vectors loaded from disk
+    Main->>Menu: MenuHandler(fleet, users, fh)
+
+    %% --- AUTHENTICATION ---
+    Note over Main, Menu: 2. Account Registration / Login
+    Main->>Menu: runMainMenu()
+    User->>Menu: Choose Register (1) or Login (2)
+    
+    alt Register Account
+        Menu->>FH: generateNextUserID()
+        Menu->>Menu: Create Customer user & add to users vector
+    else Login User
+        Menu->>Actor: authenticate(username, password)
+        Actor-->>Menu: Authentication Success (Customer or Admin)
+    end
+
+    %% --- MAIN WORKFLOWS ---
+    Note over Menu, Fleet: 3. Core Role-Based Workflows
+    
+    alt Customer Session
+        User->>Menu: Choose Search / Rent / Return / Trip Plan
+        
+        opt Rent Vehicle Flow
+            Menu->>Actor: rentVehicle(fleet, fh)
+            Actor->>Fleet: Check availability & calculateCost()
+            Actor->>FH: appendTransaction("RENT_START", ...)
+        end
+        
+        opt Return Vehicle Flow
+            Menu->>Actor: returnVehicle(fleet, fh)
+            Actor->>FH: getRentalStartDate()
+            Actor->>Fleet: setStatus(Available)
+            Actor->>FH: appendTransaction("RENT_RETURN", ...)
+        end
+        
+    else Admin Session
+        User->>Menu: Choose Fleet Management / Sales
+        
+        opt Add/Remove Vehicle
+            Menu->>Actor: addVehicle(fleet) / removeVehicle(fleet)
+            Actor->>Fleet: Modify vehicle objects in fleet vector
+        end
+        
+        opt Sale & Purchase Module
+            Menu->>Actor: salePurchaseModule(fleet, users, fh)
+            Actor->>FH: appendTransaction("SALE" / "PURCHASE", ...)
+        end
+    end
+
+    %% --- SHUTDOWN ---
+    Note over Main, FH: 4. Persistence & Resource Cleanup
+    User->>Menu: Exit (Z)
+    Menu-->>Main: Return to main()
+    Main->>FH: saveVehicles(fleet) & saveUsers(users)
+    Main->>Main: Deallocate fleet and users memory pointers (delete)

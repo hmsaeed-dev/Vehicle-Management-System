@@ -15,10 +15,13 @@ classDiagram
     class Admin {
         +addVehicle()
         +removeVehicle()
+        +removeUser()
+        +salePurchaseModule()
         +viewAllRecords()
     }
 
     class Customer {
+        -string[] rentalHistory
         +rentVehicle()
         +returnVehicle()
         +viewRentalHistory()
@@ -35,6 +38,7 @@ classDiagram
         -VehicleStatus status
         +calculateCost(days)*
         +displayInfo()
+        +calculateDiscountedCost()
     }
 
     class Economy
@@ -68,8 +72,10 @@ classDiagram
 
     class MenuHandler {
         +runMainMenu()
-        +handleLogin()
         +handleRegistration()
+        +handleLogin()
+        +handleSearch()
+        +handleTripPlanning()
     }
 
     class FileHandler {
@@ -77,6 +83,8 @@ classDiagram
         +saveVehicles()
         +loadUsers()
         +saveUsers()
+        +appendTransaction()
+        +loadTransactionsIntoHistory()
         +saveInspection()
     }
 
@@ -122,5 +130,6 @@ classDiagram
         <<Utility>>
         +isValidID()
         +isValidCNIC()
+        +isValidDate()
         +calculateDays()
     }

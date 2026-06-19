@@ -19,34 +19,57 @@ classDiagram
         + bool getAvailable() const
         + void setStatus(VehicleStatus newStatus)
         + void setAvailable(bool available)
-        + virtual string getCategory() const = 0
-        + virtual float calculateCost(int days) = 0
-        + virtual void displayInfo()
-        + virtual void displayRow() const
-        + virtual void displayRowSimple() const
+        + string getCategory() const*
+        + float calculateCost(int days)*
+        + void displayInfo()
+        + void displayRow() const
+        + void displayRowSimple() const
         + float calculateDiscountedCost(int days)
         + float getDiscountPercentage(int days) const
-        # virtual string getHeaderTitle() const = 0
-        # virtual string getCategoryDisplay() const = 0
-        # virtual string getCapacityUnit() const
-        # virtual void displayExtraInfo() const
+        # string getHeaderTitle() const*
+        # string getCategoryDisplay() const*
+        # string getCapacityUnit() const
+        # void displayExtraInfo() const
+        # string getStatusString() const
     }
 
     class Economy {
         + Economy(string id, string model, int capacity, float rate)
+        + string getCategory() const
+        + float calculateCost(int hours)
+        # string getHeaderTitle() const
+        # string getCategoryDisplay() const
+        # void displayExtraInfo() const
     }
 
     class Luxury {
         - string luxuryFeatures
         + Luxury(string id, string model, int capacity, float rate, string features)
+        + string getLuxuryFeatures() const
+        + string getCategory() const
+        + float calculateCost(int hours)
+        # string getHeaderTitle() const
+        # string getCategoryDisplay() const
     }
 
     class SUV {
         + SUV(string id, string model, int capacity, float rate)
+        + string getCategory() const
+        + float calculateCost(int hours)
+        # string getHeaderTitle() const
+        # string getCategoryDisplay() const
+        # string getCapacityUnit() const
+        # void displayExtraInfo() const
     }
 
     class Van {
         + Van(string id, string model, int capacity, float rate)
+        + string getCategory() const
+        + float calculateCost(int days)
+        # string getHeaderTitle() const
+        # string getCategoryDisplay() const
+        # string getCapacityUnit() const
+        # void displayExtraInfo() const
     }
 
     Vehicle <|-- Economy
@@ -70,13 +93,14 @@ classDiagram
         + string getCNIC() const
         + string getPassword() const
         + bool authenticate(string inputPassword) const
-        + virtual void showMenu() = 0
-        + virtual string getRole() const = 0
+        + void showMenu()*
+        + string getRole() const*
     }
 
     class Admin {
-        + Admin(...)
+        + Admin(string id, string username, string name, string cnic, string password)
         + void showMenu()
+        + string getRole() const
         + void showDashboard(const vector~Vehicle*~& fleet)
         + void addVehicle(vector~Vehicle*~& fleet)
         + void removeVehicle(vector~Vehicle*~& fleet)
@@ -84,12 +108,14 @@ classDiagram
         + void salePurchaseModule(vector~Vehicle*~& fleet, vector~User*~& users, FileHandler& fh)
         + void viewAllRecords(const vector~Vehicle*~& fleet, const vector~User*~& users)
         + void viewTransactionHistory()
+        - bool hasActiveRentals(const string& userID, FileHandler& fh)
     }
 
     class Customer {
         - vector~string~ rentalHistory
-        + Customer(...)
+        + Customer(string id, string username, string name, string cnic, string password)
         + void showMenu()
+        + string getRole() const
         + void viewRentalHistory()
         + void addToHistory(const string& record)
         + void rentVehicle(vector~Vehicle*~& fleet, FileHandler& fh)
@@ -103,13 +129,13 @@ classDiagram
     %% --- Transaction Hierarchy ---
     class Transaction {
         <<abstract>>
-        - string transactionID
-        - Vehicle* vehicle
-        - Customer* customer
-        - string date
+        # string transactionID
+        # Vehicle* vehicle
+        # Customer* customer
+        # string date
         + Transaction(string id, Vehicle* v, Customer* c, string date)
         + ~Transaction()*
-        + virtual void finalise() = 0
+        + void finalise()*
         + string getTransactionID() const
         + string getDate() const
     }
@@ -119,7 +145,7 @@ classDiagram
         - string endTime
         - int daysRented
         - float totalBill
-        + RentalTransaction(...)
+        + RentalTransaction(string id, Vehicle* v, Customer* c, string date, string start)
         + void finalise()
         + void setEndTime(string end, int days)
         + float calculateBill()
@@ -127,7 +153,7 @@ classDiagram
 
     class SaleTransaction {
         - float salePrice
-        + SaleTransaction(...)
+        + SaleTransaction(string id, Vehicle* v, Customer* c, string date, float price)
         + void finalise()
     }
 
@@ -142,11 +168,17 @@ classDiagram
         - Vehicle* inspectedVehicle
         - User* inspector
         - string fuelLevel
+        - string damageNotes
+        - float mileage
         - string condition
+        - string evaluationRemarks
+        - string date
         + InspectionReport(Vehicle* v, User* u)
         + void fillReport()
+        + void displayReport() const
         + void saveToFile(ofstream& out) const
         + float getDamageFee() const
+        + string getDate() const
     }
 
     InspectionReport o-- Vehicle : "references"
@@ -158,9 +190,14 @@ classDiagram
         + void saveVehicles(const vector~Vehicle*~& fleet)
         + vector~User*~ loadUsers()
         + void saveUsers(const vector~User*~& users)
-        + void appendTransaction(...)
+        + vector~Transaction*~ loadTransactions()
+        + void saveTransactions(const vector~Transaction*~& txns)
+        + void appendTransaction(const string& type, const string& vID, const string& cID, float amount, const string& date)
         + void loadTransactionsIntoHistory(vector~User*~& users)
+        + string getRentalStartDate(const string& vID, const string& cID)
         + void saveInspection(const InspectionReport& report)
+        + string generateNextUserID(const vector~User*~& users)$
+        + string generateNextVehicleID(const vector~Vehicle*~& fleet)$
     }
 
     class SearchEngine {
@@ -169,26 +206,47 @@ classDiagram
         + vector~Vehicle*~ searchByCategory(char type)
     }
 
+    class TripPlanner {
+        + void planTrip(string source, string destination, float distance, float budget, int passengers, const vector~Vehicle*~& fleet)
+    }
+
     class MenuHandler {
         - vector~Vehicle*~& fleet
         - vector~User*~& users
         - FileHandler& fh
-        + MenuHandler(...)
+        + MenuHandler(vector~Vehicle*~& fleet, vector~User*~& users, FileHandler& fh)
         + void runMainMenu()
         + void handleRegistration()
         + void handleLogin()
+        + void handleSearch(SearchEngine& engine, vector~Vehicle*~& fleet, Customer* customer, FileHandler* fh)$
+        + void handleTripPlanning(TripPlanner& planner, vector~Vehicle*~& fleet, Customer* customer, FileHandler* fh)$
+        - void adminSession(User* currentUser)
+        - void customerSession(User* currentUser)
     }
 
-    MenuHandler o-- Vehicle : "manages fleet"
-    MenuHandler o-- User : "manages users"
+    MenuHandler o-- Vehicle : "manages"
+    MenuHandler o-- User : "manages"
     MenuHandler --> FileHandler : "uses"
     MenuHandler --> SearchEngine : "invokes"
+    MenuHandler --> TripPlanner : "invokes"
 
     class Validator {
         <<utility>>
-        + static bool isValidID(const string& id)
-        + static bool isValidCNIC(const string& cnic)
-        + static int calculateDays(string start, string end)
+        + bool isNonNegative(int value)$
+        + bool isNonNegative(float value)$
+        + bool isPositive(int value)$
+        + bool isPositive(float value)$
+        + bool inRange(int value, int min, int max)$
+        + bool inRange(float value, float min, float max)$
+        + bool isValidID(const string& id)$
+        + bool isValidDate(const string& date)$
+        + bool isValidPhone(const string& phone)$
+        + bool isValidCNIC(const string& cnic)$
+        + bool isValidName(const string& name)$
+        + string getCurrentDate()$
+        + int calculateDays(const string& start, const string& end)$
+        + bool isAlphaOnly(const string& str, bool allowSpaces)$
+        + bool isAlphanumeric(const string& str)$
     }
 
     class VehicleStatus {
@@ -197,3 +255,4 @@ classDiagram
         Rented
         Sold
     }
+    Vehicle -- VehicleStatus

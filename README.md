@@ -1,183 +1,120 @@
-# Vehicle Management System
+# 🚗 Vehicle Management System (VMS)
 
-![C++](https://img.shields.io/badge/C%2B%2B-17-blue?style=flat-square) ![Platform](https://img.shields.io/badge/Platform-Windows-brightgreen?style=flat-square)
+A high-performance, console-based vehicle rental and sales orchestration platform built using core **Object-Oriented Programming (OOP)** principles in C++17. 
 
-A comprehensive console-based vehicle rental and sales management platform built in C++17. Manage fleet inventory, handle customer rentals, conduct vehicle inspections, and process sales transactions with role-based access control.
-
-## **Table of Contents**
-
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [System Architecture](#system-architecture)
-- [System Diagrams (Mermaid)](#system-diagrams-mermaid)
-- [Getting Started](#getting-started)
-- [Usage Guide](#usage-guide)
-- [Vehicle Categories](#vehicle-categories)
-- [System Requirements](#system-requirements)
-- [Project Structure](#project-structure)
-- [Author](#author)
+[![C++ Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg?style=for-the-badge&logo=c%2B%2B)](https://en.cppreference.com/w/cpp/17)
+[![Platform Compatibility](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-brightgreen.svg?style=for-the-badge)](https://github.com/hmsaeed-dev)
+[![Documentation](https://img.shields.io/badge/Documentation-GitHub%20Wiki-orange.svg?style=for-the-badge)](https://github.com/hmsaeed-dev/Vehicle-Management-System/wiki)
 
 ---
 
-## Overview
-
-The Vehicle Management System is a full-featured platform designed for managing vehicle fleets across rental and sales operations. It supports multiple user roles (Admins and Customers), maintains persistent data storage, provides advanced vehicle search capabilities, and includes comprehensive transaction tracking with inspection reports. The system handles complex workflows including rentals with dynamic pricing, vehicle sales, trip planning assistance, and post-rental inspections.
-
----
 ### ⚡ Live Interactive Demo
 
-You don't need to download this repository or configure a local C++ compiler to test it. You can interact with the live console interface directly in your web browser:
+Test the live console interface directly inside your web browser without installing local compilers or dependencies:
 
 👉 **[Run the Vehicle Management System Live on Replit](https://replit.com/@hmsaeed/Vehicle-Management-System)**
 
-*(Once the Replit window loads, simply hit the big green **Run** button at the very top of the interface to initialize the console database menu!)*
+*(Once the Replit workspace provisions, click the green **Run** button at the top to initialize the local flat-file database structures!)*
 
 ---
 
-## Key Features
+## 📖 Deep-Dive Documentation Hub
+Comprehensive step-by-step guides, usage parameters, and edge-case behaviors are hosted in the project repository wiki. 
 
-- **🚗 Vehicle Inventory Management** – Add, remove, and track vehicles
-- **💳 Rental System** – With dynamic pricing, duration tracking, and automatic cost calculation
-- **🛒 Sales Module** – Process vehicle purchases with transaction recording and fleet status updates
-- **🔍 Vehicle Search** – Browse the active fleet or search by category (Economy, Luxury, SUV, Van) to quickly check live availability
-- **📋 Vehicle Inspections** – Post-rental assessments _ fuel level, mileage, damage evaluation, and condition grading
-- **📍 Trip Planner** – Recommendations based on trip distance, budget constraints, and passenger requirements
-- **💰 Dynamic Pricing & Discounts** – Category-based rate multipliers with tiered discounts
-- **👥 Dual-Role Authentication** – Separate admin and customer login systems with secure credentials
-- **💾 Data Persistence** – All system data automatically saved to files
+* 🏠 **[Project Overview & Architecture Core](https://github.com/hmsaeed-dev/Vehicle-Management-System/wiki/Home)**
+* 🚀 **[Installation & Local Compilation Matrix](https://github.com/hmsaeed-dev/Vehicle-Management-System/wiki/Getting-Started)**
+* 👥 **[Customer Dashboard & Trip Planner Guide](https://github.com/hmsaeed-dev/Vehicle-Management-System/wiki/Customer-User-Guide)**
+* ⚙️ **[Admin Panel & Fleet Inventory Control](https://github.com/hmsaeed-dev/Vehicle-Management-System/wiki/Admin-Guide)**
+* 🛡️ **[Input Stream Validation & Structural FAQs](https://github.com/hmsaeed-dev/Vehicle-Management-System/wiki/Input-Validation-Rules)**
 
 ---
 
+## 🔥 Key Architectural Features
 
-## System Architecture
+* **Dual-Role Authentication:** Isolated session management wrappers for Administrators (IDs `1001+`) and Customers (IDs `2001+`).
+* **Automated Financial Engine:** Native pricing logic incorporating tiered long-term rental discounts (**10%** for 4–7 days, **20%** for 8+ days) and post-rental inspection damage modifiers (**50%** or **200%** daily rate adjustments based on structural tier checks).
+* **Trip Planner Engine:** Advanced multi-criteria search algorithms filtering the dynamic fleet array relative to client budget caps, target mileage distances, and minimum passenger tolerances.
+* **Persistent Flat-File Database:** Scalable abstract I/O file tracking modules mapping live structures back into pipe-delimited (`|`) local system text sheets dynamically upon stream termination.
 
+---
+
+## 📐 System Architecture
+
+```mermaid
+graph TD
+    %% Define Styles
+    classDef main fill:#1f6feb,stroke:#58a6ff,stroke-width:2px,color:#fff;
+    classDef sub fill:#21262d,stroke:#30363d,stroke-width:1px,color:#c9d1d9;
+    classDef feat fill:#161b22,stroke:#30363d,stroke-width:1px,color:#8b949e;
+
+    Menu[MenuHandler <br><i>UI Orchestration & Session Workflow</i>]:::main
+    
+    AdminS[Admin Session]:::sub
+    CustS[Customer Session]:::sub
+    Eng[SearchEngine & <br>TripPlanner]:::sub
+    
+    AdminF[Admin Features<br>• Dashboard<br>• Fleet CRUD<br>• User Management]:::feat
+    Trans[Transactions Layer<br>• Rentals<br>• Sales<br>• Post-Return Inspections]:::feat
+
+    %% Connections
+    Menu --> AdminS
+    Menu --> CustS
+    Menu --> Eng
+    
+    AdminS --> AdminF
+    CustS --> Trans
+    Eng --> Trans
 ```
-                        ┌──────────────────────────────────────────────────────────┐
-                        │           MenuHandler (UI Orchestration)                 │
-                        │      Manages menus, login, user sessions, workflows      │
-                        └──────────────────────┬───────────────────────────────────┘
-                                               │
-                                  ┌────────────┼────────────────────┐
-                                  │            │                    │
-                             ┌────▼──────┐   ┌─▼──────────┐   ┌─────▼──────────┐
-                             │   Admin   │   │  Customer  │   │  SearchEngine  │
-                             │  Session  │   │  Session   │   │  TripPlanner   │
-                             └───────────┘   └────────────┘   └────────────────┘
-                                  │             │                   │
-                                  │             └────────┬──────────┘
-                                  │                      │
-                                  │                      │
-                              ┌───▼──────────────┐    ┌──▼──────────────┐
-                              │  Admin Features  │    │  Transactions   │
-                              │ - Dashboard      │    │ - Rentals       │
-                              │ - Fleet CRUD     │    │ - Sales         │
-                              │ - User Manag     │    │ - Inspections   │
-                              └──────────────────┘    └─────────────────┘
-```
 
-**Core Components:**
+## 📊 Fleet Segmentation Matrix
 
-- **FileHandler** – Persistent data layer; reads/writes all system data to text files
-- **Vehicle Hierarchy** – Abstract Vehicle class with specialized types
-- **User Hierarchy** – Abstract User class with Admin and Customer implementations
-- **Transaction Modules** – RentalTransaction and SaleTransaction for tracking vehicles
-- **SearchEngine** – Multi-criteria filtering and advanced query execution
-- **InspectionReport** – Post-rental condition assessment and damage documentation
+| Category | Tracking Range | Base Rate Scale (PKR) | Representative Core Implementations |
+| :--- | :--- | :--- | :--- |
+| 🚗 **Economy** | IDs `3000 - 3999` | Rs. 3,000 - 6,500 | Suzuki Alto, Cultus, Toyota Corolla GLI, Honda City |
+| 💎 **Luxury** | IDs `4000 - 4999` | Rs. 45,000 - 80,000 | Audi A6 Prestige, BMW 7 Series, Land Cruiser V8 |
+| ⛰️ **SUV** | IDs `5000 - 5999` | Rs. 12,000 - 25,000 | Kia Sportage, Hyundai Tucson, Toyota Fortuner |
+| 🚌 **Van** | IDs `6000 - 6999` | Rs. 3,500 - 35,000 | Suzuki Bolan, Toyota Hiace, Luxury Coaster |
 
 ---
 
-## Usage Guide
+## 📁 Repository File Tree
 
-### **Admin Workflow**
-
-1. **Login** – Enter admin credentials at startup
-2. **Access Dashboard** – View fleet statistics and system status
-3. **Manage Fleet** – Add new vehicles, remove vehicles from inventory
-4. **Manage Users** – Remove user accounts and manage customer records
-5. **Process Sales** – Execute vehicle purchase transactions
-6. **View Records** – Review all transactions, inspections, and system reports
-
-### **Customer Workflow**
-
-1. **Register/Login** – Create new account or log in with existing credentials
-2. **Search Vehicles** – Filter by category, price range, availability, or passenger capacity
-3. **Plan Trip** – Use Trip Planner for vehicle recommendations based on distance and budget
-4. **Rent Vehicle** – Select vehicle and complete rental transaction
-5. **Return & Inspect** – Return vehicle and complete post-rental inspection report
-6. **View History** – Review rental history and inspection records
-7. **Purchase Option** – Buy vehicle outright (Sales transaction)
-
----
-
-## Vehicle Categories
-
-| Category | Model Type | Typical Daily Rate (PKR) | Representative Models |
-|----------|------------|--------------------------|-----------------------|
-| **Economy** | Budget sedans, fuel-efficient hatchbacks | Rs. 3,000 - 6,500 | Suzuki Alto, Suzuki Cultus, Toyota Corolla GLI, Honda City Aspire |
-| **Luxury** | Premium luxury vehicles, high-end sedans | Rs. 45,000 - 80,000 | Audi A6 Prestige, BMW 7 Series, Mercedes-Benz, Toyota Land Cruiser |
-| **SUV** | Sports utility, off-road capable vehicles | Rs. 12,000 - 25,000 | Kia Sportage, Hyundai Tucson, Toyota Hilux Revo, Toyota Fortuner |
-| **Van** | Large capacity transport, group minibuses | Rs. 3,500 - 35,000 | Suzuki Bolan, Toyota Hiace, Toyota Coaster |
-
----
-
-## System Requirements
-
-| Requirement | Specification |
-|-------------|---------------|
-| **Language** | C++17 Standard |
-| **Compiler** | GCC (g++) with C++17 support |
-| **OS** | Windows (primary) |
-| **Memory** | ~50 MB (minimal requirements) |
-| **Disk Space** | ~5 MB (including data files) |
-| **Dependencies** | Standard C++ Library (STL) only |
-
----
-
-## Project Structure
-
-```
+```text
 Vehicle Manag Sys/
-├── Include/                        # Header files (class definitions)
-│   ├── Admin.h                     # Admin user role and features
-│   ├── Customer.h                  # Customer user role and features
-│   ├── Vehicle.h                   # Abstract vehicle base class
-│   ├── Economy.h, Luxury.h         # Vehicle category implementations
-│   ├── SUV.h, Van.h                #
-│   ├── RentalTransaction.h         # Rental workflow handling
-│   ├── SaleTransaction.h           # Sales workflow handling
-│   ├── InspectionReport.h          # Post-rental inspection logic
-│   ├── SearchEngine.h              # Multi-criteria vehicle search
-│   ├── TripPlanner.h               # Trip recommendation engine
-│   ├── FileHandler.h               # Data persistence layer
-│   ├── MenuHandler.h               # UI orchestration
-│   └── [Other utility headers]
+├── Include/              # Abstract blueprints and header compilation modules (.h)
+│   ├── Admin.h           # Admin privilege configurations & control dashboard
+│   ├── Customer.h        # Customer operations interface & historical profiling
+│   ├── Vehicle.h         # Polymorphic base class for vehicle fleet data structures
+│   ├── Economy.h         # Specialized vehicle subtype implementations
+│   ├── Luxury.h          # Specialized vehicle subtype implementations
+│   ├── SUV.h             # Specialized vehicle subtype implementations
+│   ├── Van.h             # Specialized vehicle subtype implementations
+│   ├── FileHandler.h     # Core I/O serialization & flat-file mapping logic
+│   ├── SearchEngine.h    # Multivariant evaluation matching arrays
+│   └── InputHandler.h    # Secure type validation & stream clear functions
 │
-├── Source/                         # Implementation files (.cpp)
-│   ├── main.cpp                    # Application entry point
-│   ├── Admin.cpp                   # Admin implementation
-│   ├── Customer.cpp                # Customer implementation
-│   └── [Other .cpp files]
+├── Source/               # Implementation modules containing raw application logic (.cpp)
+│   ├── main.cpp          # Runtime system orchestration and file validation entry
+│   ├── Admin.cpp         # Code block parsing for system dashboard access controls
+│   └── Customer.cpp      # Interface handling for rentals and trip planner pipelines
 │
-├── Docs/                           # Design documentation & Mermaid diagrams
-│   ├── Flowchart.mmd               # Full system flowchart
-│   ├── SimpleFlowchart.mmd         # Optimized user flowchart (subgraphs)
-│   ├── UML-1.mmd                   # Simplified class diagram
-│   ├── UML-2.mmd                   # Complete codebase class diagram
-│   ├── SequenceDiagram.mmd         # Detailed C++ execution trace
-│   └── SimpleSequenceDiagram.mmd   # High-level sequence diagram
+├── Docs/                 # Structural asset modeling sheets & Mermaid graphs
+│   ├── Flowchart.mmd     # Process pipeline mapping for application logic tracking
+│   └── UML-2.mmd         # Object inheritance relationship architectures
 │
-├── Data/                           # Persistent storage (text files)
-│   ├── Vehicle.txt                 # Fleet inventory database
-│   ├── Users.txt                   # User accounts database
-│   ├── Transactions.txt            # Transaction history
-│   └── Inspections.txt             # Inspection reports
+├── Data/                 # Protected application persistence layer text files (.txt)
+│   ├── Vehicle.txt       # Dynamic live fleet inventory array configurations
+│   ├── Users.txt         # Pipe-separated credential strings for safe login parsing
+│   ├── Transactions.txt  # Cumulative chronological purchase and rental histories
+│   └── Inspections.txt   # Mechanical evaluation checklists generated upon returns
 │
-├── build.bat                       # Windows build script
-└── README.md                       # This file
+├── build.bat             # Automation script for rapid compilation and environment boot
+└── README.md             # This core documentation tracking module
 ```
-
 ---
 
-## Author
+## 👨‍💻 Engineering Lead
 
-Developed by **[Hafiz Muhammad Saeed](https://github.com/HMSaeed101)**
+* **Hafiz Muhammad Saeed** – Full-Stack Developer & Computer Science Student
+* GitHub Profile: **[@HMSaeed101](https://github.com/HMSaeed101)**
+* Portfolio: **[hmsaeed.com](https://hmsaeed.com)**

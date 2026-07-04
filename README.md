@@ -115,6 +115,7 @@ Vehicle Manag Sys/
 
 ## 👨‍💻 Engineering Lead
 
-* **Hafiz Muhammad Saeed** – Full-Stack Developer & Computer Science Student
+* **Hafiz Muhammad Saeed** – Web Developer & Computer Science Student
+* Team Members: Wajeeh-ul-Hassan, Muhammad Irfan Yasir, Hamza Khurram
 * GitHub Profile: **[@HMSaeed101](https://github.com/HMSaeed101)**
 * Portfolio: **[hmsaeed.com](https://hmsaeed.com)**

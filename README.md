@@ -1,6 +1,6 @@
 # 🚗 Vehicle Management System (VMS)
 
-A high-performance, console-based vehicle rental and sales orchestration platform built using core **Object-Oriented Programming (OOP)** principles in C++17. 
+A high-performance, console-based vehicle rental and sales orchestration platform built using core **Object-Oriented Programming (OOP)** principles in C++17.
 
 [![C++ Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg?style=for-the-badge&logo=c%2B%2B)](https://en.cppreference.com/w/cpp/17)
 [![Platform Compatibility](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-brightgreen.svg?style=for-the-badge)](https://github.com/hmsaeed-dev)
@@ -13,27 +13,20 @@ A high-performance, console-based vehicle rental and sales orchestration platfor
 
 Test the live console interface directly inside your web browser without installing local compilers or dependencies:
 
-### Option 1: GitHub Codespaces (Recommended)
-Launch a full, instant C++ cloud development container pre-configured with GCC, Make, CMake, and debugging tools:
-
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/hmsaeed-dev/Vehicle-Management-System)
 
 Once the Codespace loads, the system is automatically pre-built and ready. Simply execute:
+
 ```bash
 ./build.sh
 # or using Make:
 make run
 ```
 
-### Option 2: Replit
-👉 **[Run the Vehicle Management System Live on Replit](https://replit.com/@hmsaeed/Vehicle-Management-System)**
-
-*(Once the Replit workspace provisions, click the green **Run** button at the top to initialize the local flat-file database structures!)*
-
 ---
 
 ## 📖 Deep-Dive Documentation Hub
-Comprehensive step-by-step guides, usage parameters, and edge-case behaviors are hosted in the project repository wiki. 
+Comprehensive step-by-step guides, usage parameters, and edge-case behaviors are hosted in the project repository wiki.
 
 * 🏠 **[Project Overview & Architecture Core](https://github.com/hmsaeed-dev/Vehicle-Management-System/wiki/Home)**
 * 🚀 **[Installation & Local Compilation Matrix](https://github.com/hmsaeed-dev/Vehicle-Management-System/wiki/Getting-Started)**
@@ -62,11 +55,11 @@ graph TD
     classDef feat fill:#161b22,stroke:#30363d,stroke-width:1px,color:#8b949e;
 
     Menu[MenuHandler <br><i>UI Orchestration & Session Workflow</i>]:::main
-    
+
     AdminS[Admin Session]:::sub
     CustS[Customer Session]:::sub
     Eng[SearchEngine & <br>TripPlanner]:::sub
-    
+
     AdminF[Admin Features<br>• Dashboard<br>• Fleet CRUD<br>• User Management]:::feat
     Trans[Transactions Layer<br>• Rentals<br>• Sales<br>• Post-Return Inspections]:::feat
 
@@ -74,7 +67,7 @@ graph TD
     Menu --> AdminS
     Menu --> CustS
     Menu --> Eng
-    
+
     AdminS --> AdminF
     CustS --> Trans
     Eng --> Trans

@@ -6,8 +6,16 @@
       "extensions": [
         "ms-vscode.cpptools",
         "ms-vscode.cmake-tools"
-      ]
+      ],
+      "settings": {
+        "C_Cpp.default.cppStandard": "c++17",
+        "C_Cpp.default.includePath": [
+          "${workspaceFolder}/Include"
+        ],
+        "C_Cpp.default.compilerPath": "/usr/bin/g++",
+        "files.eol": "\n"
+      }
     }
   },
-  "postCreateCommand": "echo 'Environment ready! Compile using: g++ -std=c++17 *.cpp -o app && ./app'"
+  "postCreateCommand": "chmod +x build.sh && make"
 }

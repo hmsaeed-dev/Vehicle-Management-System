@@ -1,1 +1,26 @@
+# Binaries & Compiled Objects
+*.exe
+*.o
+*.obj
+*.out
+VehicleManagSys
+app
+
+# Build Artifacts & Directories
+build/
+bin/
+out/
+cmake-build-*/
+
+# VS Code User State
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/settings.json
+
+# Documentation
 /Docs
+
+# OS Generated Files
+.DS_Store
+Thumbs.db

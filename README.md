@@ -24,13 +24,13 @@ A comprehensive console-based vehicle rental and sales management platform built
 The Vehicle Management System is a full-featured platform designed for managing vehicle fleets across rental and sales operations. It supports multiple user roles (Admins and Customers), maintains persistent data storage, provides advanced vehicle search capabilities, and includes comprehensive transaction tracking with inspection reports. The system handles complex workflows including rentals with dynamic pricing, vehicle sales, trip planning assistance, and post-rental inspections.
 
 ---
+
 ### ⚡ Live Interactive Demo
 
 You don't need to download this repository or configure a local C++ compiler to test it. You can interact with the live console interface directly in your web browser:
 
-👉 **[Run the Vehicle Management System Live on Replit](https://replit.com/@hmsaeed/Vehicle-Management-System)**
-
-*(Once the Replit window loads, simply hit the big green **Run** button at the very top of the interface to initialize the console database menu!)*
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)
+](https://codespaces.new/hmsaeed-dev/Vehicle-Management-System)
 
 ---
 
@@ -47,7 +47,6 @@ You don't need to download this repository or configure a local C++ compiler to 
 - **💾 Data Persistence** – All system data automatically saved to files
 
 ---
-
 
 ## System Architecture
 
@@ -111,24 +110,24 @@ You don't need to download this repository or configure a local C++ compiler to 
 
 ## Vehicle Categories
 
-| Category | Model Type | Typical Daily Rate (PKR) | Representative Models |
-|----------|------------|--------------------------|-----------------------|
-| **Economy** | Budget sedans, fuel-efficient hatchbacks | Rs. 3,000 - 6,500 | Suzuki Alto, Suzuki Cultus, Toyota Corolla GLI, Honda City Aspire |
-| **Luxury** | Premium luxury vehicles, high-end sedans | Rs. 45,000 - 80,000 | Audi A6 Prestige, BMW 7 Series, Mercedes-Benz, Toyota Land Cruiser |
-| **SUV** | Sports utility, off-road capable vehicles | Rs. 12,000 - 25,000 | Kia Sportage, Hyundai Tucson, Toyota Hilux Revo, Toyota Fortuner |
-| **Van** | Large capacity transport, group minibuses | Rs. 3,500 - 35,000 | Suzuki Bolan, Toyota Hiace, Toyota Coaster |
+| Category          | Model Type                                | Typical Daily Rate (PKR) | Representative Models                                              |
+| ----------------- | ----------------------------------------- | ------------------------ | ------------------------------------------------------------------ |
+| **Economy** | Budget sedans, fuel-efficient hatchbacks  | Rs. 3,000 - 6,500        | Suzuki Alto, Suzuki Cultus, Toyota Corolla GLI, Honda City Aspire  |
+| **Luxury**  | Premium luxury vehicles, high-end sedans  | Rs. 45,000 - 80,000      | Audi A6 Prestige, BMW 7 Series, Mercedes-Benz, Toyota Land Cruiser |
+| **SUV**     | Sports utility, off-road capable vehicles | Rs. 12,000 - 25,000      | Kia Sportage, Hyundai Tucson, Toyota Hilux Revo, Toyota Fortuner   |
+| **Van**     | Large capacity transport, group minibuses | Rs. 3,500 - 35,000       | Suzuki Bolan, Toyota Hiace, Toyota Coaster                         |
 
 ---
 
 ## System Requirements
 
-| Requirement | Specification |
-|-------------|---------------|
-| **Language** | C++17 Standard |
-| **Compiler** | GCC (g++) with C++17 support |
-| **OS** | Windows (primary) |
-| **Memory** | ~50 MB (minimal requirements) |
-| **Disk Space** | ~5 MB (including data files) |
+| Requirement            | Specification                   |
+| ---------------------- | ------------------------------- |
+| **Language**     | C++17 Standard                  |
+| **Compiler**     | GCC (g++) with C++17 support    |
+| **OS**           | Windows (primary)               |
+| **Memory**       | ~50 MB (minimal requirements)   |
+| **Disk Space**   | ~5 MB (including data files)    |
 | **Dependencies** | Standard C++ Library (STL) only |
 
 ---

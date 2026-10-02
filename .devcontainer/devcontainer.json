@@ -1,0 +1,13 @@
+{
+  "name": "C++ Vehicle Management Environment",
+  "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu-22.04",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools"
+      ]
+    }
+  },
+  "postCreateCommand": "echo 'Environment ready! Compile using: g++ -std=c++17 *.cpp -o app && ./app'"
+}
